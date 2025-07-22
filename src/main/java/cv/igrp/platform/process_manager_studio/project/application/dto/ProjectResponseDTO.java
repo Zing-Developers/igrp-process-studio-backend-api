@@ -23,7 +23,7 @@ public class ProjectResponseDTO {
 
   
   
-  private String projectArtifactId ;
+  private String projectId ;
   
   
   private String code ;

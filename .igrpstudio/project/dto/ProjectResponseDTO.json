@@ -6,7 +6,7 @@
   "enableCustonValidation": false,
   "attributes": [
     {
-      "name": "projectArtifactId",
+      "name": "projectId",
       "objectType": "java",
       "type": "string",
       "required": false,
