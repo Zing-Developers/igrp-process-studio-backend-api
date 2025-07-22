@@ -1,0 +1,14 @@
+{
+  "type": "springboot",
+  "name": "igrp_platform_process_manager_studio",
+  "group": "cv.igrp.platform",
+  "artifact": "process_manager_studio",
+  "packageName": "process_manager_studio",
+  "database": "Postgresql",
+  "description": "IGRP Platform Process Manager Studio",
+  "projectStructureStyle": "domain",
+  "enableObservability": false,
+  "enableEntityRevision": true,
+  "version": "0.1.0-beta.1",
+  "enableGraalVm": false
+}
