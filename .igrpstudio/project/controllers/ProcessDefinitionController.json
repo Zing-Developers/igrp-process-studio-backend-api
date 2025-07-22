@@ -1,0 +1,38 @@
+{
+  "type": "controller",
+  "name": "ProcessDefinition",
+  "module": "project",
+  "description": "process definition endpoint",
+  "basePath": "api/v1/projects",
+  "actions": [
+    {
+      "actionName": "createProcessDefinition",
+      "path": "{projectId}/process-definitions",
+      "method": "POST",
+      "responses": {
+        "201": {
+          "name": "Created",
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "ProcessDefinitionResponse",
+                "objectType": "dto",
+                "name": "data",
+                "collectionType": "none",
+                "module": "project"
+              }
+            }
+          }
+        }
+      },
+      "pathVariables": [
+        {
+          "name": "projectId",
+          "type": "string",
+          "isRequired": true
+        }
+      ]
+    }
+  ],
+  "id": "rq125xn7ri"
+}
