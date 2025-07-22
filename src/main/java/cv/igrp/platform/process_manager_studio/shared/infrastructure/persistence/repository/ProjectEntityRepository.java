@@ -15,4 +15,5 @@ public interface ProjectEntityRepository extends
     RevisionRepository<ProjectEntity, UUID, Integer>
 {
 
+  Optional<ProjectEntity> findByCode(String code);
 }
