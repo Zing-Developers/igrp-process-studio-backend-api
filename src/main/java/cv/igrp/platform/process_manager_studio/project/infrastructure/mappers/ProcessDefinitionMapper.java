@@ -1,5 +1,7 @@
 package cv.igrp.platform.process_manager_studio.project.infrastructure.mappers;
 
+import cv.igrp.platform.process_manager_studio.project.application.dto.ProcessDefinitionResponseDTO;
+import cv.igrp.platform.process_manager_studio.project.application.dto.ProjectArtifactResponseDTO;
 import cv.igrp.platform.process_manager_studio.project.domain.models.ProcessDefinition;
 import cv.igrp.platform.process_manager_studio.project.domain.models.ProjectArtifact;
 import cv.igrp.platform.process_manager_studio.shared.domain.valueobject.ProcessDefinitionId;
@@ -66,4 +68,24 @@ public class ProcessDefinitionMapper {
         artifacts
     );
   }
+
+  public ProcessDefinitionResponseDTO toResponseDTO(ProcessDefinition processDefinition) {
+    ProcessDefinitionResponseDTO pdDto = new ProcessDefinitionResponseDTO();
+    pdDto.setProcessDefinitionId(processDefinition.getId().getIdentifier().getValueAsString());
+    pdDto.setProcessKey(processDefinition.getProcessKey());
+    pdDto.setBpmnDiagramUrl(processDefinition.getBpmnDiagramUrl());
+    pdDto.setVersion(processDefinition.getVersion());
+
+    if (processDefinition.getArtifacts() != null && !processDefinition.getArtifacts().isEmpty()) {
+      List<ProjectArtifactResponseDTO> projectArtifactResponseDTOS = processDefinition.getArtifacts().stream()
+          .map(projectArtifactMapper::toResponseDTO)
+          .collect(Collectors.toList());
+
+      pdDto.setProjectArtifacts(projectArtifactResponseDTOS);
+    }
+
+
+    return pdDto;
+  }
+
 }

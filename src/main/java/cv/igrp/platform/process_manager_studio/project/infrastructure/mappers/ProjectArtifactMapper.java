@@ -1,5 +1,7 @@
 package cv.igrp.platform.process_manager_studio.project.infrastructure.mappers;
 
+import cv.igrp.platform.process_manager_studio.project.application.dto.ArtifactVariableResponseDTO;
+import cv.igrp.platform.process_manager_studio.project.application.dto.ProjectArtifactResponseDTO;
 import cv.igrp.platform.process_manager_studio.project.domain.models.ProjectArtifact;
 import cv.igrp.platform.process_manager_studio.shared.domain.valueobject.ProcessDefinitionId;
 import cv.igrp.platform.process_manager_studio.shared.domain.valueobject.ProjectArtifactId;
@@ -57,7 +59,7 @@ public class ProjectArtifactMapper {
     if (domain.getVariables() != null && !domain.getVariables().isEmpty()) {
       List<ArtifactVariableEntity> variableEntities = domain.getVariables().stream()
           .map(artifactVariableMapper::toEntity)
-          .peek(ve -> ve.setProjectArtifactId(entity)) // seta pai no filho
+          .peek(ve -> ve.setProjectArtifactId(entity))
           .collect(Collectors.toList());
       entity.setVariables(variableEntities);
     } else {
@@ -65,6 +67,25 @@ public class ProjectArtifactMapper {
     }
 
     return entity;
+  }
+
+  public ProjectArtifactResponseDTO toResponseDTO(ProjectArtifact projectArtifact) {
+    ProjectArtifactResponseDTO paDto = new ProjectArtifactResponseDTO();
+    paDto.setProjectArtifactId(projectArtifact.getId().getIdentifier().getValueAsString());
+    paDto.setTaskKey(projectArtifact.getTaskKey());
+    paDto.setName(projectArtifact.getName());
+
+    if (projectArtifact.getVariables() != null && !projectArtifact.getVariables().isEmpty()) {
+      List<ArtifactVariableResponseDTO> variableDtos = projectArtifact.getVariables().stream()
+          .map(artifactVariableMapper::toResponseDTO)
+          .collect(Collectors.toList());
+      paDto.setArtifactVariables(variableDtos);
+    } else {
+      paDto.setArtifactVariables(Collections.emptyList());
+    }
+
+
+    return paDto;
   }
 
 }

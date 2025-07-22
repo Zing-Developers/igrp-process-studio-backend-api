@@ -86,14 +86,7 @@ public class ProjectMapper {
     if (project.getProcessDefinitions() != null && !project.getProcessDefinitions().isEmpty()) {
 
       List<ProcessDefinitionResponseDTO> processDefinitionDTOs = project.getProcessDefinitions().stream()
-          .map(pd -> {
-            ProcessDefinitionResponseDTO pdDto = new ProcessDefinitionResponseDTO();
-            pdDto.setProcessDefinitionId(pd.getId().getIdentifier().getValueAsString());
-            pdDto.setProcessKey(pd.getProcessKey());
-            pdDto.setBpmnDiagramUrl(pd.getBpmnDiagramUrl());
-            pdDto.setVersion(pd.getVersion());
-            return pdDto;
-          })
+          .map(processDefinitionMapper::toResponseDTO)
           .collect(Collectors.toList());
       dto.setProcessDefinitions(processDefinitionDTOs);
     } else {
@@ -102,6 +95,8 @@ public class ProjectMapper {
 
     return dto;
   }
+
+
 
 
 }

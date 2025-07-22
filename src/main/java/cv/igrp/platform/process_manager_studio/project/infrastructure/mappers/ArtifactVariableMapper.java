@@ -1,5 +1,6 @@
 package cv.igrp.platform.process_manager_studio.project.infrastructure.mappers;
 
+import cv.igrp.platform.process_manager_studio.project.application.dto.ArtifactVariableResponseDTO;
 import cv.igrp.platform.process_manager_studio.project.domain.models.ArtifactVariable;
 import cv.igrp.platform.process_manager_studio.shared.domain.valueobject.ArtifactVariableId;
 import cv.igrp.platform.process_manager_studio.shared.domain.valueobject.ProjectArtifactId;
@@ -42,5 +43,21 @@ public class ArtifactVariableMapper {
       entity.setProjectArtifactId(projectArtifactEntity);
     }
     return entity;
+  }
+
+  public ArtifactVariableResponseDTO toResponseDTO(ArtifactVariable artifactVariable) {
+
+    if( artifactVariable == null) {
+      return null;
+    }
+
+    var responseDTO = new ArtifactVariableResponseDTO();
+    responseDTO.setArtifactVariableId(artifactVariable.getId().getIdentifier().getValueAsString());
+    responseDTO.setName(artifactVariable.getName());
+    responseDTO.setType(artifactVariable.getType());
+    responseDTO.setDefaultValue(artifactVariable.getDefaultValue());
+    responseDTO.setRequired(artifactVariable.isRequired());
+
+    return responseDTO;
   }
 }
