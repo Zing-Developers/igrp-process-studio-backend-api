@@ -1,0 +1,66 @@
+{
+  "type": "enum",
+  "module": "shared",
+  "name": "ProcessDefinitionState",
+  "values": [
+    {
+      "name": "DRAFT",
+      "attributes": [
+        "DRAFT",
+        "Rascunho. Ainda não está pronto para uso. Pode ser editado livremente."
+      ]
+    },
+    {
+      "name": "VALIDATED",
+      "attributes": [
+        "VALIDATED",
+        "Validado internamente, mas ainda não publicado. Passou por revisão."
+      ]
+    },
+    {
+      "name": "PUBLISHED",
+      "attributes": [
+        "PUBLISHED",
+        "Disponível para instâncias. Pode ser usado para iniciar processos."
+      ]
+    },
+    {
+      "name": "DEPRECATED",
+      "attributes": [
+        "DEPRECATED",
+        "Está em uso, mas desaconselhado para novos processos."
+      ]
+    },
+    {
+      "name": "ARCHIVED",
+      "attributes": [
+        "ARCHIVED",
+        "Não pode mais ser instanciado. Guardado apenas para histórico."
+      ]
+    },
+    {
+      "name": "DISABLED",
+      "attributes": [
+        "DISABLED",
+        "Temporariamente desativado. Nenhuma instância pode ser criada."
+      ]
+    },
+    {
+      "name": "ERROR",
+      "attributes": [
+        "ERROR",
+        "Erro na implantação/parsing"
+      ]
+    }
+  ],
+  "attributes": [
+    {
+      "type": "string",
+      "name": "Code"
+    },
+    {
+      "type": "string",
+      "name": "Description"
+    }
+  ]
+}
