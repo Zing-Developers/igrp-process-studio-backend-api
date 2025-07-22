@@ -30,7 +30,10 @@ public class ProcessDefinition {
     this.artifacts = artifacts != null ? new ArrayList<>(artifacts) : new ArrayList<>();
   }
 
-  public static ProcessDefinition create(ProjectId projectId, String processKey, String bpmnDiagramUrl, Integer version) {
+  public static ProcessDefinition create(ProjectId projectId, String processKey, String bpmnDiagramUrl) {
+
+    Integer version = 1; // Default version for new process definitions
+
     return new ProcessDefinition(
         ProcessDefinitionId.generate(),
         projectId,

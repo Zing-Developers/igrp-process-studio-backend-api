@@ -33,15 +33,8 @@ public class CreateProjectCommandHandler implements CommandHandler<CreateProject
      var project = Project.create(dto.getCode(), dto.getName(), dto.getDescription());
 
      var savedProject = projectRepository.save(project);
-      ProjectResponseDTO responseDTO = new ProjectResponseDTO();
-      responseDTO.setProjectId(savedProject.getId().getIdentifier().getValueAsString());
-      responseDTO.setCode(savedProject.getCode());
-      responseDTO.setName(savedProject.getName());
-      responseDTO.setDescription(savedProject.getDescription());
-      responseDTO.setActive(savedProject.isActive());
-      responseDTO.setCurrentVersion(savedProject.getCurrentVersion());
 
-      return ResponseEntity.ok(responseDTO);
+      return ResponseEntity.ok(projectMapper.toResponseDTO(savedProject));
    }
 
 }

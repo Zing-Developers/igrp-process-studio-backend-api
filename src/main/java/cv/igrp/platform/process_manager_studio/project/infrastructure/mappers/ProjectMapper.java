@@ -1,5 +1,7 @@
 package cv.igrp.platform.process_manager_studio.project.infrastructure.mappers;
 
+import cv.igrp.platform.process_manager_studio.project.application.dto.ProcessDefinitionResponseDTO;
+import cv.igrp.platform.process_manager_studio.project.application.dto.ProjectResponseDTO;
 import cv.igrp.platform.process_manager_studio.project.domain.models.ProcessDefinition;
 import cv.igrp.platform.process_manager_studio.project.domain.models.Project;
 import cv.igrp.platform.process_manager_studio.shared.domain.valueobject.ProjectId;
@@ -68,6 +70,37 @@ public class ProjectMapper {
         entity.getCurrentVersion(),
         processDefinitions
     );
+  }
+
+  public ProjectResponseDTO toResponseDTO(Project project) {
+    if (project == null) return null;
+
+    var dto = new ProjectResponseDTO();
+    dto.setProjectId(project.getId().getIdentifier().getValueAsString());
+    dto.setCode(project.getCode());
+    dto.setName(project.getName());
+    dto.setDescription(project.getDescription());
+    dto.setActive(project.isActive());
+    dto.setCurrentVersion(project.getCurrentVersion());
+
+    if (project.getProcessDefinitions() != null && !project.getProcessDefinitions().isEmpty()) {
+
+      List<ProcessDefinitionResponseDTO> processDefinitionDTOs = project.getProcessDefinitions().stream()
+          .map(pd -> {
+            ProcessDefinitionResponseDTO pdDto = new ProcessDefinitionResponseDTO();
+            pdDto.setProcessDefinitionId(pd.getId().getIdentifier().getValueAsString());
+            pdDto.setProcessKey(pd.getProcessKey());
+            pdDto.setBpmnDiagramUrl(pd.getBpmnDiagramUrl());
+            pdDto.setVersion(pd.getVersion());
+            return pdDto;
+          })
+          .collect(Collectors.toList());
+      dto.setProcessDefinitions(processDefinitionDTOs);
+    } else {
+      dto.setProcessDefinitions(Collections.emptyList());
+    }
+
+    return dto;
   }
 
 

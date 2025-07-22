@@ -44,7 +44,7 @@
     {
       "name": "version",
       "objectType": "java",
-      "type": "string",
+      "type": "integer",
       "required": false,
       "before": false,
       "after": false,

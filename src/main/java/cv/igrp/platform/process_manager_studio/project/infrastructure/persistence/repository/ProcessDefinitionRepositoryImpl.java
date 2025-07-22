@@ -8,6 +8,7 @@ import cv.igrp.platform.process_manager_studio.shared.domain.valueobject.Project
 import cv.igrp.platform.process_manager_studio.shared.infrastructure.persistence.repository.ProcessDefinitionEntityRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
@@ -20,14 +21,14 @@ public class ProcessDefinitionRepositoryImpl implements ProcessDefinitionReposit
   private final ProcessDefinitionEntityRepository processDefinitionEntityRepository;
   private final ProcessDefinitionMapper processDefinitionMapper;
 
-
+  @Transactional(readOnly = true)
   @Override
   public Optional<ProcessDefinition> findById(ProcessDefinitionId id) {
     if (id == null) return Optional.empty();
     return processDefinitionEntityRepository.findById(id.getIdentifier().getValue())
         .map(processDefinitionMapper::toDomain);
   }
-
+  @Transactional(readOnly = true)
   @Override
   public Optional<ProcessDefinition> findByKey(String key) {
     if (key == null || key.isBlank()) return Optional.empty();
@@ -35,13 +36,14 @@ public class ProcessDefinitionRepositoryImpl implements ProcessDefinitionReposit
         .map(processDefinitionMapper::toDomain);
   }
 
+  @Transactional(readOnly = true)
   @Override
   public List<ProcessDefinition> findAll() {
     return processDefinitionEntityRepository.findAll().stream()
         .map(processDefinitionMapper::toDomain)
         .collect(Collectors.toList());
   }
-
+  @Transactional(readOnly = true)
   @Override
   public List<ProcessDefinition> findByProjectId(ProjectId projectId) {
     if (projectId == null) return List.of();
@@ -51,6 +53,7 @@ public class ProcessDefinitionRepositoryImpl implements ProcessDefinitionReposit
         .collect(Collectors.toList());
   }
 
+  @Transactional
   @Override
   public ProcessDefinition save(ProcessDefinition processDefinition) {
     if (processDefinition == null) throw new IllegalArgumentException("processDefinition cannot be null");

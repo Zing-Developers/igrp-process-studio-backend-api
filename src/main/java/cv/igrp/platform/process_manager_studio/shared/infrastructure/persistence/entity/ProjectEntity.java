@@ -10,6 +10,8 @@ import lombok.*;
 import org.hibernate.envers.Audited;
 import java.util.UUID;
 import java.util.List;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 
 @Audited
 @Getter
@@ -49,6 +51,7 @@ public class ProjectEntity extends AuditEntity {
 
 
 
-  @OneToMany(mappedBy = "projectId", fetch = FetchType.LAZY)
+  @OneToMany(mappedBy = "projectId", fetch = FetchType.LAZY, cascade = { CascadeType.ALL }, orphanRemoval = true)
+    @OnDelete(action = OnDeleteAction.SET_NULL)
 private List<ProcessDefinitionEntity> processdefinitions;
 }

@@ -1,5 +1,9 @@
 package cv.igrp.platform.process_manager_studio.project.application.queries;
 
+import cv.igrp.platform.process_manager_studio.project.domain.repository.ProjectRepository;
+import cv.igrp.platform.process_manager_studio.project.infrastructure.mappers.ProjectMapper;
+import cv.igrp.platform.process_manager_studio.shared.domain.exceptions.IgrpResponseStatusException;
+import cv.igrp.platform.process_manager_studio.shared.domain.valueobject.ProjectId;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import cv.igrp.framework.core.domain.QueryHandler;
@@ -15,15 +19,25 @@ public class GetProjectByIdQueryHandler implements QueryHandler<GetProjectByIdQu
 
   private static final Logger LOGGER = LoggerFactory.getLogger(GetProjectByIdQueryHandler.class);
 
+  private final ProjectMapper projectMapper;
+  private final ProjectRepository projectRepository;
 
-  public GetProjectByIdQueryHandler() {
 
+  public GetProjectByIdQueryHandler(ProjectMapper projectMapper, ProjectRepository projectRepository) {
+
+    this.projectMapper = projectMapper;
+    this.projectRepository = projectRepository;
   }
 
    @IgrpQueryHandler
   public ResponseEntity<ProjectResponseDTO> handle(GetProjectByIdQuery query) {
-    // TODO: Implement the query handling logic here
-    return null;
+    var projectId = ProjectId.of(query.getProjectId());
+
+    var project = projectRepository.findById(projectId)
+        .orElseThrow(() -> IgrpResponseStatusException.notFound("Project not found with id: " + projectId.getIdentifier().getValue()));
+
+    return ResponseEntity.ok(projectMapper.toResponseDTO(project));
+
   }
 
 }

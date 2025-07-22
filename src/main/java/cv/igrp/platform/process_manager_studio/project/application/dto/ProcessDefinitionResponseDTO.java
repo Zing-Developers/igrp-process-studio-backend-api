@@ -32,7 +32,7 @@ public class ProcessDefinitionResponseDTO {
   private String bpmnDiagramUrl ;
   
   
-  private String version ;
+  private Integer version ;
   
   @Valid
   private List<ProjectArtifactResponseDTO> projectArtifacts = new ArrayList<>();
