@@ -11,7 +11,7 @@ import java.util.*;
 public class ProjectArtifact {
 
   private final ProjectArtifactId id;
-  private final ProcessDefinitionId processDefinitionId;  // referência ao pai
+  private final ProcessDefinitionId processDefinitionId;
 
   private String taskKey;
   private String name;
@@ -62,15 +62,27 @@ public class ProjectArtifact {
     this.variables.add(variable);
   }
 
+  public void addVariables(List<ArtifactVariable> variables) {
+    if (variables == null || variables.isEmpty()) return;
+    this.variables.addAll(variables);
+  }
+
   public void removeVariable(ArtifactVariable variable) {
     this.variables.remove(variable);
   }
 
-  public List<ArtifactVariable> getVariables() {
-    return Collections.unmodifiableList(variables);
+  public void updateVariables(List<ArtifactVariable> updatedVariables) {
+    if (updatedVariables == null) return;
+
+    for (ArtifactVariable updatedVar : updatedVariables) {
+      this.variables.stream()
+          .filter(v -> v.getId().equals(updatedVar.getId()))
+          .findFirst()
+          .ifPresent(v -> v.updateInfo(updatedVar.getName(), updatedVar.getType(), updatedVar.getDefaultValue(), updatedVar.isRequired()));
+    }
   }
 
-  // Search methods
+
 
   public Optional<ArtifactVariable> getVariableById(ArtifactVariableId id) {
     if (id == null) return Optional.empty();

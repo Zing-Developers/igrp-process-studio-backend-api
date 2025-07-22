@@ -68,13 +68,29 @@ public class ProcessDefinition {
     this.artifacts.add(artifact);
   }
 
+  public void addArtifacts(List<ProjectArtifact> artifacts) {
+    if (artifacts == null || artifacts.isEmpty()) return;
+    this.artifacts.addAll(artifacts);
+  }
+
   public void removeArtifact(ProjectArtifact artifact) {
     this.artifacts.remove(artifact);
   }
 
-  public List<ProjectArtifact> getArtifacts() {
-    return Collections.unmodifiableList(artifacts);
+  public void updateArtifacts(List<ProjectArtifact> updatedArtifacts) {
+    if (updatedArtifacts == null) return;
+
+    for (ProjectArtifact updatedArtifact : updatedArtifacts) {
+      this.artifacts.stream()
+          .filter(a -> a.getId().equals(updatedArtifact.getId()))
+          .findFirst()
+          .ifPresent(existingArtifact ->
+                  existingArtifact.updateInfo(updatedArtifact.getTaskKey(), updatedArtifact.getName())
+              // Se precisar atualizar variáveis, pode chamar um método do ProjectArtifact aqui também
+          );
+    }
   }
+
 
   public Optional<ProjectArtifact> getArtifactById(ProjectArtifactId id) {
     if (id == null) return Optional.empty();

@@ -10,7 +10,7 @@ import java.util.Objects;
 public class ArtifactVariable {
 
   private final ArtifactVariableId id;
-  private final ProjectArtifactId artifactId; // referência ao pai
+  private final ProjectArtifactId artifactId
   private String name;
   private String type;
   private String defaultValue;
