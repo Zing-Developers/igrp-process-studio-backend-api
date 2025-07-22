@@ -1,0 +1,46 @@
+/* THIS FILE WAS GENERATED AUTOMATICALLY BY iGRP STUDIO. */
+/* DO NOT MODIFY IT BECAUSE IT COULD BE REWRITTEN AT ANY TIME. */
+
+package cv.igrp.platform.process_manager_studio.project.application.dto;
+
+import cv.igrp.framework.stereotype.IgrpDTO;
+import jakarta.validation.*;
+import jakarta.validation.constraints.*;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+import lombok.AllArgsConstructor;
+import cv.igrp.platform.process_manager_studio.project.application.dto.ProcessDefinitionResponseDTO;
+import java.util.ArrayList;
+import java.util.List;
+
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
+
+
+@IgrpDTO
+public class ProjectResponseDTO {
+
+  
+  
+  private String projectArtifactId ;
+  
+  
+  private String code ;
+  
+  
+  private String name ;
+  
+  
+  private String description ;
+  
+  
+  private boolean active ;
+  
+  
+  private Integer currentVersion ;
+  
+  @Valid
+  private List<ProcessDefinitionResponseDTO> processDefinitions = new ArrayList<>();
+
+}
