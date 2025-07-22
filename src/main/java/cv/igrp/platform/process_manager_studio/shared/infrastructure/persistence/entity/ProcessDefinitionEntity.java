@@ -47,7 +47,9 @@ public class ProcessDefinitionEntity extends AuditEntity {
 
 
   @OneToMany(mappedBy = "procesDefinitionId", fetch = FetchType.LAZY)
-private List<ProjectArtifactEntity> artifacts;   @ManyToOne(fetch = FetchType.LAZY)
+private List<ProjectArtifactEntity> artifacts;
+
+  @ManyToOne(fetch = FetchType.LAZY)
    @JoinColumn(name = "project_id")
    private ProjectEntity projectId;
 
