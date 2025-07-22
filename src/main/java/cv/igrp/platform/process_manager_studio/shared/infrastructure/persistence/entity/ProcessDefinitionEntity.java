@@ -10,6 +10,7 @@ import lombok.*;
 import org.hibernate.envers.Audited;
 import java.util.UUID;
 import jakarta.validation.constraints.NotBlank;
+import cv.igrp.platform.process_manager_studio.shared.application.constants.ProcessDefinitionState;
 import java.util.List;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
@@ -45,6 +46,11 @@ public class ProcessDefinitionEntity extends AuditEntity {
 
     @Column(name="rejected_reason")
     private String rejectedReason;
+
+
+    @Enumerated(EnumType.STRING)
+    @Column(name="state")
+    private ProcessDefinitionState state;
 
 
 
