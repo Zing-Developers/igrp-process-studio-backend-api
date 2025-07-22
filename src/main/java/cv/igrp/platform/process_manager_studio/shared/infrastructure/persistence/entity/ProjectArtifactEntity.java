@@ -11,6 +11,8 @@ import org.hibernate.envers.Audited;
 import java.util.UUID;
 import jakarta.validation.constraints.NotBlank;
 import java.util.List;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 
 @Audited
 @Getter
@@ -39,7 +41,8 @@ public class ProjectArtifactEntity extends AuditEntity {
 
 
 
-  @OneToMany(mappedBy = "projectArtifactId", fetch = FetchType.LAZY)
+  @OneToMany(mappedBy = "projectArtifactId", fetch = FetchType.LAZY, cascade = { CascadeType.ALL }, orphanRemoval = true)
+    @OnDelete(action = OnDeleteAction.SET_NULL)
 private List<ArtifactVariableEntity> variables;   @ManyToOne(fetch = FetchType.LAZY)
    @JoinColumn(name = "proces_definition_id")
    private ProcessDefinitionEntity procesDefinitionId;
