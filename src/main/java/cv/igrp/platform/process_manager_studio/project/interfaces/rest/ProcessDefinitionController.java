@@ -3,26 +3,21 @@
 
 package cv.igrp.platform.process_manager_studio.project.interfaces.rest;
 
+import cv.igrp.framework.core.domain.CommandBus;
+import cv.igrp.framework.core.domain.QueryBus;
 import cv.igrp.framework.stereotype.IgrpController;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
-import org.springframework.http.HttpStatus;
-import io.swagger.v3.oas.annotations.tags.Tag;
+import cv.igrp.platform.process_manager_studio.project.application.commands.CreateProcessDefinitionCommand;
+import cv.igrp.platform.process_manager_studio.project.application.dto.ProcessDefinitionResponseDTO;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
-import io.swagger.v3.oas.annotations.media.ExampleObject;
-import jakarta.validation.Valid;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import cv.igrp.framework.core.domain.CommandBus;
-import cv.igrp.framework.core.domain.QueryBus;
-import cv.igrp.platform.process_manager_studio.project.application.commands.*;
-import cv.igrp.platform.process_manager_studio.project.application.queries.*;
-
-
-import cv.igrp.platform.process_manager_studio.project.application.dto.ProcessDefinitionResponseDTO;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 @IgrpController
 @RestController
@@ -32,11 +27,11 @@ public class ProcessDefinitionController {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(ProcessDefinitionController.class);
 
-  
+
   private final CommandBus commandBus;
   private final QueryBus queryBus;
 
-  
+
   public ProcessDefinitionController(
     CommandBus commandBus, QueryBus queryBus
   ) {
@@ -63,14 +58,14 @@ public class ProcessDefinitionController {
       )
     }
   )
-  
+
   public ResponseEntity<ProcessDefinitionResponseDTO> createProcessDefinition(
-    @PathVariable(value = "projectId") String projectId)
+      @RequestParam(value = "file") MultipartFile file , @PathVariable(value = "projectId") String projectId)
   {
 
       LOGGER.debug("Operation started");
 
-      final var command = new CreateProcessDefinitionCommand(projectId);
+      final var command = new CreateProcessDefinitionCommand(file, projectId);
 
        ResponseEntity<ProcessDefinitionResponseDTO> response = commandBus.send(command);
 

@@ -7,11 +7,12 @@ import cv.igrp.platform.process_manager_studio.shared.config.AuditEntity;
 import cv.igrp.framework.stereotype.IgrpEntity;
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.envers.Audited;
 import java.util.UUID;
 import jakarta.validation.constraints.NotBlank;
 import java.util.List;
 
-
+@Audited
 @Getter
 @Setter
 @ToString

@@ -25,6 +25,13 @@
           }
         }
       },
+      "requestParams": [
+        {
+          "type": "file",
+          "name": "file",
+          "isRequired": true
+        }
+      ],
       "pathVariables": [
         {
           "name": "projectId",

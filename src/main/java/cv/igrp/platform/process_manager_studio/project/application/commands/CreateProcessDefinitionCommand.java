@@ -5,13 +5,16 @@ import jakarta.validation.constraints.*;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.AllArgsConstructor;
-
+import org.springframework.web.multipart.MultipartFile;
 
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 public class CreateProcessDefinitionCommand implements Command {
 
+
+  @NotBlank(message = "The field <file> is required.")
+  private MultipartFile file;
   @NotBlank(message = "The field <projectId> is required.")
   private String projectId;
 
