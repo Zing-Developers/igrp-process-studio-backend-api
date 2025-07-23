@@ -7,7 +7,7 @@
   "actions": [
     {
       "actionName": "createProcessDefinition",
-      "path": "{projectId}/process-definitions",
+      "path": "{projectId}/process-definitions/save",
       "method": "POST",
       "responses": {
         "201": {
@@ -39,7 +39,42 @@
           "isRequired": true
         }
       ]
+    },
+    {
+      "actionName": "deployProcessDefinition",
+      "path": "{projectId}/process-definitions/deploy",
+      "method": "POST",
+      "responses": {
+        "200": {
+          "name": "OK",
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "ProjectResponse",
+                "objectType": "dto",
+                "name": "data",
+                "collectionType": "none",
+                "module": "project"
+              }
+            }
+          }
+        }
+      },
+      "requestParams": [
+        {
+          "type": "file",
+          "name": "file",
+          "isRequired": true
+        }
+      ],
+      "pathVariables": [
+        {
+          "name": "projectId",
+          "type": "string",
+          "isRequired": true
+        }
+      ]
     }
   ],
-  "id": "rq125xn7ri"
+  "id": "rq125xn7ri-CONTROLLER"
 }
