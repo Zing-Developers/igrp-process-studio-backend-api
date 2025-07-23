@@ -6,10 +6,8 @@ import cv.igrp.platform.process_manager_studio.shared.domain.valueobject.Project
 import cv.igrp.platform.process_manager_studio.shared.domain.valueobject.ProjectId;
 import lombok.Getter;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
+import java.time.LocalDate;
+import java.util.*;
 
 @Getter
 public class ProcessDefinition {
@@ -21,11 +19,13 @@ public class ProcessDefinition {
   private Integer version;
   private ProcessDefinitionState state;
   private String rejectedReason;
+  private final LocalDate deploymentDate;
+  private final String deploymentId;
 
   private final List<ProjectArtifact> artifacts;
 
-  private ProcessDefinition(ProcessDefinitionId id, ProjectId projectId, String processKey, String bpmnDiagramUrl, Integer version, String rejectedReason, List<ProjectArtifact> artifacts,
-   ProcessDefinitionState state) {
+  private ProcessDefinition(ProcessDefinitionId id, ProjectId projectId, String processKey, String bpmnDiagramUrl, Integer version, String rejectedReason,
+                            List<ProjectArtifact> artifacts, ProcessDefinitionState state, LocalDate deploymentDate, String deploymentId) {
     this.id = Objects.requireNonNull(id, "id cannot be null");
     this.projectId = Objects.requireNonNull(projectId);
     this.processKey = processKey;
@@ -34,33 +34,41 @@ public class ProcessDefinition {
     this.rejectedReason = rejectedReason;
     this.artifacts = artifacts != null ? new ArrayList<>(artifacts) : new ArrayList<>();
     this.state = state;
+    this.deploymentDate = deploymentDate;
+    this.deploymentId = deploymentId;
   }
 
-  public static ProcessDefinition create(ProjectId projectId, String processKey, String bpmnDiagramUrl) {
 
-    Integer version = 1; // Default version for new process definitions
+  public static ProcessDefinition create(ProjectId projectId, String processKey, String bpmnDiagramUrl) {
 
     return new ProcessDefinition(
         ProcessDefinitionId.generate(),
         projectId,
         processKey,
         bpmnDiagramUrl,
-        version,
+        null,
         null,
         new ArrayList<>(),
-        ProcessDefinitionState.DRAFT
+        ProcessDefinitionState.DRAFT,
+        null,
+        null
     );
   }
 
-  public static ProcessDefinition rebuild(ProcessDefinitionId id,ProjectId projectId, String processKey, String bpmnDiagramUrl, Integer version, String rejectedReason, List<ProjectArtifact> artifacts,
-                                          ProcessDefinitionState state) {
-    return new ProcessDefinition(id, projectId,processKey, bpmnDiagramUrl, version, rejectedReason, artifacts, state);
+  public static ProcessDefinition rebuild(ProcessDefinitionId id, ProjectId projectId, String processKey, String bpmnDiagramUrl, Integer version, String rejectedReason,
+                                          List<ProjectArtifact> artifacts, ProcessDefinitionState state, LocalDate deploymentDate, String deploymentId) {
+    return new ProcessDefinition(id, projectId, processKey, bpmnDiagramUrl, version, rejectedReason, artifacts, state, deploymentDate, deploymentId);
   }
 
   public void updateInfo(String processKey, String bpmnDiagramUrl, Integer version) {
     this.processKey = processKey;
     this.bpmnDiagramUrl = bpmnDiagramUrl;
     this.version = version;
+  }
+
+  public void updateInfo(String processKey, String bpmnDiagramUrl) {
+    this.processKey = processKey;
+    this.bpmnDiagramUrl = bpmnDiagramUrl;
   }
 
   public void approve() {
@@ -82,14 +90,14 @@ public class ProcessDefinition {
   }
 
   public void reject(String reason) {
-    if(reason == null || reason.isBlank()) {
+    if (reason == null || reason.isBlank()) {
       throw new IllegalArgumentException("Rejected reason cannot be blank");
     }
     this.rejectedReason = reason;
   }
 
   public void addArtifact(ProjectArtifact artifact) {
-    if(artifact == null) throw new IllegalArgumentException("Artifact cannot be null");
+    if (artifact == null) throw new IllegalArgumentException("Artifact cannot be null");
     this.artifacts.add(artifact);
   }
 

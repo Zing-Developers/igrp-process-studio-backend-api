@@ -59,7 +59,6 @@ public class CreateProcessDefinitionCommandHandler implements CommandHandler<Cre
     try (InputStream inputStream = file.getInputStream()) {
       BpmnModelInstance modelInstance = Bpmn.readModelFromStream(inputStream);
 
-      // Pegando o processo principal do modelo
       Collection<Process> processes = modelInstance.getModelElementsByType(Process.class);
 
       if (processes.isEmpty()) {
@@ -68,7 +67,7 @@ public class CreateProcessDefinitionCommandHandler implements CommandHandler<Cre
 
       for (Process process : processes) {
 
-        String processId = process.getId();
+        String processId = process.getId(); //processkey
         String processName = process.getName();
 
         LOGGER.debug("Process ID: {}", processId);

@@ -37,6 +37,12 @@ public class ProcessDefinitionResponseDTO {
   
   private String state ;
   
+  
+  private String deploymentId ;
+  
+  
+  private String deploymentDate ;
+  
   @Valid
   private List<ProjectArtifactResponseDTO> projectArtifacts = new ArrayList<>();
 

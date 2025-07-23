@@ -10,6 +10,7 @@ import cv.igrp.platform.process_manager_studio.shared.infrastructure.persistence
 import cv.igrp.platform.process_manager_studio.shared.infrastructure.persistence.entity.ProjectArtifactEntity;
 import org.springframework.stereotype.Component;
 
+import java.time.format.DateTimeFormatter;
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -66,17 +67,24 @@ public class ProcessDefinitionMapper {
         entity.getVersion(),
         entity.getRejectedReason(),
         artifacts,
-        entity.getState()
+        entity.getState(),
+        entity.getDeploymentDate(),
+        entity.getDeploymentId()
     );
   }
 
   public ProcessDefinitionResponseDTO toResponseDTO(ProcessDefinition processDefinition) {
+
+    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+
     ProcessDefinitionResponseDTO pdDto = new ProcessDefinitionResponseDTO();
     pdDto.setProcessDefinitionId(processDefinition.getId().getIdentifier().getValueAsString());
     pdDto.setProcessKey(processDefinition.getProcessKey());
     pdDto.setBpmnDiagramUrl(processDefinition.getBpmnDiagramUrl());
     pdDto.setVersion(processDefinition.getVersion());
     pdDto.setState(processDefinition.getState()!= null ? processDefinition.getState().getCode() : null);
+    pdDto.setDeploymentId(processDefinition.getDeploymentId()!= null ? processDefinition.getDeploymentId() : null);
+    pdDto.setDeploymentDate(processDefinition.getDeploymentDate()!= null ? processDefinition.getDeploymentDate().format(formatter) : null);
 
     if (processDefinition.getArtifacts() != null && !processDefinition.getArtifacts().isEmpty()) {
       List<ProjectArtifactResponseDTO> projectArtifactResponseDTOS = processDefinition.getArtifacts().stream()
