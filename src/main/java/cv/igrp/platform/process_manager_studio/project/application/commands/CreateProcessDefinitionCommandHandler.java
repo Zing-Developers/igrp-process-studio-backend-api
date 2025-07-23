@@ -90,30 +90,32 @@ public class CreateProcessDefinitionCommandHandler implements CommandHandler<Cre
           // Extrair variáveis do user task
           ExtensionElements extensionElements = userTask.getExtensionElements();
 
-          if (extensionElements != null) {
-            CamundaFormData formData = extensionElements.getElementsQuery()
+          if (extensionElements != null ) {
+            Collection<CamundaFormData> formDataList = extensionElements.getElementsQuery()
                 .filterByType(CamundaFormData.class)
-                .singleResult();
+                .list();
 
-            if (formData != null) {
-              Collection<CamundaFormField> formFields = formData.getCamundaFormFields();
+            if (formDataList != null && !formDataList.isEmpty()) {
 
+              for (CamundaFormData formData : formDataList) {
+                Collection<CamundaFormField> formFields = formData.getCamundaFormFields();
 
-              for (CamundaFormField field : formFields) {
-                String varName = field.getCamundaId();
-                String varType = field.getCamundaType();
-                String varDefault = field.getCamundaDefaultValue();
-                boolean isRequired = "true".equalsIgnoreCase(field.getAttributeValue("required"));
+                for (CamundaFormField field : formFields) {
+                  String varName = field.getCamundaId();
+                  String varType = field.getCamundaType();
+                  String varDefault = field.getCamundaDefaultValue();
+                  boolean isRequired = "true".equalsIgnoreCase(field.getAttributeValue("required"));
 
-                var variable = ArtifactVariable.create(
-                    artifact.getId(),
-                    varName,
-                    varType,
-                    varDefault,
-                    isRequired
-                );
+                  var variable = ArtifactVariable.create(
+                      artifact.getId(),
+                      varName,
+                      varType,
+                      varDefault,
+                      isRequired
+                  );
 
-                artifact.addVariable(variable);
+                  artifact.addVariable(variable);
+                }
               }
             }
           }
