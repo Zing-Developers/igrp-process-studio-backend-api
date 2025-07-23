@@ -65,7 +65,8 @@ public class ProcessDefinitionMapper {
         entity.getBpmnDiagramUrl(),
         entity.getVersion(),
         entity.getRejectedReason(),
-        artifacts
+        artifacts,
+        entity.getState()
     );
   }
 
@@ -75,6 +76,7 @@ public class ProcessDefinitionMapper {
     pdDto.setProcessKey(processDefinition.getProcessKey());
     pdDto.setBpmnDiagramUrl(processDefinition.getBpmnDiagramUrl());
     pdDto.setVersion(processDefinition.getVersion());
+    pdDto.setState(processDefinition.getState()!= null ? processDefinition.getState().getCode() : null);
 
     if (processDefinition.getArtifacts() != null && !processDefinition.getArtifacts().isEmpty()) {
       List<ProjectArtifactResponseDTO> projectArtifactResponseDTOS = processDefinition.getArtifacts().stream()

@@ -1,12 +1,15 @@
 package cv.igrp.platform.process_manager_studio.project.domain.models;
 
-import cv.igrp.platform.process_manager_studio.shared.domain.valueobject.Identifier;
+import cv.igrp.platform.process_manager_studio.shared.application.constants.ProcessDefinitionState;
 import cv.igrp.platform.process_manager_studio.shared.domain.valueobject.ProcessDefinitionId;
 import cv.igrp.platform.process_manager_studio.shared.domain.valueobject.ProjectArtifactId;
 import cv.igrp.platform.process_manager_studio.shared.domain.valueobject.ProjectId;
 import lombok.Getter;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
 
 @Getter
 public class ProcessDefinition {
@@ -16,11 +19,13 @@ public class ProcessDefinition {
   private String processKey;
   private String bpmnDiagramUrl;
   private Integer version;
+  private ProcessDefinitionState state;
   private String rejectedReason;
 
   private final List<ProjectArtifact> artifacts;
 
-  private ProcessDefinition(ProcessDefinitionId id, ProjectId projectId, String processKey, String bpmnDiagramUrl, Integer version, String rejectedReason, List<ProjectArtifact> artifacts) {
+  private ProcessDefinition(ProcessDefinitionId id, ProjectId projectId, String processKey, String bpmnDiagramUrl, Integer version, String rejectedReason, List<ProjectArtifact> artifacts,
+   ProcessDefinitionState state) {
     this.id = Objects.requireNonNull(id, "id cannot be null");
     this.projectId = Objects.requireNonNull(projectId);
     this.processKey = processKey;
@@ -28,6 +33,7 @@ public class ProcessDefinition {
     this.version = version;
     this.rejectedReason = rejectedReason;
     this.artifacts = artifacts != null ? new ArrayList<>(artifacts) : new ArrayList<>();
+    this.state = state;
   }
 
   public static ProcessDefinition create(ProjectId projectId, String processKey, String bpmnDiagramUrl) {
@@ -41,12 +47,14 @@ public class ProcessDefinition {
         bpmnDiagramUrl,
         version,
         null,
-        new ArrayList<>()
+        new ArrayList<>(),
+        ProcessDefinitionState.DRAFT
     );
   }
 
-  public static ProcessDefinition rebuild(ProcessDefinitionId id,ProjectId projectId, String processKey, String bpmnDiagramUrl, Integer version, String rejectedReason, List<ProjectArtifact> artifacts) {
-    return new ProcessDefinition(id, projectId,processKey, bpmnDiagramUrl, version, rejectedReason, artifacts);
+  public static ProcessDefinition rebuild(ProcessDefinitionId id,ProjectId projectId, String processKey, String bpmnDiagramUrl, Integer version, String rejectedReason, List<ProjectArtifact> artifacts,
+                                          ProcessDefinitionState state) {
+    return new ProcessDefinition(id, projectId,processKey, bpmnDiagramUrl, version, rejectedReason, artifacts, state);
   }
 
   public void updateInfo(String processKey, String bpmnDiagramUrl, Integer version) {
@@ -57,6 +65,20 @@ public class ProcessDefinition {
 
   public void approve() {
     this.rejectedReason = null;
+  }
+
+  public void upateState(ProcessDefinitionState newState) {
+    if (newState == null) {
+      throw new IllegalArgumentException("New state cannot be null");
+    }
+    this.state = newState;
+  }
+
+  public void upateVersion(Integer newVersion) {
+    if (newVersion == null || newVersion <= 0) {
+      throw new IllegalArgumentException("Version must be a positive integer");
+    }
+    this.version = newVersion;
   }
 
   public void reject(String reason) {
@@ -78,6 +100,10 @@ public class ProcessDefinition {
 
   public void removeArtifact(ProjectArtifact artifact) {
     this.artifacts.remove(artifact);
+  }
+
+  public void publish() {
+    this.state = ProcessDefinitionState.PUBLISHED;
   }
 
   public void updateArtifacts(List<ProjectArtifact> updatedArtifacts) {

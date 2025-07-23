@@ -34,6 +34,9 @@ public class ProcessDefinitionResponseDTO {
   
   private Integer version ;
   
+  
+  private String state ;
+  
   @Valid
   private List<ProjectArtifactResponseDTO> projectArtifacts = new ArrayList<>();
 

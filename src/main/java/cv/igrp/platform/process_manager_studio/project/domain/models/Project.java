@@ -56,6 +56,14 @@ public class Project {
     this.active = active;
   }
 
+  public void updateCurrentVersion(Integer newVersion) {
+    if (newVersion == null || newVersion <= 0) {
+      throw new IllegalArgumentException("Version must be positive");
+    }
+    if (this.currentVersion == null || newVersion > this.currentVersion) {
+      this.currentVersion = newVersion;
+    }
+  }
 
   public void activate() {
     this.active = true;

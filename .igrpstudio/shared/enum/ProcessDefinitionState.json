@@ -7,49 +7,49 @@
       "name": "DRAFT",
       "attributes": [
         "DRAFT",
-        "Rascunho. Ainda não está pronto para uso. Pode ser editado livremente."
+        "Rascunho"
       ]
     },
     {
       "name": "VALIDATED",
       "attributes": [
         "VALIDATED",
-        "Validado internamente, mas ainda não publicado. Passou por revisão."
+        "Validado internamente, mas ainda não publicado"
       ]
     },
     {
       "name": "PUBLISHED",
       "attributes": [
         "PUBLISHED",
-        "Disponível para instâncias. Pode ser usado para iniciar processos."
+        "Publicado"
       ]
     },
     {
       "name": "DEPRECATED",
       "attributes": [
         "DEPRECATED",
-        "Está em uso, mas desaconselhado para novos processos."
+        "Obsoleto"
       ]
     },
     {
       "name": "ARCHIVED",
       "attributes": [
         "ARCHIVED",
-        "Não pode mais ser instanciado. Guardado apenas para histórico."
+        "Arquivado"
       ]
     },
     {
       "name": "DISABLED",
       "attributes": [
         "DISABLED",
-        "Temporariamente desativado. Nenhuma instância pode ser criada."
+        "Temporariamente desativado."
       ]
     },
     {
       "name": "ERROR",
       "attributes": [
         "ERROR",
-        "Erro na implantação/parsing"
+        "Erro no parsing"
       ]
     }
   ],

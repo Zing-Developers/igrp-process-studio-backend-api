@@ -13,13 +13,13 @@ import java.util.stream.Collectors;
 
 public enum ProcessDefinitionState implements IgrpEnum<String> {
 
-  DRAFT("DRAFT", "Rascunho. Ainda não está pronto para uso. Pode ser editado livremente."),
-    VALIDATED("VALIDATED", "Validado internamente, mas ainda não publicado. Passou por revisão."),
-    PUBLISHED("PUBLISHED", "Disponível para instâncias. Pode ser usado para iniciar processos."),
-    DEPRECATED("DEPRECATED", "Está em uso, mas desaconselhado para novos processos."),
-    ARCHIVED("ARCHIVED", "Não pode mais ser instanciado. Guardado apenas para histórico."),
-    DISABLED("DISABLED", "Temporariamente desativado. Nenhuma instância pode ser criada."),
-    ERROR("ERROR", "Erro na implantação/parsing")
+  DRAFT("DRAFT", "Rascunho"),
+    VALIDATED("VALIDATED", "Validado internamente, mas ainda não publicado"),
+    PUBLISHED("PUBLISHED", "Publicado"),
+    DEPRECATED("DEPRECATED", "Obsoleto"),
+    ARCHIVED("ARCHIVED", "Arquivado"),
+    DISABLED("DISABLED", "Temporariamente desativado."),
+    ERROR("ERROR", "Erro no parsing")
   ;
 
   private final String code;
