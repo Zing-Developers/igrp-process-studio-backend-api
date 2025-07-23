@@ -1,5 +1,6 @@
 package cv.igrp.platform.process_manager_studio.project.domain.models;
 
+import cv.igrp.platform.process_manager_studio.shared.application.constants.ProcessDefinitionState;
 import cv.igrp.platform.process_manager_studio.shared.domain.valueobject.Identifier;
 import cv.igrp.platform.process_manager_studio.shared.domain.valueobject.ProcessDefinitionId;
 import cv.igrp.platform.process_manager_studio.shared.domain.valueobject.ProjectId;
@@ -38,13 +39,14 @@ public class Project {
   }
 
   public static Project create(String code, String name, String description) {
+
     return new Project(
         ProjectId.generate(),
         code,
         name,
         description,
         true,
-        1,
+        null,
         new ArrayList<>()
     );
   }
@@ -104,5 +106,12 @@ public class Project {
         .filter(pd -> processKey.equals(pd.getProcessKey()))
         .findFirst();
   }
+
+  public Optional<ProcessDefinition> getDraftProcessDefinitionByKey(String processKey) {
+    return processDefinitions.stream()
+        .filter(pd -> processKey.equals(pd.getProcessKey()) && pd.getState() == ProcessDefinitionState.DRAFT)
+        .findFirst();
+  }
+
 
 }

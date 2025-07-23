@@ -28,6 +28,10 @@ public class ArtifactVariableEntity extends AuditEntity {
     private UUID id;
 
 
+    @Column(name="key")
+    private String key;
+
+
     @NotBlank(message = "name is mandatory")
     @Column(name="name", nullable = false)
     private String name;

@@ -143,5 +143,16 @@ public class ProcessDefinition {
         .findFirst();
   }
 
+  public void replaceArtifacts(List<ProjectArtifact> newArtifacts) {
+    this.artifacts.clear();
+    this.artifacts.addAll(newArtifacts);
+  }
+
+
+  public void cleanArtifacts() {
+    this.artifacts.clear();
+  }
+
+
 
 }

@@ -11,6 +11,7 @@ public class ArtifactVariable {
 
   private final ArtifactVariableId id;
   private final ProjectArtifactId artifactId;
+  private final String artifactVariableKey;
   private String name;
   private String type;
   private String defaultValue;
@@ -19,6 +20,7 @@ public class ArtifactVariable {
   private ArtifactVariable(
       ArtifactVariableId id,
       ProjectArtifactId artifactId,
+      String artifactVariableKey,
       String name,
       String type,
       String defaultValue,
@@ -29,10 +31,12 @@ public class ArtifactVariable {
     this.type = type;
     this.defaultValue = defaultValue;
     this.isRequired = isRequired;
+    this.artifactVariableKey = artifactVariableKey;
   }
 
   public static ArtifactVariable create(
       ProjectArtifactId artifactId,
+      String artifactVariableKey,
       String name,
       String type,
       String defaultValue,
@@ -43,6 +47,7 @@ public class ArtifactVariable {
     return new ArtifactVariable(
         ArtifactVariableId.generate(),
         artifactId,
+        artifactVariableKey,
         name,
         type,
         defaultValue,
@@ -53,11 +58,12 @@ public class ArtifactVariable {
   public static ArtifactVariable rebuild(
       ArtifactVariableId id,
       ProjectArtifactId artifactId,
+      String artifactVariableKey,
       String name,
       String type,
       String defaultValue,
       boolean isRequired) {
-    return new ArtifactVariable(id, artifactId, name, type, defaultValue, isRequired);
+    return new ArtifactVariable(id, artifactId,artifactVariableKey, name, type, defaultValue, isRequired);
   }
 
   public void updateInfo(String name, String type, String defaultValue, boolean isRequired) {

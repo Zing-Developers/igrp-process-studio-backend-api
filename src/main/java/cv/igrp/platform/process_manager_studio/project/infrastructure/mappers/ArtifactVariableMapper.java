@@ -18,6 +18,7 @@ public class ArtifactVariableMapper {
     return ArtifactVariable.rebuild(
         ArtifactVariableId.of(entity.getId().toString()),
         entity.getProjectArtifactId() != null ? ProjectArtifactId.of(entity.getProjectArtifactId().getId().toString()) : null,
+        entity.getKey(),
         entity.getName(),
         entity.getType(),
         entity.getDefaultValue(),
@@ -36,6 +37,7 @@ public class ArtifactVariableMapper {
     entity.setType(domain.getType());
     entity.setDefaultValue(domain.getDefaultValue());
     entity.setRequired(domain.isRequired());
+    entity.setKey(domain.getArtifactVariableKey());
 
     if (domain.getArtifactId() != null) {
       var projectArtifactEntity = new ProjectArtifactEntity();
@@ -53,6 +55,7 @@ public class ArtifactVariableMapper {
 
     var responseDTO = new ArtifactVariableResponseDTO();
     responseDTO.setArtifactVariableId(artifactVariable.getId().getIdentifier().getValueAsString());
+    responseDTO.setKey(artifactVariable.getArtifactVariableKey());
     responseDTO.setName(artifactVariable.getName());
     responseDTO.setType(artifactVariable.getType());
     responseDTO.setDefaultValue(artifactVariable.getDefaultValue());

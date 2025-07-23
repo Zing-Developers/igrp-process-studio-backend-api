@@ -33,6 +33,9 @@ public class ProcessDefinitionMapper {
     entity.setBpmnDiagramUrl(domain.getBpmnDiagramUrl());
     entity.setVersion(domain.getVersion());
     entity.setRejectedReason(domain.getRejectedReason());
+    entity.setState(domain.getState());
+    entity.setDeploymentDate(domain.getDeploymentDate());
+    entity.setDeploymentId(domain.getDeploymentId());
 
     if (domain.getArtifacts() != null && !domain.getArtifacts().isEmpty()) {
       List<ProjectArtifactEntity> artifactEntities = domain.getArtifacts().stream()

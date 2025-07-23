@@ -24,6 +24,9 @@ public class ArtifactVariableResponseDTO {
   private String artifactVariableId ;
   
   
+  private String key ;
+  
+  
   private String name ;
   
   

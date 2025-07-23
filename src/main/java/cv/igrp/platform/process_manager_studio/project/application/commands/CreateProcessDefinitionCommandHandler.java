@@ -50,6 +50,7 @@ public class CreateProcessDefinitionCommandHandler implements CommandHandler<Cre
         .orElseThrow(() ->
             IgrpResponseStatusException.notFound("Project not found with id: " + projectId.getIdentifier().getValue()));
 
+
     var file = command.getFile();
 
     if (file.isEmpty()) {
@@ -67,18 +68,30 @@ public class CreateProcessDefinitionCommandHandler implements CommandHandler<Cre
 
       for (Process process : processes) {
 
-        String processId = process.getId(); //processkey
+        String processKey  = process.getId(); //processkey
         String processName = process.getName();
 
-        LOGGER.debug("Process ID: {}", processId);
+        LOGGER.debug("Process ID: {}", processKey);
         LOGGER.debug("Process Name: {}", processName);
 
+        // Verifica se já existe um ProcessDefinition com mesmo processKey e estado DRAFT
+        var draftProcessDefinition = project.getDraftProcessDefinitionByKey(processKey);
 
-        var processDefinition = ProcessDefinition.create(projectId, processId, "url_minion");
-        project.addProcessDefinition(processDefinition);
+        ProcessDefinition processDefinition;
+
+        if (draftProcessDefinition.isPresent()) {
+          processDefinition = draftProcessDefinition.get();
+          LOGGER.debug("processDefinition found: {}", processDefinition);
+          processDefinition.cleanArtifacts(); // Limpa artifacts antigos
+        } else {
+          processDefinition = ProcessDefinition.create(projectId, processKey, "url_minio"); // Ajustar URL real
+          LOGGER.debug("processDefinition new: {}", processDefinition);
+          project.addProcessDefinition(processDefinition);
+        }
 
         Collection<UserTask> userTasks = process.getChildElementsByType(UserTask.class);
 
+        // processing user tasks
         for (UserTask userTask : userTasks) {
           String taskId = userTask.getId();
           String taskName = userTask.getName();
@@ -100,13 +113,15 @@ public class CreateProcessDefinitionCommandHandler implements CommandHandler<Cre
                 Collection<CamundaFormField> formFields = formData.getCamundaFormFields();
 
                 for (CamundaFormField field : formFields) {
-                  String varName = field.getCamundaId();
+                  String varKey = field.getCamundaId();
+                  String varName = field.getCamundaLabel();
                   String varType = field.getCamundaType();
                   String varDefault = field.getCamundaDefaultValue();
                   boolean isRequired = "true".equalsIgnoreCase(field.getAttributeValue("required"));
 
                   var variable = ArtifactVariable.create(
                       artifact.getId(),
+                      varKey,
                       varName,
                       varType,
                       varDefault,
@@ -119,6 +134,7 @@ public class CreateProcessDefinitionCommandHandler implements CommandHandler<Cre
             }
           }
         }
+
       }
 
       projectRepository.save(project);
