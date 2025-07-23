@@ -11,6 +11,7 @@ import org.hibernate.envers.Audited;
 import java.util.UUID;
 import jakarta.validation.constraints.NotBlank;
 import cv.igrp.platform.process_manager_studio.shared.application.constants.ProcessDefinitionState;
+import java.time.LocalDate;
 import java.util.List;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
@@ -25,6 +26,7 @@ import org.hibernate.annotations.OnDeleteAction;
 @AllArgsConstructor
 @Table(name = "t_process_definition")
 public class ProcessDefinitionEntity extends AuditEntity {
+
 
     @Id
     @Column(name = "id", unique = true, nullable = false)
@@ -51,6 +53,14 @@ public class ProcessDefinitionEntity extends AuditEntity {
     @Enumerated(EnumType.STRING)
     @Column(name="state")
     private ProcessDefinitionState state;
+
+
+    @Column(name="deployment_id")
+    private String deploymentId;
+
+
+    @Column(name="deployment_date")
+    private LocalDate deploymentDate;
 
 
 
