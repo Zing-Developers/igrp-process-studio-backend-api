@@ -148,7 +148,6 @@
             <version>7.20.0</version>
         </dependency>
 
-
     </dependencies>
     <dependencyManagement>
         <dependencies>

@@ -23,7 +23,7 @@ import cv.igrp.platform.process_manager_studio.project.application.commands.*;
 import cv.igrp.platform.process_manager_studio.project.application.queries.*;
 
 
-import cv.igrp.platform.process_manager_studio.project.application.dto.ProcessDefinitionResponseDTO;
+import cv.igrp.platform.process_manager_studio.project.application.dto.ProjectResponseDTO;
 import org.springframework.web.multipart.MultipartFile;
 
 @IgrpController
@@ -40,7 +40,7 @@ public class ProcessDefinitionController {
 
 
   public ProcessDefinitionController(
-      CommandBus commandBus, QueryBus queryBus
+    CommandBus commandBus, QueryBus queryBus
   ) {
     this.commandBus = commandBus;
     this.queryBus = queryBus;
@@ -52,36 +52,37 @@ public class ProcessDefinitionController {
       produces = MediaType.APPLICATION_JSON_VALUE
   )
   @Operation(
-      summary = "POST method to handle operations for createProcessDefinition",
-      description = "POST method to handle operations for createProcessDefinition",
-      responses = {
-          @ApiResponse(
-              responseCode = "201",
-              description = "",
-              content = @Content(
-                  mediaType = "application/json",
-                  schema = @Schema(
-                      implementation = ProcessDefinitionResponseDTO.class,
-                      type = "object")
-              )
+    summary = "POST method to handle operations for createProcessDefinition",
+    description = "POST method to handle operations for createProcessDefinition",
+    responses = {
+      @ApiResponse(
+          responseCode = "201",
+          description = "",
+          content = @Content(
+              mediaType = "application/json",
+              schema = @Schema(
+                  implementation = ProjectResponseDTO.class,
+                  type = "object")
           )
-      }
+      )
+    }
   )
 
-  public ResponseEntity<ProcessDefinitionResponseDTO> createProcessDefinition(
-      @RequestParam(value = "file") MultipartFile file, @PathVariable(value = "projectId") String projectId) {
+  public ResponseEntity<ProjectResponseDTO> createProcessDefinition(
+    @RequestParam(value = "file") MultipartFile file, @PathVariable(value = "projectId") String projectId)
+  {
 
-    LOGGER.debug("Operation started");
+      LOGGER.debug("Operation started");
 
-    final var command = new CreateProcessDefinitionCommand(file, projectId);
+      final var command = new CreateProcessDefinitionCommand(file, projectId);
 
-    ResponseEntity<ProcessDefinitionResponseDTO> response = commandBus.send(command);
+       ResponseEntity<ProjectResponseDTO> response = commandBus.send(command);
 
-    LOGGER.debug("Operation finished");
+       LOGGER.debug("Operation finished");
 
-    return ResponseEntity.status(response.getStatusCode())
-        .headers(response.getHeaders())
-        .body(response.getBody());
+        return ResponseEntity.status(response.getStatusCode())
+              .headers(response.getHeaders())
+              .body(response.getBody());
   }
 
 }

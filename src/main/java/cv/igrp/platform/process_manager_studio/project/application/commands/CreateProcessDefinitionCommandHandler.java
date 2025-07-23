@@ -2,6 +2,8 @@ package cv.igrp.platform.process_manager_studio.project.application.commands;
 
 import cv.igrp.framework.core.domain.CommandHandler;
 import cv.igrp.framework.stereotype.IgrpCommandHandler;
+import cv.igrp.platform.process_manager_studio.project.application.dto.ProjectResponseDTO;
+import cv.igrp.platform.process_manager_studio.project.domain.models.ArtifactVariable;
 import cv.igrp.platform.process_manager_studio.project.domain.models.ProcessDefinition;
 import cv.igrp.platform.process_manager_studio.project.domain.models.ProjectArtifact;
 import cv.igrp.platform.process_manager_studio.project.domain.repository.ProjectRepository;
@@ -10,7 +12,10 @@ import cv.igrp.platform.process_manager_studio.shared.domain.exceptions.IgrpResp
 import cv.igrp.platform.process_manager_studio.shared.domain.valueobject.ProjectId;
 import org.camunda.bpm.model.bpmn.Bpmn;
 import org.camunda.bpm.model.bpmn.BpmnModelInstance;
+import org.camunda.bpm.model.bpmn.instance.ExtensionElements;
 import org.camunda.bpm.model.bpmn.instance.UserTask;
+import org.camunda.bpm.model.bpmn.instance.camunda.CamundaFormData;
+import org.camunda.bpm.model.bpmn.instance.camunda.CamundaFormField;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import org.slf4j.Logger;
@@ -24,77 +29,107 @@ import java.io.InputStream;
 import java.util.Collection;
 
 @Component
-public class CreateProcessDefinitionCommandHandler implements CommandHandler<CreateProcessDefinitionCommand, ResponseEntity<ProcessDefinitionResponseDTO>> {
+public class CreateProcessDefinitionCommandHandler implements CommandHandler<CreateProcessDefinitionCommand, ResponseEntity<ProjectResponseDTO>> {
 
-   private static final Logger LOGGER = LoggerFactory.getLogger(CreateProcessDefinitionCommandHandler.class);
+  private static final Logger LOGGER = LoggerFactory.getLogger(CreateProcessDefinitionCommandHandler.class);
 
   private final ProjectRepository projectRepository;
   private final ProjectMapper projectMapper;
 
-   public CreateProcessDefinitionCommandHandler(ProjectRepository projectRepository, ProjectMapper projectMapper) {
+  public CreateProcessDefinitionCommandHandler(ProjectRepository projectRepository, ProjectMapper projectMapper) {
 
-     this.projectRepository = projectRepository;
-     this.projectMapper = projectMapper;
-   }
+    this.projectRepository = projectRepository;
+    this.projectMapper = projectMapper;
+  }
 
-   @IgrpCommandHandler
-   public ResponseEntity<ProcessDefinitionResponseDTO> handle(CreateProcessDefinitionCommand command) {
-     var projectId = ProjectId.of(command.getProjectId());
+  @IgrpCommandHandler
+  public ResponseEntity<ProjectResponseDTO> handle(CreateProcessDefinitionCommand command) {
+    var projectId = ProjectId.of(command.getProjectId());
 
-     var project = projectRepository.findById(projectId)
-         .orElseThrow(() ->
-             IgrpResponseStatusException.notFound("Project not found with id: " + projectId.getIdentifier().getValue()));
+    var project = projectRepository.findById(projectId)
+        .orElseThrow(() ->
+            IgrpResponseStatusException.notFound("Project not found with id: " + projectId.getIdentifier().getValue()));
 
-     var file = command.getFile();
+    var file = command.getFile();
 
-     if (file.isEmpty()) {
-       throw IgrpResponseStatusException.badRequest("File is empty.");
-     }
+    if (file.isEmpty()) {
+      throw IgrpResponseStatusException.badRequest("File is empty.");
+    }
 
-     try (InputStream inputStream = file.getInputStream()) {
-       BpmnModelInstance modelInstance = Bpmn.readModelFromStream(inputStream);
+    try (InputStream inputStream = file.getInputStream()) {
+      BpmnModelInstance modelInstance = Bpmn.readModelFromStream(inputStream);
 
-       // Pegando o processo principal do modelo
-       Collection<Process> processes = modelInstance.getModelElementsByType(Process.class);
+      // Pegando o processo principal do modelo
+      Collection<Process> processes = modelInstance.getModelElementsByType(Process.class);
 
-       if (processes.isEmpty()) {
-         throw IgrpResponseStatusException.badRequest("No process found in BPMN file.");
-       }
+      if (processes.isEmpty()) {
+        throw IgrpResponseStatusException.badRequest("No process found in BPMN file.");
+      }
 
-       Process process = processes.iterator().next();
+      for (Process process : processes) {
 
-       String processId = process.getId();
-       String processName = process.getName();
+        String processId = process.getId();
+        String processName = process.getName();
 
-       LOGGER.debug("Process ID: {}", processId);
-       LOGGER.debug("Process Name: {}", processName);
+        LOGGER.debug("Process ID: {}", processId);
+        LOGGER.debug("Process Name: {}", processName);
 
 
-       var processDefinition = ProcessDefinition.create(projectId,processId,"url_minion");
-       project.addProcessDefinition(processDefinition);
+        var processDefinition = ProcessDefinition.create(projectId, processId, "url_minion");
+        project.addProcessDefinition(processDefinition);
 
-       Collection<UserTask> userTasks =
-           modelInstance.getModelElementsByType(UserTask.class);
+        Collection<UserTask> userTasks = process.getChildElementsByType(UserTask.class);
 
-       for (org.camunda.bpm.model.bpmn.instance.UserTask userTask : userTasks) {
-         String taskId = userTask.getId();
-         String taskName = userTask.getName();
+        for (UserTask userTask : userTasks) {
+          String taskId = userTask.getId();
+          String taskName = userTask.getName();
 
-         var artifact = ProjectArtifact.create(processDefinition.getId(),taskId, taskName);
-         processDefinition.addArtifact(artifact);
-       }
+          var artifact = ProjectArtifact.create(processDefinition.getId(), taskId, taskName);
+          processDefinition.addArtifact(artifact);
 
-       projectRepository.save(project);
+          // Extrair variáveis do user task
+          ExtensionElements extensionElements = userTask.getExtensionElements();
 
-       var response = new ProcessDefinitionResponseDTO();
-       response.setProcessKey(processId);
+          if (extensionElements != null) {
+            CamundaFormData formData = extensionElements.getElementsQuery()
+                .filterByType(CamundaFormData.class)
+                .singleResult();
 
-       return ResponseEntity.ok(response);
+            if (formData != null) {
+              Collection<CamundaFormField> formFields = formData.getCamundaFormFields();
 
-     } catch (IOException e) {
-       LOGGER.error("Error reading BPMN file", e);
-       throw IgrpResponseStatusException.internalServerError("Error processing BPMN file.");
-     }
-   }
+
+              for (CamundaFormField field : formFields) {
+                String varName = field.getCamundaId();
+                String varType = field.getCamundaType();
+                String varDefault = field.getCamundaDefaultValue();
+                boolean isRequired = "true".equalsIgnoreCase(field.getAttributeValue("required"));
+
+                var variable = ArtifactVariable.create(
+                    artifact.getId(),
+                    varName,
+                    varType,
+                    varDefault,
+                    isRequired
+                );
+
+                artifact.addVariable(variable);
+              }
+            }
+          }
+        }
+      }
+
+      projectRepository.save(project);
+
+      var response = projectMapper.toResponseDTO(project);
+
+      return ResponseEntity.ok(response);
+
+    } catch (IOException e) {
+      LOGGER.error("Error reading BPMN file", e);
+      throw IgrpResponseStatusException.internalServerError("Error processing BPMN file.");
+    }
+  }
 
 }
