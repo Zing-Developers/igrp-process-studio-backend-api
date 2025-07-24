@@ -10,8 +10,6 @@ import lombok.*;
 import org.hibernate.envers.Audited;
 import java.util.UUID;
 import jakarta.validation.constraints.NotBlank;
-import org.hibernate.annotations.JdbcType;
-import org.hibernate.type.descriptor.jdbc.BinaryJdbcType;
 import cv.igrp.platform.process_manager_studio.shared.application.constants.ProcessDefinitionState;
 import java.time.LocalDate;
 import java.util.List;
@@ -52,9 +50,8 @@ public class ProcessDefinitionEntity extends AuditEntity {
 
 
     @Lob
-    @JdbcType(BinaryJdbcType.class)
-    @Column(name="bpm_file_content", columnDefinition = "BLOB")
-    private byte[] bpmFileContent;
+    @Column(name="bpm_file_content", columnDefinition="TEXT")
+    private String bpmFileContent;
 
 
     @Column(name="version")

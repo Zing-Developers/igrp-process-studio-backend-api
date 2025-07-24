@@ -14,6 +14,7 @@ import cv.igrp.platform.process_manager_studio.project.infrastructure.mappers.Pr
 import cv.igrp.platform.process_manager_studio.shared.domain.exceptions.IgrpResponseStatusException;
 import cv.igrp.platform.process_manager_studio.shared.domain.valueobject.ProcessDefinitionId;
 import cv.igrp.platform.process_manager_studio.shared.domain.valueobject.ProjectId;
+import cv.igrp.platform.process_manager_studio.shared.infrastructure.persistence.entity.BpmDriagram;
 import org.camunda.bpm.model.bpmn.Bpmn;
 import org.camunda.bpm.model.bpmn.BpmnModelInstance;
 import org.camunda.bpm.model.bpmn.instance.ExtensionElements;
@@ -28,8 +29,10 @@ import org.slf4j.LoggerFactory;
 
 import cv.igrp.platform.process_manager_studio.project.application.dto.ProjectResponseDTO;
 
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
 import java.util.Collection;
 
 @Component
@@ -43,21 +46,22 @@ public class DeployProcessDefinitionCommandHandler implements CommandHandler<Dep
   private final ProcessDefinitionMapper processDefinitionMapper;
 
 
-  private final ProcessDeploymentPort processDeploymentPort;
-
-   public DeployProcessDefinitionCommandHandler(ProjectRepository projectRepository, ProcessDefinitionRepository processDefinitionRepository, ProcessDefinitionMapper processDefinitionMapper, ProcessDeploymentPort processDeploymentPort) {
+   public DeployProcessDefinitionCommandHandler(ProjectRepository projectRepository, ProcessDefinitionRepository processDefinitionRepository, ProcessDefinitionMapper processDefinitionMapper) {
 
      this.projectRepository = projectRepository;
      this.processDefinitionRepository = processDefinitionRepository;
      this.processDefinitionMapper = processDefinitionMapper;
-     this.processDeploymentPort = processDeploymentPort;
    }
 
    @IgrpCommandHandler
    public ResponseEntity<ProcessDefinitionResponseDTO> handle(DeployProcessDefinitionCommand command) {
+
      var projectId = ProjectId.of(command.getProjectId());
 
      var processDefinitionId = ProcessDefinitionId.of(command.getProcessId());
+
+     var content = command.getBpmdiagram().getContent();
+     byte[] bpmnBytes = content.getBytes(StandardCharsets.UTF_8);
 
      if (!projectRepository.existsById(projectId))
        throw IgrpResponseStatusException.notFound("Project not found with id: " + projectId.getIdentifier().getValue());
@@ -68,20 +72,8 @@ public class DeployProcessDefinitionCommandHandler implements CommandHandler<Dep
              IgrpResponseStatusException.notFound("Process Definition not found with id: " + processDefinitionId.getIdentifier().getValue()));
 
 
-     var file = command.getFile();
 
-     if (file == null || file.isEmpty()) {
-       throw IgrpResponseStatusException.badRequest("File is empty.");
-     }
-
-     byte[] bpmnBytes = null;
-     try {
-       bpmnBytes = file.getBytes();
-     } catch (IOException e) {
-       throw new RuntimeException(e);
-     }
-
-     try (InputStream inputStream = file.getInputStream()) {
+     try (InputStream inputStream = new ByteArrayInputStream(bpmnBytes)) {
        BpmnModelInstance modelInstance = Bpmn.readModelFromStream(inputStream);
 
        Collection<Process> processes = modelInstance.getModelElementsByType(Process.class);
@@ -104,9 +96,9 @@ public class DeployProcessDefinitionCommandHandler implements CommandHandler<Dep
        if (processDefinition.isDraft()) {
          LOGGER.debug("processDefinition is draft: {}", processDefinition);
          processDefinition.cleanArtifacts(); // Limpa artifacts antigos
-         processDefinition.updateBpmnContent(bpmnBytes); // Atualiza o conteúdo do BPMN
+         processDefinition.updateBpmnContent(BpmDriagram.of(content)); // Atualiza o conteúdo do BPMN
        } else {
-         processDefinition = ProcessDefinition.create(projectId, processDefinition.getProcessKey(), bpmnBytes);
+         processDefinition = ProcessDefinition.create(projectId, processDefinition.getProcessKey(), BpmDriagram.of(content));
          LOGGER.debug("processDefinition new: {}", processDefinition);
        }
 

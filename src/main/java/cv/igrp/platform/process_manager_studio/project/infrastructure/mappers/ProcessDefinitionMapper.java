@@ -6,6 +6,7 @@ import cv.igrp.platform.process_manager_studio.project.domain.models.ProcessDefi
 import cv.igrp.platform.process_manager_studio.project.domain.models.ProjectArtifact;
 import cv.igrp.platform.process_manager_studio.shared.domain.valueobject.ProcessDefinitionId;
 import cv.igrp.platform.process_manager_studio.shared.domain.valueobject.ProjectId;
+import cv.igrp.platform.process_manager_studio.shared.infrastructure.persistence.entity.BpmDriagram;
 import cv.igrp.platform.process_manager_studio.shared.infrastructure.persistence.entity.ProcessDefinitionEntity;
 import cv.igrp.platform.process_manager_studio.shared.infrastructure.persistence.entity.ProjectArtifactEntity;
 import org.springframework.stereotype.Component;
@@ -32,7 +33,7 @@ public class ProcessDefinitionMapper {
     entity.setProcessKey(domain.getProcessKey());
     entity.setBpmnDiagramUrl(domain.getBpmnDiagramUrl());
     entity.setVersion(domain.getVersion());
-    entity.setBpmFileContent(domain.getBpmnFileContent());
+    entity.setBpmFileContent(domain.getBpmDriagram().getContent());
     entity.setState(domain.getState());
     entity.setDeploymentDate(domain.getDeploymentDate());
     entity.setDeploymentId(domain.getDeploymentId());
@@ -69,7 +70,7 @@ public class ProcessDefinitionMapper {
         ProjectId.of(entity.getProjectId().getId().toString()),
         entity.getProcessKey(),
         entity.getBpmnDiagramUrl(),
-        entity.getBpmFileContent(),
+        entity.getBpmFileContent()!=null ? BpmDriagram.of(entity.getBpmFileContent()) : null,
         entity.getVersion(),
         artifacts,
         entity.getState(),
@@ -94,7 +95,7 @@ public class ProcessDefinitionMapper {
     pdDto.setStatusDesc(processDefinition.getState()!= null ? processDefinition.getState().getDescription() : null);
     pdDto.setDeploymentId(processDefinition.getDeploymentId()!= null ? processDefinition.getDeploymentId() : null);
     pdDto.setDeploymentDate(processDefinition.getDeploymentDate()!= null ? processDefinition.getDeploymentDate().format(formatter) : null);
-    pdDto.setBpmFileContent(processDefinition.getBpmnFileContent()!=null ? processDefinition.getBpmnFileContent().toString(): null);
+    pdDto.setBpmFileContent(processDefinition.getBpmDriagram()!=null ? processDefinition.getBpmDriagram().getContent(): null);
     pdDto.setTitle(processDefinition.getTitle());
     pdDto.setDescripiton(processDefinition.getDescription());
     pdDto.setProjectId(processDefinition.getProjectId().getIdentifier().getValueAsString());

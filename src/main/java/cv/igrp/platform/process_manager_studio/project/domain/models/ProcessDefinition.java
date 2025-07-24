@@ -4,6 +4,7 @@ import cv.igrp.platform.process_manager_studio.shared.application.constants.Proc
 import cv.igrp.platform.process_manager_studio.shared.domain.valueobject.ProcessDefinitionId;
 import cv.igrp.platform.process_manager_studio.shared.domain.valueobject.ProjectArtifactId;
 import cv.igrp.platform.process_manager_studio.shared.domain.valueobject.ProjectId;
+import cv.igrp.platform.process_manager_studio.shared.infrastructure.persistence.entity.BpmDriagram;
 import lombok.Getter;
 
 import java.time.LocalDate;
@@ -18,7 +19,7 @@ public class ProcessDefinition {
   private String description;
   private String processKey;
   private String bpmnDiagramUrl;
-  private byte[] bpmnFileContent;
+  private BpmDriagram bpmDriagram;
   private Integer version;
   private ProcessDefinitionState state;
   private final LocalDate deploymentDate;
@@ -26,13 +27,13 @@ public class ProcessDefinition {
 
   private final List<ProjectArtifact> artifacts;
 
-  private ProcessDefinition(ProcessDefinitionId id, ProjectId projectId, String processKey, String bpmnDiagramUrl, byte[] bpmnFileContent, Integer version,
+  private ProcessDefinition(ProcessDefinitionId id, ProjectId projectId, String processKey, String bpmnDiagramUrl,BpmDriagram bpmDriagram, Integer version,
                             List<ProjectArtifact> artifacts, ProcessDefinitionState state, LocalDate deploymentDate, String deploymentId, String title, String description) {
     this.id = Objects.requireNonNull(id, "id cannot be null");
     this.projectId = Objects.requireNonNull(projectId);
     this.processKey = processKey;
     this.bpmnDiagramUrl = bpmnDiagramUrl;
-    this.bpmnFileContent = bpmnFileContent;
+    this.bpmDriagram = bpmDriagram;
     this.version = version;
     this.artifacts = artifacts != null ? new ArrayList<>(artifacts) : new ArrayList<>();
     this.state = state;
@@ -43,14 +44,16 @@ public class ProcessDefinition {
   }
 
 
-  public static ProcessDefinition create(ProjectId projectId, String processKey, String bpmnDiagramUrl) {
+
+
+  public static ProcessDefinition create(ProjectId projectId, String processKey, BpmDriagram bpmDriagram) {
 
     return new ProcessDefinition(
         ProcessDefinitionId.generate(),
         projectId,
         processKey,
-        bpmnDiagramUrl,
         null,
+        bpmDriagram,
         null,
         new ArrayList<>(),
         ProcessDefinitionState.DRAFT,
@@ -61,23 +64,6 @@ public class ProcessDefinition {
     );
   }
 
-  public static ProcessDefinition create(ProjectId projectId, String processKey, byte[] bpmnFileContent) {
-
-    return new ProcessDefinition(
-        ProcessDefinitionId.generate(),
-        projectId,
-        processKey,
-        null,
-        bpmnFileContent,
-        null,
-        new ArrayList<>(),
-        ProcessDefinitionState.DRAFT,
-        null,
-        null,
-        null,
-        null
-    );
-  }
 
   public static ProcessDefinition create(ProjectId projectId, String processKey, String title, String description ) {
 
@@ -97,19 +83,19 @@ public class ProcessDefinition {
     );
   }
 
-  public static ProcessDefinition rebuild(ProcessDefinitionId id, ProjectId projectId, String processKey, String bpmnDiagramUrl, byte[] bpmnFileContent, Integer version,
+  public static ProcessDefinition rebuild(ProcessDefinitionId id, ProjectId projectId, String processKey, String bpmnDiagramUrl,  BpmDriagram bpmDriagram, Integer version,
                                           List<ProjectArtifact> artifacts, ProcessDefinitionState state, LocalDate deploymentDate, String deploymentId, String title, String description) {
-    return new ProcessDefinition(id, projectId, processKey, bpmnDiagramUrl, bpmnFileContent, version, artifacts, state, deploymentDate, deploymentId, title, description);
+    return new ProcessDefinition(id, projectId, processKey, bpmnDiagramUrl, bpmDriagram, version, artifacts, state, deploymentDate, deploymentId, title, description);
   }
 
-  public void updateInfo(String bpmnDiagramUrl, Integer version, byte[] bpmnFileContent) {
-    this.bpmnFileContent = bpmnFileContent;
+  public void updateInfo(String bpmnDiagramUrl, Integer version, BpmDriagram bpmDriagram) {
+    this.bpmDriagram = bpmDriagram;
     this.bpmnDiagramUrl = bpmnDiagramUrl;
     this.version = version;
   }
 
-  public void updateInfo(Integer version, byte[] bpmnFileContent) {
-    this.bpmnFileContent = bpmnFileContent;
+  public void updateInfo(Integer version, BpmDriagram bpmDriagram) {
+    this.bpmDriagram = bpmDriagram;
     this.version = version;
   }
 
@@ -185,8 +171,8 @@ public class ProcessDefinition {
   }
 
 
-  public void updateBpmnContent(byte[] bpmnBytes) {
-    this.bpmnFileContent = bpmnBytes;
+  public void updateBpmnContent(BpmDriagram bpmDriagram ) {
+    this.bpmDriagram = bpmDriagram;
   }
 
   public boolean isDraft() {

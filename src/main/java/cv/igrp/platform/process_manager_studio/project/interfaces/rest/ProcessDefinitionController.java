@@ -3,26 +3,28 @@
 
 package cv.igrp.platform.process_manager_studio.project.interfaces.rest;
 
-import cv.igrp.framework.core.domain.CommandBus;
-import cv.igrp.framework.core.domain.QueryBus;
 import cv.igrp.framework.stereotype.IgrpController;
-import cv.igrp.platform.process_manager_studio.project.application.commands.DeployProcessDefinitionCommand;
-import cv.igrp.platform.process_manager_studio.project.application.commands.DiagramEditorProcessDefinitionCommand;
-import cv.igrp.platform.process_manager_studio.project.application.commands.SaveProcessDefinitionCommand;
-import cv.igrp.platform.process_manager_studio.project.application.dto.ProcessDefinitionRequestDTO;
-import cv.igrp.platform.process_manager_studio.project.application.dto.ProcessDefinitionResponseDTO;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.http.HttpStatus;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
-import io.swagger.v3.oas.annotations.tags.Tag;
+import io.swagger.v3.oas.annotations.media.ExampleObject;
 import jakarta.validation.Valid;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
+import cv.igrp.framework.core.domain.CommandBus;
+import cv.igrp.framework.core.domain.QueryBus;
+import cv.igrp.platform.process_manager_studio.project.application.commands.*;
+import cv.igrp.platform.process_manager_studio.project.application.queries.*;
+
+
+import cv.igrp.platform.process_manager_studio.project.application.dto.ProcessDefinitionRequestDTO;
+import cv.igrp.platform.process_manager_studio.project.application.dto.ProcessDefinitionResponseDTO;
+import cv.igrp.platform.process_manager_studio.project.application.dto.BpmDiagramDTO;
 
 @IgrpController
 @RestController
@@ -32,11 +34,11 @@ public class ProcessDefinitionController {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(ProcessDefinitionController.class);
 
-
+  
   private final CommandBus commandBus;
   private final QueryBus queryBus;
 
-
+  
   public ProcessDefinitionController(
     CommandBus commandBus, QueryBus queryBus
   ) {
@@ -63,7 +65,7 @@ public class ProcessDefinitionController {
       )
     }
   )
-
+  
   public ResponseEntity<ProcessDefinitionResponseDTO> saveProcessDefinition(@Valid @RequestBody ProcessDefinitionRequestDTO saveProcessDefinitionRequest
     , @PathVariable(value = "projectId") String projectId)
   {
@@ -82,9 +84,7 @@ public class ProcessDefinitionController {
   }
 
   @PostMapping(
-    value = "{projectId}/processes/{processId}/deploy",
-  consumes = MediaType.MULTIPART_FORM_DATA_VALUE,
-  produces = MediaType.APPLICATION_JSON_VALUE
+    value = "{projectId}/processes/{processId}/deploy"
   )
   @Operation(
     summary = "POST method to handle operations for deployProcessDefinition",
@@ -102,14 +102,14 @@ public class ProcessDefinitionController {
       )
     }
   )
-
-  public ResponseEntity<ProcessDefinitionResponseDTO> deployProcessDefinition(
-    @RequestParam(value = "file") MultipartFile file, @PathVariable(value = "projectId") String projectId,@PathVariable(value = "processId") String processId)
+  
+  public ResponseEntity<ProcessDefinitionResponseDTO> deployProcessDefinition(@Valid @RequestBody BpmDiagramDTO deployProcessDefinitionRequest
+    , @PathVariable(value = "projectId") String projectId,@PathVariable(value = "processId") String processId)
   {
 
       LOGGER.debug("Operation started");
 
-      final var command = new DeployProcessDefinitionCommand(file, projectId, processId);
+      final var command = new DeployProcessDefinitionCommand(deployProcessDefinitionRequest, projectId, processId);
 
        ResponseEntity<ProcessDefinitionResponseDTO> response = commandBus.send(command);
 
@@ -121,9 +121,7 @@ public class ProcessDefinitionController {
   }
 
   @PutMapping(
-    value = "{projectId}/processes/{processId}/diagram",
-      consumes = MediaType.MULTIPART_FORM_DATA_VALUE,
-      produces = MediaType.APPLICATION_JSON_VALUE
+    value = "{projectId}/processes/{processId}/diagram"
   )
   @Operation(
     summary = "PUT method to handle operations for diagramEditorProcessDefinition",
@@ -141,14 +139,14 @@ public class ProcessDefinitionController {
       )
     }
   )
-
-  public ResponseEntity<ProcessDefinitionResponseDTO> diagramEditorProcessDefinition(
-    @RequestParam(value = "file") MultipartFile file, @PathVariable(value = "projectId") String projectId,@PathVariable(value = "processId") String processId)
+  
+  public ResponseEntity<ProcessDefinitionResponseDTO> diagramEditorProcessDefinition(@Valid @RequestBody BpmDiagramDTO diagramEditorProcessDefinitionRequest
+    , @PathVariable(value = "projectId") String projectId,@PathVariable(value = "processId") String processId)
   {
 
       LOGGER.debug("Operation started");
 
-      final var command = new DiagramEditorProcessDefinitionCommand(file, projectId, processId);
+      final var command = new DiagramEditorProcessDefinitionCommand(diagramEditorProcessDefinitionRequest, projectId, processId);
 
        ResponseEntity<ProcessDefinitionResponseDTO> response = commandBus.send(command);
 

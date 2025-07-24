@@ -50,6 +50,19 @@
       "actionName": "deployProcessDefinition",
       "path": "{projectId}/processes/{processId}/deploy",
       "method": "POST",
+      "requestBody": {
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "BpmDiagram",
+              "collectionType": "none",
+              "name": "data",
+              "objectType": "dto",
+              "module": "project"
+            }
+          }
+        }
+      },
       "responses": {
         "200": {
           "name": "OK",
@@ -66,13 +79,6 @@
           }
         }
       },
-      "requestParams": [
-        {
-          "type": "file",
-          "name": "file",
-          "isRequired": true
-        }
-      ],
       "pathVariables": [
         {
           "name": "projectId",
@@ -90,6 +96,19 @@
       "actionName": "diagramEditorProcessDefinition",
       "path": "{projectId}/processes/{processId}/diagram",
       "method": "PUT",
+      "requestBody": {
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "BpmDiagram",
+              "collectionType": "none",
+              "name": "data",
+              "objectType": "dto",
+              "module": "project"
+            }
+          }
+        }
+      },
       "responses": {
         "200": {
           "name": "OK",
@@ -106,13 +125,6 @@
           }
         }
       },
-      "requestParams": [
-        {
-          "type": "file",
-          "name": "file",
-          "isRequired": true
-        }
-      ],
       "pathVariables": [
         {
           "name": "projectId",
