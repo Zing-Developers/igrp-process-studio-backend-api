@@ -4,7 +4,7 @@ import cv.igrp.platform.process_manager_studio.shared.application.constants.Proc
 import cv.igrp.platform.process_manager_studio.shared.domain.valueobject.ProcessDefinitionId;
 import cv.igrp.platform.process_manager_studio.shared.domain.valueobject.ProjectArtifactId;
 import cv.igrp.platform.process_manager_studio.shared.domain.valueobject.ProjectId;
-import cv.igrp.platform.process_manager_studio.shared.infrastructure.persistence.entity.BpmDriagram;
+import cv.igrp.platform.process_manager_studio.shared.domain.valueobject.BpmDriagram;
 import lombok.Getter;
 
 import java.time.LocalDate;

@@ -6,9 +6,10 @@ import cv.igrp.platform.process_manager_studio.project.domain.models.ProcessDefi
 import cv.igrp.platform.process_manager_studio.project.domain.models.ProjectArtifact;
 import cv.igrp.platform.process_manager_studio.shared.domain.valueobject.ProcessDefinitionId;
 import cv.igrp.platform.process_manager_studio.shared.domain.valueobject.ProjectId;
-import cv.igrp.platform.process_manager_studio.shared.infrastructure.persistence.entity.BpmDriagram;
+import cv.igrp.platform.process_manager_studio.shared.domain.valueobject.BpmDriagram;
 import cv.igrp.platform.process_manager_studio.shared.infrastructure.persistence.entity.ProcessDefinitionEntity;
 import cv.igrp.platform.process_manager_studio.shared.infrastructure.persistence.entity.ProjectArtifactEntity;
+import cv.igrp.platform.process_manager_studio.shared.infrastructure.persistence.entity.ProjectEntity;
 import org.springframework.stereotype.Component;
 
 import java.time.format.DateTimeFormatter;
@@ -33,12 +34,15 @@ public class ProcessDefinitionMapper {
     entity.setProcessKey(domain.getProcessKey());
     entity.setBpmnDiagramUrl(domain.getBpmnDiagramUrl());
     entity.setVersion(domain.getVersion());
-    entity.setBpmFileContent(domain.getBpmDriagram().getContent());
+    entity.setBpmFileContent(domain.getBpmDriagram()!=null ? domain.getBpmDriagram().getContent() : null);
     entity.setState(domain.getState());
     entity.setDeploymentDate(domain.getDeploymentDate());
     entity.setDeploymentId(domain.getDeploymentId());
     entity.setTitle(domain.getTitle());
     entity.setDescription(domain.getDescription());
+    ProjectEntity pr = new ProjectEntity();
+    pr.setId(domain.getProjectId().getIdentifier().getValue());
+    entity.setProjectId(pr);
 
     if (domain.getArtifacts() != null && !domain.getArtifacts().isEmpty()) {
       List<ProjectArtifactEntity> artifactEntities = domain.getArtifacts().stream()

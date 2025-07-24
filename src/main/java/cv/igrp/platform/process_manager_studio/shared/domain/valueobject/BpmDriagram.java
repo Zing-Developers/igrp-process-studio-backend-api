@@ -1,4 +1,4 @@
-package cv.igrp.platform.process_manager_studio.shared.infrastructure.persistence.entity;
+package cv.igrp.platform.process_manager_studio.shared.domain.valueobject;
 
 import lombok.Getter;
 

@@ -6,15 +6,13 @@ import cv.igrp.platform.process_manager_studio.project.application.dto.ProcessDe
 import cv.igrp.platform.process_manager_studio.project.domain.models.ArtifactVariable;
 import cv.igrp.platform.process_manager_studio.project.domain.models.ProcessDefinition;
 import cv.igrp.platform.process_manager_studio.project.domain.models.ProjectArtifact;
-import cv.igrp.platform.process_manager_studio.project.domain.ports.ProcessDeploymentPort;
 import cv.igrp.platform.process_manager_studio.project.domain.repository.ProcessDefinitionRepository;
 import cv.igrp.platform.process_manager_studio.project.domain.repository.ProjectRepository;
 import cv.igrp.platform.process_manager_studio.project.infrastructure.mappers.ProcessDefinitionMapper;
-import cv.igrp.platform.process_manager_studio.project.infrastructure.mappers.ProjectMapper;
 import cv.igrp.platform.process_manager_studio.shared.domain.exceptions.IgrpResponseStatusException;
 import cv.igrp.platform.process_manager_studio.shared.domain.valueobject.ProcessDefinitionId;
 import cv.igrp.platform.process_manager_studio.shared.domain.valueobject.ProjectId;
-import cv.igrp.platform.process_manager_studio.shared.infrastructure.persistence.entity.BpmDriagram;
+import cv.igrp.platform.process_manager_studio.shared.domain.valueobject.BpmDriagram;
 import org.camunda.bpm.model.bpmn.Bpmn;
 import org.camunda.bpm.model.bpmn.BpmnModelInstance;
 import org.camunda.bpm.model.bpmn.instance.ExtensionElements;
@@ -26,8 +24,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import cv.igrp.platform.process_manager_studio.project.application.dto.ProjectResponseDTO;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
