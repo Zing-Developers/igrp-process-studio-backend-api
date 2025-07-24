@@ -1,5 +1,6 @@
 package cv.igrp.platform.process_manager_studio.project.domain.repository;
 
+import cv.igrp.platform.process_manager_studio.project.domain.filter.FilterProject;
 import cv.igrp.platform.process_manager_studio.project.domain.models.Project;
 import cv.igrp.platform.process_manager_studio.shared.domain.valueobject.ProjectId;
 
@@ -13,6 +14,8 @@ public interface ProjectRepository {
   Optional<Project> findByCode(String code);
 
   List<Project> findAll();
+
+  List<Project> findAll(FilterProject filter);
 
   Project save(Project project);
 

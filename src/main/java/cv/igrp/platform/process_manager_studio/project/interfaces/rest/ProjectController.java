@@ -24,7 +24,7 @@ import cv.igrp.platform.process_manager_studio.project.application.queries.*;
 
 import cv.igrp.platform.process_manager_studio.project.application.dto.ProjectRequestDTO;
 import cv.igrp.platform.process_manager_studio.project.application.dto.ProjectResponseDTO;
-import java.util.List;
+import cv.igrp.platform.process_manager_studio.project.application.dto.WrapperListaProjectDTO;
 import java.util.Map;
 
 @IgrpController
@@ -132,22 +132,24 @@ public class ProjectController {
           content = @Content(
               mediaType = "application/json",
               schema = @Schema(
-                  implementation = ProjectResponseDTO.class,
+                  implementation = WrapperListaProjectDTO.class,
                   type = "object")
           )
       )
     }
   )
   
-  public ResponseEntity<List<ProjectResponseDTO>> getProjects(
-    )
+  public ResponseEntity<WrapperListaProjectDTO> getProjects(
+    @RequestParam(value = "appCode", required = false) String appCode,
+    @RequestParam(value = "pageNumber", defaultValue = "0") String pageNumber,
+    @RequestParam(value = "pageSize", defaultValue = "20") String pageSize)
   {
 
       LOGGER.debug("Operation started");
 
-      final var query = new GetProjectsQuery();
+      final var query = new GetProjectsQuery(appCode, pageNumber, pageSize);
 
-      ResponseEntity<List<ProjectResponseDTO>> response = queryBus.handle(query);
+      ResponseEntity<WrapperListaProjectDTO> response = queryBus.handle(query);
 
       LOGGER.debug("Operation finished");
 

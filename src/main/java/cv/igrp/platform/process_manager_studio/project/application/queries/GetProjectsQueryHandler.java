@@ -1,5 +1,7 @@
 package cv.igrp.platform.process_manager_studio.project.application.queries;
 
+import cv.igrp.platform.process_manager_studio.project.application.dto.WrapperListaProjectDTO;
+import cv.igrp.platform.process_manager_studio.project.domain.filter.FilterProject;
 import cv.igrp.platform.process_manager_studio.project.domain.repository.ProjectRepository;
 import cv.igrp.platform.process_manager_studio.project.infrastructure.mappers.ProjectMapper;
 import org.slf4j.Logger;
@@ -14,7 +16,7 @@ import java.util.List;
 import cv.igrp.platform.process_manager_studio.project.application.dto.ProjectResponseDTO;
 
 @Component
-public class GetProjectsQueryHandler implements QueryHandler<GetProjectsQuery, ResponseEntity<List<ProjectResponseDTO>>>{
+public class GetProjectsQueryHandler implements QueryHandler<GetProjectsQuery, ResponseEntity<WrapperListaProjectDTO>>{
 
   private static final Logger LOGGER = LoggerFactory.getLogger(GetProjectsQueryHandler.class);
 
@@ -28,13 +30,26 @@ public class GetProjectsQueryHandler implements QueryHandler<GetProjectsQuery, R
   }
 
    @IgrpQueryHandler
-  public ResponseEntity<List<ProjectResponseDTO>> handle(GetProjectsQuery query) {
+  public ResponseEntity<WrapperListaProjectDTO> handle(GetProjectsQuery query) {
 
-    List<ProjectResponseDTO> projects = projectRepository.findAll().stream()
+     FilterProject filter = FilterProject.builder()
+          .appCode(query.getAppCode())
+          .pageNumber(Integer.parseInt(query.getPageNumber()))
+          .pageSize(Integer.parseInt(query.getPageSize()))
+          .build();
+
+
+    List<ProjectResponseDTO> projects = projectRepository.findAll(filter).stream()
         .map(projectMapper::toResponseDTO)
         .toList();
-    
-    return ResponseEntity.ok(projects);
+
+     var wrapperListaProjectDTO = new WrapperListaProjectDTO();
+     wrapperListaProjectDTO.setContent(projects);
+     wrapperListaProjectDTO.setPageNumber(filter.getPageNumber());
+     wrapperListaProjectDTO.setPageSize(filter.getPageSize());
+     wrapperListaProjectDTO.setTotalElements((long) projects.size());
+
+    return ResponseEntity.ok(wrapperListaProjectDTO);
   }
 
 }

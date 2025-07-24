@@ -75,16 +75,35 @@
           "content": {
             "application/json": {
               "schema": {
-                "type": "ProjectResponse",
+                "type": "WrapperListaProject",
                 "objectType": "dto",
                 "name": "data",
-                "collectionType": "list",
+                "collectionType": "none",
                 "module": "project"
               }
             }
           }
         }
-      }
+      },
+      "requestParams": [
+        {
+          "type": "string",
+          "name": "appCode",
+          "isRequired": false
+        },
+        {
+          "type": "string",
+          "name": "pageNumber",
+          "value": "0",
+          "isRequired": true
+        },
+        {
+          "type": "string",
+          "name": "pageSize",
+          "value": "20",
+          "isRequired": true
+        }
+      ]
     },
     {
       "actionName": "enableProject",
