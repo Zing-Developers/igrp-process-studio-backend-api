@@ -7,7 +7,7 @@
   "actions": [
     {
       "actionName": "saveProcessDefinition",
-      "path": "{projectId}/process-definitions/processes",
+      "path": "{projectId}/process-definitions",
       "method": "POST",
       "requestBody": {
         "content": {
@@ -48,21 +48,8 @@
     },
     {
       "actionName": "deployProcessDefinition",
-      "path": "{projectId}/processes/{processId}/deploy",
+      "path": "{projectId}/process-definitions/{processId}/deploy",
       "method": "POST",
-      "requestBody": {
-        "content": {
-          "application/json": {
-            "schema": {
-              "type": "BpmDiagram",
-              "collectionType": "none",
-              "name": "data",
-              "objectType": "dto",
-              "module": "project"
-            }
-          }
-        }
-      },
       "responses": {
         "200": {
           "name": "OK",
@@ -90,11 +77,24 @@
           "type": "string",
           "isRequired": true
         }
-      ]
+      ],
+      "requestBody": {
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "BpmDiagram",
+              "collectionType": "none",
+              "name": "data",
+              "objectType": "dto",
+              "module": "project"
+            }
+          }
+        }
+      }
     },
     {
       "actionName": "diagramEditorProcessDefinition",
-      "path": "{projectId}/processes/{processId}/diagram",
+      "path": "{projectId}/process-definitions/{processId}/diagram",
       "method": "PUT",
       "requestBody": {
         "content": {
@@ -140,7 +140,7 @@
     },
     {
       "actionName": "getProcessDefinitionById",
-      "path": "{projectId}/processes/{processId}",
+      "path": "{projectId}/process-definitions/{processId}",
       "method": "GET",
       "responses": {
         "200": {
@@ -167,6 +167,41 @@
         {
           "name": "processId",
           "type": "string",
+          "isRequired": true
+        }
+      ]
+    },
+    {
+      "actionName": "getProcessDefinition",
+      "path": "process-definitions",
+      "method": "GET",
+      "responses": {
+        "200": {
+          "name": "OK",
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "WrapperListaProcessDefinition",
+                "objectType": "dto",
+                "name": "data",
+                "collectionType": "none",
+                "module": "project"
+              }
+            }
+          }
+        }
+      },
+      "requestParams": [
+        {
+          "type": "string",
+          "name": "pageNumber",
+          "value": "0",
+          "isRequired": true
+        },
+        {
+          "type": "string",
+          "name": "pageSize",
+          "value": "20",
           "isRequired": true
         }
       ]

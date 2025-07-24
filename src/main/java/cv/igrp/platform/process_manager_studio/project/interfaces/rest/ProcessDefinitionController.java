@@ -25,6 +25,7 @@ import cv.igrp.platform.process_manager_studio.project.application.queries.*;
 import cv.igrp.platform.process_manager_studio.project.application.dto.ProcessDefinitionRequestDTO;
 import cv.igrp.platform.process_manager_studio.project.application.dto.ProcessDefinitionResponseDTO;
 import cv.igrp.platform.process_manager_studio.project.application.dto.BpmDiagramDTO;
+import cv.igrp.platform.process_manager_studio.project.application.dto.WrapperListaProcessDefinitionDTO;
 
 @IgrpController
 @RestController
@@ -47,7 +48,7 @@ public class ProcessDefinitionController {
   }
 
   @PostMapping(
-    value = "{projectId}/process-definitions/processes"
+    value = "{projectId}/process-definitions"
   )
   @Operation(
     summary = "POST method to handle operations for saveProcessDefinition",
@@ -84,7 +85,7 @@ public class ProcessDefinitionController {
   }
 
   @PostMapping(
-    value = "{projectId}/processes/{processId}/deploy"
+    value = "{projectId}/process-definitions/{processId}/deploy"
   )
   @Operation(
     summary = "POST method to handle operations for deployProcessDefinition",
@@ -121,7 +122,7 @@ public class ProcessDefinitionController {
   }
 
   @PutMapping(
-    value = "{projectId}/processes/{processId}/diagram"
+    value = "{projectId}/process-definitions/{processId}/diagram"
   )
   @Operation(
     summary = "PUT method to handle operations for diagramEditorProcessDefinition",
@@ -158,7 +159,7 @@ public class ProcessDefinitionController {
   }
 
   @GetMapping(
-    value = "{projectId}/processes/{processId}"
+    value = "{projectId}/process-definitions/{processId}"
   )
   @Operation(
     summary = "GET method to handle operations for getProcessDefinitionById",
@@ -186,6 +187,44 @@ public class ProcessDefinitionController {
       final var query = new GetProcessDefinitionByIdQuery(projectId, processId);
 
       ResponseEntity<ProcessDefinitionResponseDTO> response = queryBus.handle(query);
+
+      LOGGER.debug("Operation finished");
+
+      return ResponseEntity.status(response.getStatusCode())
+              .headers(response.getHeaders())
+              .body(response.getBody());
+  }
+
+  @GetMapping(
+    value = "process-definitions"
+  )
+  @Operation(
+    summary = "GET method to handle operations for getProcessDefinition",
+    description = "GET method to handle operations for getProcessDefinition",
+    responses = {
+      @ApiResponse(
+          responseCode = "200",
+          description = "",
+          content = @Content(
+              mediaType = "application/json",
+              schema = @Schema(
+                  implementation = WrapperListaProcessDefinitionDTO.class,
+                  type = "object")
+          )
+      )
+    }
+  )
+  
+  public ResponseEntity<WrapperListaProcessDefinitionDTO> getProcessDefinition(
+    @RequestParam(value = "pageNumber", defaultValue = "0") String pageNumber,
+    @RequestParam(value = "pageSize", defaultValue = "20") String pageSize)
+  {
+
+      LOGGER.debug("Operation started");
+
+      final var query = new GetProcessDefinitionQuery(pageNumber, pageSize);
+
+      ResponseEntity<WrapperListaProcessDefinitionDTO> response = queryBus.handle(query);
 
       LOGGER.debug("Operation finished");
 
