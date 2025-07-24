@@ -159,6 +159,7 @@
     },
     {
       "actionName": "updateProject",
+      "path": "{projectId}",
       "method": "PUT",
       "requestBody": {
         "content": {
@@ -188,7 +189,14 @@
             }
           }
         }
-      }
+      },
+      "pathVariables": [
+        {
+          "name": "projectId",
+          "type": "string",
+          "isRequired": true
+        }
+      ]
     }
   ],
   "id": "jmv2dc8dm4-CONTROLLER"

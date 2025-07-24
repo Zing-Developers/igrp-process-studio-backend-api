@@ -233,6 +233,7 @@ public class ProjectController {
   }
 
   @PutMapping(
+    value = "{projectId}"
   )
   @Operation(
     summary = "PUT method to handle operations for updateProject",
@@ -252,12 +253,12 @@ public class ProjectController {
   )
   
   public ResponseEntity<ProjectResponseDTO> updateProject(@Valid @RequestBody ProjectRequestDTO updateProjectRequest
-    )
+    , @PathVariable(value = "projectId") String projectId)
   {
 
       LOGGER.debug("Operation started");
 
-      final var command = new UpdateProjectCommand(updateProjectRequest);
+      final var command = new UpdateProjectCommand(updateProjectRequest, projectId);
 
        ResponseEntity<ProjectResponseDTO> response = commandBus.send(command);
 

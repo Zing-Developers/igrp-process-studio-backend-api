@@ -50,11 +50,11 @@ public class Project {
     );
   }
 
-  public void updateInfo(String code, String name, String description, boolean active) {
+  public void updateInfo(String code, String name, String description, String appCode) {
     this.code = code;
     this.name = name;
     this.description = description;
-    this.active = active;
+    this.appCode = appCode;
   }
 
 
