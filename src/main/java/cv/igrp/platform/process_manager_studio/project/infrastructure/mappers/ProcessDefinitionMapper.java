@@ -29,6 +29,8 @@ public class ProcessDefinitionMapper {
   public ProcessDefinitionEntity toEntity(ProcessDefinition domain) {
     if (domain == null) return null;
 
+    //System.out.println("bpm content " +domain.getBpmDriagram()!=null ? domain.getBpmDriagram().getContent() : "sem conteudo");
+
     ProcessDefinitionEntity entity = new ProcessDefinitionEntity();
     entity.setId(domain.getId().getIdentifier().getValue());
     entity.setProcessKey(domain.getProcessKey());
