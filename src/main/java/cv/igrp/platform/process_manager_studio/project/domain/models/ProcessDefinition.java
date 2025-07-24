@@ -14,6 +14,8 @@ public class ProcessDefinition {
 
   private final ProcessDefinitionId id;
   private final ProjectId projectId;
+  private String title;
+  private String description;
   private String processKey;
   private String bpmnDiagramUrl;
   private byte[] bpmnFileContent;

@@ -89,6 +89,49 @@ public class ProjectRepositoryImpl implements ProjectRepository {
   }
 
 
+  /*@Transactional(readOnly = true)
+  @Override
+  public List<Project> findAllPublishedVersion(FilterProject filter) {
+    var pageable = PageRequest.of(
+        filter.getPageNumber() != null ? filter.getPageNumber() : 0,
+        filter.getPageSize() != null ? filter.getPageSize() : 20
+    );
+
+    Specification<ProjectEntity> spec = (root, query, cb) -> {
+      var predicates = cb.conjunction();
+
+      if (filter.getCode() != null && !filter.getCode().isBlank()) {
+        predicates = cb.and(predicates,
+            cb.equal(root.get("code"), filter.getCode().trim()));
+      }
+
+      if (filter.getName() != null && !filter.getName().isBlank()) {
+        predicates = cb.and(predicates,
+            cb.like(cb.lower(root.get("name")), "%" + filter.getName().trim().toLowerCase() + "%"));
+      }
+
+      if (filter.getDescription() != null && !filter.getDescription().isBlank()) {
+        predicates = cb.and(predicates,
+            cb.like(cb.lower(root.get("description")), "%" + filter.getDescription().trim().toLowerCase() + "%"));
+      }
+
+      if (filter.getAppCode() != null && !filter.getAppCode().isBlank()) {
+        predicates = cb.and(predicates,
+            cb.equal(cb.lower(root.get("appCode")), filter.getAppCode().trim().toLowerCase()));
+      }
+
+      return predicates;
+    };
+
+    var page = projectEntityRepository.findAll(spec, pageable);
+
+    return page.stream()
+        .map(projectMapper::toDomain)
+        .toList();
+  }
+*/
+
+
   @Transactional()
   @Override
   public Project save(Project project) {

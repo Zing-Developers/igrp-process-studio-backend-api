@@ -29,13 +29,28 @@ public class ProcessDefinitionResponseDTO {
   private String processKey ;
   
   
+  private String code ;
+  
+  
   private String bpmnDiagramUrl ;
+  
+  
+  private String bpmFileContent ;
+  
+  
+  private String title ;
+  
+  
+  private String descripiton ;
   
   
   private Integer version ;
   
   
-  private String state ;
+  private String status ;
+  
+  
+  private String statusDesc ;
   
   
   private String deploymentId ;

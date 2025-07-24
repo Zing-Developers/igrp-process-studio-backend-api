@@ -36,6 +36,8 @@ public class ProcessDefinitionMapper {
     entity.setState(domain.getState());
     entity.setDeploymentDate(domain.getDeploymentDate());
     entity.setDeploymentId(domain.getDeploymentId());
+    entity.setTitle(domain.getTitle());
+    entity.setDescription(domain.getDescription());
 
     if (domain.getArtifacts() != null && !domain.getArtifacts().isEmpty()) {
       List<ProjectArtifactEntity> artifactEntities = domain.getArtifacts().stream()
@@ -83,11 +85,17 @@ public class ProcessDefinitionMapper {
     ProcessDefinitionResponseDTO pdDto = new ProcessDefinitionResponseDTO();
     pdDto.setProcessDefinitionId(processDefinition.getId().getIdentifier().getValueAsString());
     pdDto.setProcessKey(processDefinition.getProcessKey());
+    pdDto.setCode(processDefinition.getProcessKey());
     pdDto.setBpmnDiagramUrl(processDefinition.getBpmnDiagramUrl());
     pdDto.setVersion(processDefinition.getVersion());
-    pdDto.setState(processDefinition.getState()!= null ? processDefinition.getState().getCode() : null);
+    pdDto.setStatus(processDefinition.getState()!= null ? processDefinition.getState().getCode() : null);
+    pdDto.setStatusDesc(processDefinition.getState()!= null ? processDefinition.getState().getDescription() : null);
     pdDto.setDeploymentId(processDefinition.getDeploymentId()!= null ? processDefinition.getDeploymentId() : null);
     pdDto.setDeploymentDate(processDefinition.getDeploymentDate()!= null ? processDefinition.getDeploymentDate().format(formatter) : null);
+    pdDto.setBpmFileContent(processDefinition.getBpmnFileContent()!=null ? processDefinition.getBpmnFileContent().toString(): null);
+    pdDto.setTitle(processDefinition.getTitle());
+    pdDto.setDescripiton(processDefinition.getDescription());
+
 
     if (processDefinition.getArtifacts() != null && !processDefinition.getArtifacts().isEmpty()) {
       List<ProjectArtifactResponseDTO> projectArtifactResponseDTOS = processDefinition.getArtifacts().stream()
