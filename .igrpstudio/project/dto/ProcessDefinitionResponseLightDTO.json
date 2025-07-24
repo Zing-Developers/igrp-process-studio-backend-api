@@ -1,12 +1,36 @@
 {
   "type": "dto",
   "module": "project",
-  "name": "ProjectResponse",
+  "name": "ProcessDefinitionResponseLight",
   "template": "classic",
   "enableCustonValidation": false,
   "attributes": [
     {
+      "name": "processDefinitionId",
+      "objectType": "java",
+      "type": "string",
+      "required": false,
+      "before": false,
+      "after": false,
+      "positive": false,
+      "isEmail": false,
+      "isUrl": false,
+      "primaryKey": false
+    },
+    {
       "name": "projectId",
+      "objectType": "java",
+      "type": "string",
+      "required": false,
+      "before": false,
+      "after": false,
+      "positive": false,
+      "isEmail": false,
+      "isUrl": false,
+      "primaryKey": false
+    },
+    {
+      "name": "processKey",
       "objectType": "java",
       "type": "string",
       "required": false,
@@ -30,7 +54,7 @@
       "primaryKey": false
     },
     {
-      "name": "name",
+      "name": "bpmnDiagramUrl",
       "objectType": "java",
       "type": "string",
       "required": false,
@@ -42,7 +66,7 @@
       "primaryKey": false
     },
     {
-      "name": "description",
+      "name": "title",
       "objectType": "java",
       "type": "string",
       "required": false,
@@ -54,19 +78,7 @@
       "primaryKey": false
     },
     {
-      "name": "active",
-      "objectType": "java",
-      "type": "boolean",
-      "required": false,
-      "before": false,
-      "after": false,
-      "positive": false,
-      "isEmail": false,
-      "isUrl": false,
-      "primaryKey": false
-    },
-    {
-      "name": "appCode",
+      "name": "descripiton",
       "objectType": "java",
       "type": "string",
       "required": false,
@@ -78,19 +90,65 @@
       "primaryKey": false
     },
     {
-      "name": "processDefinitions",
-      "objectType": "dto",
-      "type": "ProcessDefinitionResponseLight",
+      "name": "version",
+      "objectType": "java",
+      "type": "integer",
       "required": false,
       "before": false,
       "after": false,
       "positive": false,
       "isEmail": false,
       "isUrl": false,
-      "primaryKey": false,
-      "collectionType": "list",
-      "module": "project"
+      "primaryKey": false
+    },
+    {
+      "name": "status",
+      "objectType": "java",
+      "type": "string",
+      "required": false,
+      "before": false,
+      "after": false,
+      "positive": false,
+      "isEmail": false,
+      "isUrl": false,
+      "primaryKey": false
+    },
+    {
+      "name": "statusDesc",
+      "objectType": "java",
+      "type": "string",
+      "required": false,
+      "before": false,
+      "after": false,
+      "positive": false,
+      "isEmail": false,
+      "isUrl": false,
+      "primaryKey": false
+    },
+    {
+      "name": "deploymentId",
+      "objectType": "java",
+      "type": "string",
+      "required": false,
+      "before": false,
+      "after": false,
+      "positive": false,
+      "isEmail": false,
+      "isUrl": false,
+      "primaryKey": false
+    },
+    {
+      "name": "deploymentDate",
+      "objectType": "java",
+      "type": "string",
+      "required": false,
+      "before": false,
+      "after": false,
+      "positive": false,
+      "isEmail": false,
+      "isUrl": false,
+      "primaryKey": false
     }
   ],
-  "id": "sekamzsfe6"
+  "id": "wsck03nbt4_copy"
 }

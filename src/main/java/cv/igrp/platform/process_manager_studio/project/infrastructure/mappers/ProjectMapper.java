@@ -1,6 +1,7 @@
 package cv.igrp.platform.process_manager_studio.project.infrastructure.mappers;
 
 import cv.igrp.platform.process_manager_studio.project.application.dto.ProcessDefinitionResponseDTO;
+import cv.igrp.platform.process_manager_studio.project.application.dto.ProcessDefinitionResponseLightDTO;
 import cv.igrp.platform.process_manager_studio.project.application.dto.ProjectResponseDTO;
 import cv.igrp.platform.process_manager_studio.project.domain.models.ProcessDefinition;
 import cv.igrp.platform.process_manager_studio.project.domain.models.Project;
@@ -85,8 +86,8 @@ public class ProjectMapper {
 
     if (project.getProcessDefinitions() != null && !project.getProcessDefinitions().isEmpty()) {
 
-      List<ProcessDefinitionResponseDTO> processDefinitionDTOs = project.getProcessDefinitions().stream()
-          .map(processDefinitionMapper::toResponseDTO)
+      List<ProcessDefinitionResponseLightDTO> processDefinitionDTOs = project.getProcessDefinitions().stream()
+          .map(processDefinitionMapper::toResponseDTOLight)
           .collect(Collectors.toList());
       dto.setProcessDefinitions(processDefinitionDTOs);
     } else {

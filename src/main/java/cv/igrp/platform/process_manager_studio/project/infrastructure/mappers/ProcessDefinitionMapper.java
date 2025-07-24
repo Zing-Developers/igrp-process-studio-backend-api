@@ -1,6 +1,7 @@
 package cv.igrp.platform.process_manager_studio.project.infrastructure.mappers;
 
 import cv.igrp.platform.process_manager_studio.project.application.dto.ProcessDefinitionResponseDTO;
+import cv.igrp.platform.process_manager_studio.project.application.dto.ProcessDefinitionResponseLightDTO;
 import cv.igrp.platform.process_manager_studio.project.application.dto.ProjectArtifactResponseDTO;
 import cv.igrp.platform.process_manager_studio.project.domain.models.ProcessDefinition;
 import cv.igrp.platform.process_manager_studio.project.domain.models.ProjectArtifact;
@@ -115,6 +116,27 @@ public class ProcessDefinitionMapper {
       pdDto.setProjectArtifacts(projectArtifactResponseDTOS);
     }
 
+
+    return pdDto;
+  }
+
+  public ProcessDefinitionResponseLightDTO toResponseDTOLight(ProcessDefinition processDefinition) {
+
+    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+
+    var pdDto = new ProcessDefinitionResponseLightDTO();
+    pdDto.setProcessDefinitionId(processDefinition.getId().getIdentifier().getValueAsString());
+    pdDto.setProcessKey(processDefinition.getProcessKey());
+    pdDto.setCode(processDefinition.getProcessKey());
+    pdDto.setBpmnDiagramUrl(processDefinition.getBpmnDiagramUrl());
+    pdDto.setVersion(processDefinition.getVersion());
+    pdDto.setStatus(processDefinition.getState()!= null ? processDefinition.getState().getCode() : null);
+    pdDto.setStatusDesc(processDefinition.getState()!= null ? processDefinition.getState().getDescription() : null);
+    pdDto.setDeploymentId(processDefinition.getDeploymentId()!= null ? processDefinition.getDeploymentId() : null);
+    pdDto.setDeploymentDate(processDefinition.getDeploymentDate()!= null ? processDefinition.getDeploymentDate().format(formatter) : null);
+    pdDto.setTitle(processDefinition.getTitle());
+    pdDto.setDescripiton(processDefinition.getDescription());
+    pdDto.setProjectId(processDefinition.getProjectId().getIdentifier().getValueAsString());
 
     return pdDto;
   }
