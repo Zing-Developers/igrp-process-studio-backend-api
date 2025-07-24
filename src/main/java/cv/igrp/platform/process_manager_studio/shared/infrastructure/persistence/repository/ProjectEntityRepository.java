@@ -21,4 +21,6 @@ public interface ProjectEntityRepository extends
 
   Optional<ProjectEntity> findByCode(String code);
 
+  boolean existsById(UUID id);
+
 }

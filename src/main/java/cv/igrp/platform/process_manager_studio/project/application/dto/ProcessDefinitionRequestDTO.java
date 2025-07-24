@@ -31,5 +31,8 @@ public class ProcessDefinitionRequestDTO {
   
   
   private ProcessDefinitionState Status ;
+  
+  
+  private String projectId ;
 
 }

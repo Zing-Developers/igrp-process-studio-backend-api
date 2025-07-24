@@ -35,7 +35,7 @@ public class ProcessDefinitionEntity extends AuditEntity {
 
 
     @NotBlank(message = "processKey is mandatory")
-    @Column(name="process_key", nullable = false)
+    @Column(name="process_key", unique = true, nullable = false)
     private String processKey;
 
 

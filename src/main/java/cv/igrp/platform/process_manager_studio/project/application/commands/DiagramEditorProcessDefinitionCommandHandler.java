@@ -6,7 +6,6 @@ import cv.igrp.platform.process_manager_studio.project.application.dto.ProcessDe
 import cv.igrp.platform.process_manager_studio.project.domain.models.ArtifactVariable;
 import cv.igrp.platform.process_manager_studio.project.domain.models.ProcessDefinition;
 import cv.igrp.platform.process_manager_studio.project.domain.models.ProjectArtifact;
-import cv.igrp.platform.process_manager_studio.project.domain.ports.ProcessDeploymentPort;
 import cv.igrp.platform.process_manager_studio.project.domain.repository.ProcessDefinitionRepository;
 import cv.igrp.platform.process_manager_studio.project.domain.repository.ProjectRepository;
 import cv.igrp.platform.process_manager_studio.project.infrastructure.mappers.ProcessDefinitionMapper;
@@ -33,34 +32,30 @@ import java.io.InputStream;
 import java.util.Collection;
 
 @Component
-public class DeployProcessDefinitionCommandHandler implements CommandHandler<DeployProcessDefinitionCommand, ResponseEntity<ProcessDefinitionResponseDTO>> {
+public class DiagramEditorProcessDefinitionCommandHandler implements CommandHandler<DiagramEditorProcessDefinitionCommand, ResponseEntity<ProcessDefinitionResponseDTO>> {
 
-   private static final Logger LOGGER = LoggerFactory.getLogger(DeployProcessDefinitionCommandHandler.class);
+   private static final Logger LOGGER = LoggerFactory.getLogger(DiagramEditorProcessDefinitionCommandHandler.class);
 
   private final ProjectRepository projectRepository;
 
   private final ProcessDefinitionRepository processDefinitionRepository;
   private final ProcessDefinitionMapper processDefinitionMapper;
 
-
-  private final ProcessDeploymentPort processDeploymentPort;
-
-   public DeployProcessDefinitionCommandHandler(ProjectRepository projectRepository, ProcessDefinitionRepository processDefinitionRepository, ProcessDefinitionMapper processDefinitionMapper, ProcessDeploymentPort processDeploymentPort) {
+   public DiagramEditorProcessDefinitionCommandHandler(ProjectRepository projectRepository, ProcessDefinitionRepository processDefinitionRepository, ProcessDefinitionMapper processDefinitionMapper) {
 
      this.projectRepository = projectRepository;
      this.processDefinitionRepository = processDefinitionRepository;
      this.processDefinitionMapper = processDefinitionMapper;
-     this.processDeploymentPort = processDeploymentPort;
    }
 
    @IgrpCommandHandler
-   public ResponseEntity<ProcessDefinitionResponseDTO> handle(DeployProcessDefinitionCommand command) {
+   public ResponseEntity<ProcessDefinitionResponseDTO> handle(DiagramEditorProcessDefinitionCommand command) {
      var projectId = ProjectId.of(command.getProjectId());
 
      var processDefinitionId = ProcessDefinitionId.of(command.getProcessId());
 
-     if (!projectRepository.existsById(projectId))
-       throw IgrpResponseStatusException.notFound("Project not found with id: " + projectId.getIdentifier().getValue());
+      if (!projectRepository.existsById(projectId))
+        throw IgrpResponseStatusException.notFound("Project not found with id: " + projectId.getIdentifier().getValue());
 
 
      var processDefinition = processDefinitionRepository.findById(processDefinitionId)

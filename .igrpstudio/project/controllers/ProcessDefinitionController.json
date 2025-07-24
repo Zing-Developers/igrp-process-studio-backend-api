@@ -6,16 +6,57 @@
   "basePath": "api/v1/projects",
   "actions": [
     {
-      "actionName": "createProcessDefinition",
-      "path": "{projectId}/process-definitions/save",
+      "actionName": "saveProcessDefinition",
+      "path": "{projectId}/process-definitions/processes",
       "method": "POST",
+      "requestBody": {
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "ProcessDefinitionRequest",
+              "collectionType": "none",
+              "name": "data",
+              "objectType": "dto",
+              "module": "project"
+            }
+          }
+        }
+      },
       "responses": {
         "201": {
           "name": "Created",
           "content": {
             "application/json": {
               "schema": {
-                "type": "ProjectResponse",
+                "type": "ProcessDefinitionResponse",
+                "objectType": "dto",
+                "name": "data",
+                "collectionType": "none",
+                "module": "project"
+              }
+            }
+          }
+        }
+      },
+      "pathVariables": [
+        {
+          "name": "projectId",
+          "type": "string",
+          "isRequired": true
+        }
+      ]
+    },
+    {
+      "actionName": "deployProcessDefinition",
+      "path": "{projectId}/processes/{processId}/deploy",
+      "method": "POST",
+      "responses": {
+        "200": {
+          "name": "OK",
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "ProcessDefinitionResponse",
                 "objectType": "dto",
                 "name": "data",
                 "collectionType": "none",
@@ -37,20 +78,25 @@
           "name": "projectId",
           "type": "string",
           "isRequired": true
+        },
+        {
+          "name": "processId",
+          "type": "string",
+          "isRequired": true
         }
       ]
     },
     {
-      "actionName": "deployProcessDefinition",
-      "path": "{projectId}/process-definitions/deploy",
-      "method": "POST",
+      "actionName": "diagramEditorProcessDefinition",
+      "path": "{projectId}/processes/{processId}/diagram",
+      "method": "PUT",
       "responses": {
         "200": {
           "name": "OK",
           "content": {
             "application/json": {
               "schema": {
-                "type": "ProjectResponse",
+                "type": "ProcessDefinitionResponse",
                 "objectType": "dto",
                 "name": "data",
                 "collectionType": "none",
@@ -70,6 +116,11 @@
       "pathVariables": [
         {
           "name": "projectId",
+          "type": "string",
+          "isRequired": true
+        },
+        {
+          "name": "processId",
           "type": "string",
           "isRequired": true
         }

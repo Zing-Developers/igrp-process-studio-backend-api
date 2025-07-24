@@ -31,6 +31,12 @@ public class ProjectRepositoryImpl implements ProjectRepository {
     return projectEntityRepository.findById(id.getIdentifier().getValue())
         .map(projectMapper::toDomain);
   }
+
+  @Override
+  public boolean existsById(ProjectId id) {
+    return id != null && projectEntityRepository.existsById(id.getIdentifier().getValue());
+  }
+
   @Transactional(readOnly = true)
   @Override
   public Optional<Project> findByCode(String code) {

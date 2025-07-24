@@ -12,7 +12,7 @@ import org.springframework.web.multipart.MultipartFile;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class DeployProcessDefinitionCommand implements Command {
+public class DiagramEditorProcessDefinitionCommand implements Command {
 
   @NotNull(message = "The field <file> is required.")
   private MultipartFile file;

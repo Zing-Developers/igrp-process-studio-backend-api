@@ -232,4 +232,40 @@ public class ProjectController {
               .body(response.getBody());
   }
 
+  @PutMapping(
+  )
+  @Operation(
+    summary = "PUT method to handle operations for updateProject",
+    description = "PUT method to handle operations for updateProject",
+    responses = {
+      @ApiResponse(
+          responseCode = "200",
+          description = "",
+          content = @Content(
+              mediaType = "application/json",
+              schema = @Schema(
+                  implementation = ProjectResponseDTO.class,
+                  type = "object")
+          )
+      )
+    }
+  )
+  
+  public ResponseEntity<ProjectResponseDTO> updateProject(@Valid @RequestBody ProjectRequestDTO updateProjectRequest
+    )
+  {
+
+      LOGGER.debug("Operation started");
+
+      final var command = new UpdateProjectCommand(updateProjectRequest);
+
+       ResponseEntity<ProjectResponseDTO> response = commandBus.send(command);
+
+       LOGGER.debug("Operation finished");
+
+        return ResponseEntity.status(response.getStatusCode())
+              .headers(response.getHeaders())
+              .body(response.getBody());
+  }
+
 }

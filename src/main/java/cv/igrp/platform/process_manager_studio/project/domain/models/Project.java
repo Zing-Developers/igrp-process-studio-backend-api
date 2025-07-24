@@ -96,5 +96,13 @@ public class Project {
         .findFirst();
   }
 
+  public Optional<ProcessDefinition> getDraftProcessDefinitionById(ProcessDefinitionId id) {
+    if (id == null) return Optional.empty();
+    return processDefinitions.stream()
+        .filter(pd -> pd.getId().equals(id)  && pd.getState() == ProcessDefinitionState.DRAFT)
+        .findFirst();
+  }
+
+
 
 }

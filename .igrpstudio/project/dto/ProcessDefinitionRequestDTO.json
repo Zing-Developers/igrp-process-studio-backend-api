@@ -53,6 +53,18 @@
       "isUrl": false,
       "primaryKey": false,
       "module": "shared"
+    },
+    {
+      "name": "projectId",
+      "objectType": "java",
+      "type": "string",
+      "required": false,
+      "before": false,
+      "after": false,
+      "positive": false,
+      "isEmail": false,
+      "isUrl": false,
+      "primaryKey": false
     }
   ],
   "id": "4jr88lgnl9"

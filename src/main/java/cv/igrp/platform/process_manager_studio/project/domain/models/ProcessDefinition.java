@@ -27,7 +27,7 @@ public class ProcessDefinition {
   private final List<ProjectArtifact> artifacts;
 
   private ProcessDefinition(ProcessDefinitionId id, ProjectId projectId, String processKey, String bpmnDiagramUrl, byte[] bpmnFileContent, Integer version,
-                            List<ProjectArtifact> artifacts, ProcessDefinitionState state, LocalDate deploymentDate, String deploymentId) {
+                            List<ProjectArtifact> artifacts, ProcessDefinitionState state, LocalDate deploymentDate, String deploymentId, String title, String description) {
     this.id = Objects.requireNonNull(id, "id cannot be null");
     this.projectId = Objects.requireNonNull(projectId);
     this.processKey = processKey;
@@ -38,6 +38,8 @@ public class ProcessDefinition {
     this.state = state;
     this.deploymentDate = deploymentDate;
     this.deploymentId = deploymentId;
+    this.title = title;
+    this.description = description;
   }
 
 
@@ -52,6 +54,8 @@ public class ProcessDefinition {
         null,
         new ArrayList<>(),
         ProcessDefinitionState.DRAFT,
+        null,
+        null,
         null,
         null
     );
@@ -69,13 +73,33 @@ public class ProcessDefinition {
         new ArrayList<>(),
         ProcessDefinitionState.DRAFT,
         null,
+        null,
+        null,
         null
     );
   }
 
+  public static ProcessDefinition create(ProjectId projectId, String processKey, String title, String description ) {
+
+    return new ProcessDefinition(
+        ProcessDefinitionId.generate(),
+        projectId,
+        processKey,
+        null,
+        null,
+        null,
+        new ArrayList<>(),
+        ProcessDefinitionState.DRAFT,
+        null,
+        null,
+        title,
+        description
+    );
+  }
+
   public static ProcessDefinition rebuild(ProcessDefinitionId id, ProjectId projectId, String processKey, String bpmnDiagramUrl, byte[] bpmnFileContent, Integer version,
-                                          List<ProjectArtifact> artifacts, ProcessDefinitionState state, LocalDate deploymentDate, String deploymentId) {
-    return new ProcessDefinition(id, projectId, processKey, bpmnDiagramUrl, bpmnFileContent, version, artifacts, state, deploymentDate, deploymentId);
+                                          List<ProjectArtifact> artifacts, ProcessDefinitionState state, LocalDate deploymentDate, String deploymentId, String title, String description) {
+    return new ProcessDefinition(id, projectId, processKey, bpmnDiagramUrl, bpmnFileContent, version, artifacts, state, deploymentDate, deploymentId, title, description);
   }
 
   public void updateInfo(String bpmnDiagramUrl, Integer version, byte[] bpmnFileContent) {
@@ -163,5 +187,9 @@ public class ProcessDefinition {
 
   public void updateBpmnContent(byte[] bpmnBytes) {
     this.bpmnFileContent = bpmnBytes;
+  }
+
+  public boolean isDraft() {
+    return this.state == ProcessDefinitionState.DRAFT;
   }
 }

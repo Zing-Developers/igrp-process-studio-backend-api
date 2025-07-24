@@ -74,7 +74,9 @@ public class ProcessDefinitionMapper {
         artifacts,
         entity.getState(),
         entity.getDeploymentDate(),
-        entity.getDeploymentId()
+        entity.getDeploymentId(),
+        entity.getTitle(),
+        entity.getDescription()
     );
   }
 
@@ -95,6 +97,7 @@ public class ProcessDefinitionMapper {
     pdDto.setBpmFileContent(processDefinition.getBpmnFileContent()!=null ? processDefinition.getBpmnFileContent().toString(): null);
     pdDto.setTitle(processDefinition.getTitle());
     pdDto.setDescripiton(processDefinition.getDescription());
+    pdDto.setProjectId(processDefinition.getProjectId().getIdentifier().getValueAsString());
 
 
     if (processDefinition.getArtifacts() != null && !processDefinition.getArtifacts().isEmpty()) {

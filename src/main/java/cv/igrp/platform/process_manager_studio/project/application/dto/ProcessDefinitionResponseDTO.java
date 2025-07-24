@@ -26,6 +26,9 @@ public class ProcessDefinitionResponseDTO {
   private String processDefinitionId ;
   
   
+  private String projectId ;
+  
+  
   private String processKey ;
   
   

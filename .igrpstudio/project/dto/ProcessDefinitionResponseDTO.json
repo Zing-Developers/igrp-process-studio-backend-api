@@ -18,6 +18,18 @@
       "primaryKey": false
     },
     {
+      "name": "projectId",
+      "objectType": "java",
+      "type": "string",
+      "required": false,
+      "before": false,
+      "after": false,
+      "positive": false,
+      "isEmail": false,
+      "isUrl": false,
+      "primaryKey": false
+    },
+    {
       "name": "processKey",
       "objectType": "java",
       "type": "string",
