@@ -30,7 +30,7 @@ public class CreateProjectCommandHandler implements CommandHandler<CreateProject
    public ResponseEntity<ProjectResponseDTO> handle(CreateProjectCommand command) {
      var dto = command.getProjectrequest();
 
-     var project = Project.create(dto.getCode(), dto.getName(), dto.getDescription());
+     var project = Project.create(dto.getCode(), dto.getName(), dto.getDescription(), dto.getAppCode());
 
      var savedProject = projectRepository.save(project);
 

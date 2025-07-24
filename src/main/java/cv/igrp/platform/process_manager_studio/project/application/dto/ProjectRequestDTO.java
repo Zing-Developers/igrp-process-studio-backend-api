@@ -28,5 +28,8 @@ public class ProjectRequestDTO {
   
   
   private String description ;
+  
+  
+  private String appCode ;
 
 }

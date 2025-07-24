@@ -1,7 +1,6 @@
 package cv.igrp.platform.process_manager_studio.project.domain.models;
 
 import cv.igrp.platform.process_manager_studio.shared.application.constants.ProcessDefinitionState;
-import cv.igrp.platform.process_manager_studio.shared.domain.valueobject.Identifier;
 import cv.igrp.platform.process_manager_studio.shared.domain.valueobject.ProcessDefinitionId;
 import cv.igrp.platform.process_manager_studio.shared.domain.valueobject.ProjectId;
 import lombok.Getter;
@@ -38,7 +37,7 @@ public class Project {
     return new Project(id, code, name, description, active, appCode, processDefinitions);
   }
 
-  public static Project create(String code, String name, String description) {
+  public static Project create(String code, String name, String description, String appCode) {
 
     return new Project(
         ProjectId.generate(),
@@ -46,7 +45,7 @@ public class Project {
         name,
         description,
         true,
-        null,
+        appCode,
         new ArrayList<>()
     );
   }
