@@ -7,12 +7,20 @@ import cv.igrp.platform.process_manager_studio.shared.config.AuditEntity;
 import cv.igrp.framework.stereotype.IgrpEntity;
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.JdbcTypeCode;
 import org.hibernate.envers.Audited;
+
 import java.util.UUID;
+
 import jakarta.validation.constraints.NotBlank;
+import org.hibernate.annotations.JdbcType;
+import org.hibernate.type.SqlTypes;
+import org.hibernate.type.descriptor.jdbc.BinaryJdbcType;
 import cv.igrp.platform.process_manager_studio.shared.application.constants.ProcessDefinitionState;
+
 import java.time.LocalDate;
 import java.util.List;
+
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 
@@ -27,49 +35,49 @@ import org.hibernate.annotations.OnDeleteAction;
 @Table(name = "t_process_definition")
 public class ProcessDefinitionEntity extends AuditEntity {
 
-
-    @Id
-    @Column(name = "id", unique = true, nullable = false)
-    private UUID id;
-
-
-    @NotBlank(message = "processKey is mandatory")
-    @Column(name="process_key", nullable = false)
-    private String processKey;
+  @Id
+  @Column(name = "id", unique = true, nullable = false)
+  private UUID id;
 
 
-    @Column(name="bpmn_diagram_url")
-    private String bpmnDiagramUrl;
+  @NotBlank(message = "processKey is mandatory")
+  @Column(name = "process_key", nullable = false)
+  private String processKey;
 
 
-    @Column(name="version")
-    private Integer version;
+  @Column(name = "bpmn_diagram_url")
+  private String bpmnDiagramUrl;
 
 
-    @Column(name="rejected_reason")
-    private String rejectedReason;
+  @Lob
+  @JdbcTypeCode(SqlTypes.BINARY)
+  @Column(name = "bpm_file_content", nullable = false, columnDefinition = "bytea")
+  private byte[] bpmFileContent;
 
 
-    @Enumerated(EnumType.STRING)
-    @Column(name="state")
-    private ProcessDefinitionState state;
+  @Column(name = "version")
+  private Integer version;
 
 
-    @Column(name="deployment_id")
-    private String deploymentId;
+  @Enumerated(EnumType.STRING)
+  @Column(name = "state")
+  private ProcessDefinitionState state;
 
 
-    @Column(name="deployment_date")
-    private LocalDate deploymentDate;
+  @Column(name = "deployment_id")
+  private String deploymentId;
 
 
+  @Column(name = "deployment_date")
+  private LocalDate deploymentDate;
 
 
-  @OneToMany(mappedBy = "procesDefinitionId", fetch = FetchType.LAZY, cascade = { CascadeType.ALL }, orphanRemoval = true)
-    @OnDelete(action = OnDeleteAction.SET_NULL)
-private List<ProjectArtifactEntity> artifacts;   @ManyToOne(fetch = FetchType.LAZY)
-   @JoinColumn(name = "project_id")
-   private ProjectEntity projectId;
+  @OneToMany(mappedBy = "procesDefinitionId", fetch = FetchType.LAZY, cascade = {CascadeType.ALL}, orphanRemoval = true)
+  @OnDelete(action = OnDeleteAction.SET_NULL)
+  private List<ProjectArtifactEntity> artifacts;
+  @ManyToOne(fetch = FetchType.LAZY)
+  @JoinColumn(name = "project_id")
+  private ProjectEntity projectId;
 
 
 }

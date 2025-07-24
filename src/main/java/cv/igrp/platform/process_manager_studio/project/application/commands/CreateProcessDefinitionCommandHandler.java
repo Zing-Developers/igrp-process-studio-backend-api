@@ -13,16 +13,14 @@ import cv.igrp.platform.process_manager_studio.shared.domain.valueobject.Project
 import org.camunda.bpm.model.bpmn.Bpmn;
 import org.camunda.bpm.model.bpmn.BpmnModelInstance;
 import org.camunda.bpm.model.bpmn.instance.ExtensionElements;
+import org.camunda.bpm.model.bpmn.instance.Process;
 import org.camunda.bpm.model.bpmn.instance.UserTask;
 import org.camunda.bpm.model.bpmn.instance.camunda.CamundaFormData;
 import org.camunda.bpm.model.bpmn.instance.camunda.CamundaFormField;
-import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Component;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import cv.igrp.platform.process_manager_studio.project.application.dto.ProcessDefinitionResponseDTO;
-import org.camunda.bpm.model.bpmn.instance.Process;
+import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Component;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -53,8 +51,15 @@ public class CreateProcessDefinitionCommandHandler implements CommandHandler<Cre
 
     var file = command.getFile();
 
-    if (file.isEmpty()) {
+    if (file == null || file.isEmpty()) {
       throw IgrpResponseStatusException.badRequest("File is empty.");
+    }
+
+    byte[] bpmnBytes = null;
+    try {
+      bpmnBytes = file.getBytes();
+    } catch (IOException e) {
+      throw new RuntimeException(e);
     }
 
     try (InputStream inputStream = file.getInputStream()) {
@@ -65,6 +70,7 @@ public class CreateProcessDefinitionCommandHandler implements CommandHandler<Cre
       if (processes.isEmpty()) {
         throw IgrpResponseStatusException.badRequest("No process found in BPMN file.");
       }
+
 
       for (Process process : processes) {
 
@@ -83,8 +89,9 @@ public class CreateProcessDefinitionCommandHandler implements CommandHandler<Cre
           processDefinition = draftProcessDefinition.get();
           LOGGER.debug("processDefinition found: {}", processDefinition);
           processDefinition.cleanArtifacts(); // Limpa artifacts antigos
+          processDefinition.updateBpmnContent(bpmnBytes); // Atualiza o conteúdo do BPMN
         } else {
-          processDefinition = ProcessDefinition.create(projectId, processKey, "url_minio"); // Ajustar URL real
+          processDefinition = ProcessDefinition.create(projectId, processKey, bpmnBytes);
           LOGGER.debug("processDefinition new: {}", processDefinition);
           project.addProcessDefinition(processDefinition);
         }

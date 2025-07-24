@@ -32,7 +32,7 @@ public class ProcessDefinitionMapper {
     entity.setProcessKey(domain.getProcessKey());
     entity.setBpmnDiagramUrl(domain.getBpmnDiagramUrl());
     entity.setVersion(domain.getVersion());
-    entity.setRejectedReason(domain.getRejectedReason());
+    entity.setBpmFileContent(domain.getBpmnFileContent());
     entity.setState(domain.getState());
     entity.setDeploymentDate(domain.getDeploymentDate());
     entity.setDeploymentId(domain.getDeploymentId());
@@ -67,8 +67,8 @@ public class ProcessDefinitionMapper {
         ProjectId.of(entity.getProjectId().getId().toString()),
         entity.getProcessKey(),
         entity.getBpmnDiagramUrl(),
+        entity.getBpmFileContent(),
         entity.getVersion(),
-        entity.getRejectedReason(),
         artifacts,
         entity.getState(),
         entity.getDeploymentDate(),

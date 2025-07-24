@@ -45,8 +45,8 @@ public class ProjectEntity extends AuditEntity {
     private boolean active;
 
 
-    @Column(name="current_version")
-    private Integer currentVersion;
+    @Column(name="app_code")
+    private String appCode;
 
 
 

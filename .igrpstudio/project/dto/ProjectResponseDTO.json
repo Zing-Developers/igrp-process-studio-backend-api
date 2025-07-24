@@ -66,9 +66,9 @@
       "primaryKey": false
     },
     {
-      "name": "currentVersion",
+      "name": "appCode",
       "objectType": "java",
-      "type": "integer",
+      "type": "string",
       "required": false,
       "before": false,
       "after": false,

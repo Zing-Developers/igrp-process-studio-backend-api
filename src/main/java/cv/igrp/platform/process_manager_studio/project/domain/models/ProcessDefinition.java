@@ -16,22 +16,22 @@ public class ProcessDefinition {
   private final ProjectId projectId;
   private String processKey;
   private String bpmnDiagramUrl;
+  private byte[] bpmnFileContent;
   private Integer version;
   private ProcessDefinitionState state;
-  private String rejectedReason;
   private final LocalDate deploymentDate;
   private final String deploymentId;
 
   private final List<ProjectArtifact> artifacts;
 
-  private ProcessDefinition(ProcessDefinitionId id, ProjectId projectId, String processKey, String bpmnDiagramUrl, Integer version, String rejectedReason,
+  private ProcessDefinition(ProcessDefinitionId id, ProjectId projectId, String processKey, String bpmnDiagramUrl, byte[] bpmnFileContent, Integer version,
                             List<ProjectArtifact> artifacts, ProcessDefinitionState state, LocalDate deploymentDate, String deploymentId) {
     this.id = Objects.requireNonNull(id, "id cannot be null");
     this.projectId = Objects.requireNonNull(projectId);
     this.processKey = processKey;
     this.bpmnDiagramUrl = bpmnDiagramUrl;
+    this.bpmnFileContent = bpmnFileContent;
     this.version = version;
-    this.rejectedReason = rejectedReason;
     this.artifacts = artifacts != null ? new ArrayList<>(artifacts) : new ArrayList<>();
     this.state = state;
     this.deploymentDate = deploymentDate;
@@ -55,14 +55,35 @@ public class ProcessDefinition {
     );
   }
 
-  public static ProcessDefinition rebuild(ProcessDefinitionId id, ProjectId projectId, String processKey, String bpmnDiagramUrl, Integer version, String rejectedReason,
-                                          List<ProjectArtifact> artifacts, ProcessDefinitionState state, LocalDate deploymentDate, String deploymentId) {
-    return new ProcessDefinition(id, projectId, processKey, bpmnDiagramUrl, version, rejectedReason, artifacts, state, deploymentDate, deploymentId);
+  public static ProcessDefinition create(ProjectId projectId, String processKey, byte[] bpmnFileContent) {
+
+    return new ProcessDefinition(
+        ProcessDefinitionId.generate(),
+        projectId,
+        processKey,
+        null,
+        bpmnFileContent,
+        null,
+        new ArrayList<>(),
+        ProcessDefinitionState.DRAFT,
+        null,
+        null
+    );
   }
 
-  public void updateInfo(String processKey, String bpmnDiagramUrl, Integer version) {
-    this.processKey = processKey;
+  public static ProcessDefinition rebuild(ProcessDefinitionId id, ProjectId projectId, String processKey, String bpmnDiagramUrl, byte[] bpmnFileContent, Integer version,
+                                          List<ProjectArtifact> artifacts, ProcessDefinitionState state, LocalDate deploymentDate, String deploymentId) {
+    return new ProcessDefinition(id, projectId, processKey, bpmnDiagramUrl, bpmnFileContent, version, artifacts, state, deploymentDate, deploymentId);
+  }
+
+  public void updateInfo(String bpmnDiagramUrl, Integer version, byte[] bpmnFileContent) {
+    this.bpmnFileContent = bpmnFileContent;
     this.bpmnDiagramUrl = bpmnDiagramUrl;
+    this.version = version;
+  }
+
+  public void updateInfo(Integer version, byte[] bpmnFileContent) {
+    this.bpmnFileContent = bpmnFileContent;
     this.version = version;
   }
 
@@ -71,9 +92,6 @@ public class ProcessDefinition {
     this.bpmnDiagramUrl = bpmnDiagramUrl;
   }
 
-  public void approve() {
-    this.rejectedReason = null;
-  }
 
   public void upateState(ProcessDefinitionState newState) {
     if (newState == null) {
@@ -82,19 +100,6 @@ public class ProcessDefinition {
     this.state = newState;
   }
 
-  public void upateVersion(Integer newVersion) {
-    if (newVersion == null || newVersion <= 0) {
-      throw new IllegalArgumentException("Version must be a positive integer");
-    }
-    this.version = newVersion;
-  }
-
-  public void reject(String reason) {
-    if (reason == null || reason.isBlank()) {
-      throw new IllegalArgumentException("Rejected reason cannot be blank");
-    }
-    this.rejectedReason = reason;
-  }
 
   public void addArtifact(ProjectArtifact artifact) {
     if (artifact == null) throw new IllegalArgumentException("Artifact cannot be null");
@@ -154,5 +159,7 @@ public class ProcessDefinition {
   }
 
 
-
+  public void updateBpmnContent(byte[] bpmnBytes) {
+    this.bpmnFileContent = bpmnBytes;
+  }
 }

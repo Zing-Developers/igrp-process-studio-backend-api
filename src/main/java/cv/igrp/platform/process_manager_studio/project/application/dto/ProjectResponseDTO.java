@@ -38,7 +38,7 @@ public class ProjectResponseDTO {
   private boolean active ;
   
   
-  private Integer currentVersion ;
+  private String appCode ;
   
   @Valid
   private List<ProcessDefinitionResponseDTO> processDefinitions = new ArrayList<>();

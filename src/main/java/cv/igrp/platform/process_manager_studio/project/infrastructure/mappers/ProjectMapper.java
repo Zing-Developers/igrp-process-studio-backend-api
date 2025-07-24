@@ -32,7 +32,7 @@ public class ProjectMapper {
     entity.setName(domain.getName());
     entity.setDescription(domain.getDescription());
     entity.setActive(domain.isActive());
-    entity.setCurrentVersion(domain.getCurrentVersion());
+    entity.setAppCode(domain.getAppCode());
 
     List<ProcessDefinitionEntity> processDefinitionEntities = Collections.emptyList();
     if (domain.getProcessDefinitions() != null && !domain.getProcessDefinitions().isEmpty()) {
@@ -67,7 +67,7 @@ public class ProjectMapper {
         entity.getName(),
         entity.getDescription(),
         entity.isActive(),
-        entity.getCurrentVersion(),
+        entity.getAppCode(),
         processDefinitions
     );
   }
@@ -81,7 +81,7 @@ public class ProjectMapper {
     dto.setName(project.getName());
     dto.setDescription(project.getDescription());
     dto.setActive(project.isActive());
-    dto.setCurrentVersion(project.getCurrentVersion());
+    dto.setAppCode(project.getAppCode());
 
     if (project.getProcessDefinitions() != null && !project.getProcessDefinitions().isEmpty()) {
 
