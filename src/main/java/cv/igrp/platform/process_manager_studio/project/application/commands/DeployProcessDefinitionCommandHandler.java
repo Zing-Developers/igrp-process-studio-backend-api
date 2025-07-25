@@ -1,6 +1,9 @@
 package cv.igrp.platform.process_manager_studio.project.application.commands;
 
 import cv.igrp.framework.core.domain.CommandHandler;
+import cv.igrp.framework.process.management.integration.core.adapter.IProcessDefinitionAdapter;
+import cv.igrp.framework.process.management.integration.core.model.IgrpProcessDefinitionRepresentation;
+import cv.igrp.framework.process.management.integration.core.model.ProcessDefinitionRepresentation;
 import cv.igrp.framework.stereotype.IgrpCommandHandler;
 import cv.igrp.platform.process_manager_studio.project.application.dto.ProcessDefinitionResponseDTO;
 import cv.igrp.platform.process_manager_studio.project.domain.models.ArtifactVariable;
@@ -34,118 +37,146 @@ import java.util.Collection;
 @Component
 public class DeployProcessDefinitionCommandHandler implements CommandHandler<DeployProcessDefinitionCommand, ResponseEntity<ProcessDefinitionResponseDTO>> {
 
-   private static final Logger LOGGER = LoggerFactory.getLogger(DeployProcessDefinitionCommandHandler.class);
+  private static final Logger LOGGER = LoggerFactory.getLogger(DeployProcessDefinitionCommandHandler.class);
 
   private final ProjectRepository projectRepository;
 
   private final ProcessDefinitionRepository processDefinitionRepository;
   private final ProcessDefinitionMapper processDefinitionMapper;
 
+  private final IProcessDefinitionAdapter processDefinitionAdapter;
 
-   public DeployProcessDefinitionCommandHandler(ProjectRepository projectRepository, ProcessDefinitionRepository processDefinitionRepository, ProcessDefinitionMapper processDefinitionMapper) {
+  public DeployProcessDefinitionCommandHandler(ProjectRepository projectRepository, ProcessDefinitionRepository processDefinitionRepository, ProcessDefinitionMapper processDefinitionMapper, IProcessDefinitionAdapter processDefinitionAdapter) {
 
-     this.projectRepository = projectRepository;
-     this.processDefinitionRepository = processDefinitionRepository;
-     this.processDefinitionMapper = processDefinitionMapper;
-   }
+    this.projectRepository = projectRepository;
+    this.processDefinitionRepository = processDefinitionRepository;
+    this.processDefinitionMapper = processDefinitionMapper;
+    this.processDefinitionAdapter = processDefinitionAdapter;
+  }
 
-   @IgrpCommandHandler
-   public ResponseEntity<ProcessDefinitionResponseDTO> handle(DeployProcessDefinitionCommand command) {
+  @IgrpCommandHandler
+  public ResponseEntity<ProcessDefinitionResponseDTO> handle(DeployProcessDefinitionCommand command) {
 
-     var processDefinitionId = ProcessDefinitionId.of(command.getProcessId());
+    var processDefinitionId = ProcessDefinitionId.of(command.getProcessId());
 
-     var content = command.getBpmdiagram().getContent();
-     byte[] bpmnBytes = content.getBytes(StandardCharsets.UTF_8);
+    var content = command.getBpmdiagram().getContent();
+    byte[] bpmnBytes = content.getBytes(StandardCharsets.UTF_8);
 
-     var processDefinition = processDefinitionRepository.findById(processDefinitionId)
-         .orElseThrow(() ->
-             IgrpResponseStatusException.notFound("Process Definition not found with id: " + processDefinitionId.getIdentifier().getValue()));
+    var processDefinition = processDefinitionRepository.findById(processDefinitionId)
+        .orElseThrow(() ->
+            IgrpResponseStatusException.notFound("Process Definition not found with id: " + processDefinitionId.getIdentifier().getValue()));
 
 
-     try (InputStream inputStream = new ByteArrayInputStream(bpmnBytes)) {
-       BpmnModelInstance modelInstance = Bpmn.readModelFromStream(inputStream);
+    try (InputStream inputStream = new ByteArrayInputStream(bpmnBytes)) {
+      BpmnModelInstance modelInstance = Bpmn.readModelFromStream(inputStream);
 
-       Collection<Process> processes = modelInstance.getModelElementsByType(Process.class);
+      Collection<Process> processes = modelInstance.getModelElementsByType(Process.class);
 
-       if (processes.isEmpty()) {
-         throw IgrpResponseStatusException.badRequest("No process found in BPMN file.");
-       }
+      if (processes.isEmpty()) {
+        throw IgrpResponseStatusException.badRequest("No process found in BPMN file.");
+      }
 
-       // Pega o primeiro processo (assumindo que há só um)
-       Process process = processes.iterator().next();
+      // Pega o primeiro processo (assumindo que há só um)
+      Process process = processes.iterator().next();
 
-       String processKey  = process.getId(); // processKey
-       String processName = process.getName();
+      String processKey = process.getId(); // processKey
+      String processName = process.getName();
 
-       LOGGER.debug("Process ID: {}", processKey);
-       LOGGER.debug("Process Name: {}", processName);
+      LOGGER.debug("Process ID: {}", processKey);
+      LOGGER.debug("Process Name: {}", processName);
 
-       // Verifica estado DRAF
+      // Verifica estado DRAF
 
-       if (processDefinition.isDraft()) {
-         LOGGER.debug("processDefinition is draft: {}", processDefinition);
-         processDefinition.cleanArtifacts(); // Limpa artifacts antigos
-         processDefinition.updateBpmnContent(BpmDriagram.of(content)); // Atualiza o conteúdo do BPMN
-       } else {
-         processDefinition = ProcessDefinition.create(processDefinition.getProjectId(), processDefinition.getProcessKey(), BpmDriagram.of(content));
-         LOGGER.debug("processDefinition new: {}", processDefinition);
-       }
+      if (processDefinition.isDraft()) {
+        LOGGER.debug("processDefinition is draft: {}", processDefinition);
+        processDefinition.cleanArtifacts(); // Limpa artifacts antigos
+        processDefinition.updateBpmnContent(BpmDriagram.of(content)); // Atualiza o conteúdo do BPMN
+      } else {
+        processDefinition = ProcessDefinition.create(processDefinition.getProjectId(), processDefinition.getProcessKey(), BpmDriagram.of(content));
+        LOGGER.debug("processDefinition new: {}", processDefinition);
+      }
 
-       Collection<UserTask> userTasks = process.getChildElementsByType(UserTask.class);
+      Collection<UserTask> userTasks = process.getChildElementsByType(UserTask.class);
 
-       // processing user tasks
-       for (UserTask userTask : userTasks) {
-         String taskId = userTask.getId();
-         String taskName = userTask.getName();
+      // processing user tasks
+      for (UserTask userTask : userTasks) {
+        String taskId = userTask.getId();
+        String taskName = userTask.getName();
 
-         var artifact = ProjectArtifact.create(processDefinition.getId(), taskId, taskName);
-         processDefinition.addArtifact(artifact);
+        var artifact = ProjectArtifact.create(processDefinition.getId(), taskId, taskName);
+        processDefinition.addArtifact(artifact);
 
-         // Extrair variáveis do user task
-         ExtensionElements extensionElements = userTask.getExtensionElements();
+        // Extrair variáveis do user task
+        ExtensionElements extensionElements = userTask.getExtensionElements();
 
-         if (extensionElements != null) {
-           Collection<CamundaFormData> formDataList = extensionElements.getElementsQuery()
-               .filterByType(CamundaFormData.class)
-               .list();
+        if (extensionElements != null) {
+          Collection<CamundaFormData> formDataList = extensionElements.getElementsQuery()
+              .filterByType(CamundaFormData.class)
+              .list();
 
-           if (formDataList != null && !formDataList.isEmpty()) {
-             for (CamundaFormData formData : formDataList) {
-               Collection<CamundaFormField> formFields = formData.getCamundaFormFields();
+          if (formDataList != null && !formDataList.isEmpty()) {
+            for (CamundaFormData formData : formDataList) {
+              Collection<CamundaFormField> formFields = formData.getCamundaFormFields();
 
-               for (CamundaFormField field : formFields) {
-                 String varKey = field.getCamundaId();
-                 String varName = field.getCamundaLabel();
-                 String varType = field.getCamundaType();
-                 String varDefault = field.getCamundaDefaultValue();
-                 boolean isRequired = "true".equalsIgnoreCase(field.getAttributeValue("required"));
+              for (CamundaFormField field : formFields) {
+                String varKey = field.getCamundaId();
+                String varName = field.getCamundaLabel();
+                String varType = field.getCamundaType();
+                String varDefault = field.getCamundaDefaultValue();
+                boolean isRequired = "true".equalsIgnoreCase(field.getAttributeValue("required"));
 
-                 var variable = ArtifactVariable.create(
-                     artifact.getId(),
-                     varKey,
-                     varName,
-                     varType,
-                     varDefault,
-                     isRequired
-                 );
+                var variable = ArtifactVariable.create(
+                    artifact.getId(),
+                    varKey,
+                    varName,
+                    varType,
+                    varDefault,
+                    isRequired
+                );
 
-                 artifact.addVariable(variable);
-               }
-             }
-           }
-         }
-       }
+                artifact.addVariable(variable);
+              }
+            }
+          }
+        }
+      }
 
-       processDefinitionRepository.save(processDefinition);
+      IgrpProcessDefinitionRepresentation definitionToDeploy = IgrpProcessDefinitionRepresentation.builder()
+          .key(processDefinition.getProcessKey())
+          .name(process.getName())
+          .description(processDefinition.getDescription())
+          .bpmnXml(content)
+          .build();
 
-       var response = processDefinitionMapper.toResponseDTO(processDefinition);
-       return ResponseEntity.ok(response);
+      LOGGER.info("Attempting to deploy process with key: {}", definitionToDeploy.getKey());
+      ProcessDefinitionRepresentation deployResult = processDefinitionAdapter.deploy(definitionToDeploy);
+      LOGGER.info("Process deployed successfully. Deployment ID: {}", deployResult.getDeploymentId());
 
-     } catch (IOException e) {
-       LOGGER.error("Error reading BPMN file", e);
-       throw IgrpResponseStatusException.internalServerError("Error processing BPMN file.");
-     }
+      if (deployResult.isDeployed()) {
+        processDefinition.deploy(
+            deployResult.getDeploymentId(),
+            deployResult.getDeployedAt(),
+            deployResult.getVersion()
+        );
+      }else{
+        throw IgrpResponseStatusException.badRequest("Process not deployed successfully.");
+      }
 
-   }
+      processDefinitionRepository.save(processDefinition);
+
+      var response = processDefinitionMapper.toResponseDTO(processDefinition);
+      return ResponseEntity.ok(response);
+
+    } catch (IOException e) {
+      LOGGER.error("Error reading BPMN file", e);
+      throw IgrpResponseStatusException.internalServerError("Error processing BPMN file.");
+    } catch (Exception e) {
+      // Captura exceções do deploy (ex: ProcessDefinitionClientException)
+      LOGGER.error("Failed to deploy process definition to external engine.", e);
+      // Aqui você pode querer reverter a transação ou marcar o processo como "FALHA NO DEPLOY"
+      throw IgrpResponseStatusException.internalServerError("Failed to deploy process: " + e.getMessage());
+    }
+
+  }
 
 }

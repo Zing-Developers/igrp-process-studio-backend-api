@@ -1,5 +1,6 @@
 package cv.igrp.platform.process_manager_studio;
 
+import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 import cv.igrp.platform.process_manager_studio.shared.config.ApplicationAuditorAware;
 import java.time.LocalDateTime;
 import java.util.Optional;
@@ -13,7 +14,6 @@ import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 @SpringBootApplication
 @EnableJpaAuditing(auditorAwareRef = "auditAware", dateTimeProviderRef = "auditDateTimeProvider")
 public class IgrpPlatformProcessManagerStudioApplication {
-
   @Bean
   public AuditorAware<String> auditAware() {
     return new ApplicationAuditorAware();
