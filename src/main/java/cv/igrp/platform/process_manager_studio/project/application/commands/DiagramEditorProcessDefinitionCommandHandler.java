@@ -1,5 +1,8 @@
 package cv.igrp.platform.process_manager_studio.project.application.commands;
 
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 import cv.igrp.framework.core.domain.CommandHandler;
 import cv.igrp.framework.stereotype.IgrpCommandHandler;
 import cv.igrp.platform.process_manager_studio.project.application.dto.ProcessDefinitionResponseDTO;
@@ -25,9 +28,12 @@ import org.springframework.stereotype.Component;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.ByteArrayInputStream;
-import java.io.IOException;
-import java.io.InputStream;
+import javax.xml.transform.OutputKeys;
+import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.stream.StreamResult;
+import javax.xml.transform.stream.StreamSource;
+import java.io.*;
 import java.nio.charset.StandardCharsets;
 import java.util.Collection;
 
@@ -36,36 +42,32 @@ public class DiagramEditorProcessDefinitionCommandHandler implements CommandHand
 
    private static final Logger LOGGER = LoggerFactory.getLogger(DiagramEditorProcessDefinitionCommandHandler.class);
 
-  private final ProjectRepository projectRepository;
 
   private final ProcessDefinitionRepository processDefinitionRepository;
   private final ProcessDefinitionMapper processDefinitionMapper;
 
-   public DiagramEditorProcessDefinitionCommandHandler(ProjectRepository projectRepository, ProcessDefinitionRepository processDefinitionRepository, ProcessDefinitionMapper processDefinitionMapper) {
+   public DiagramEditorProcessDefinitionCommandHandler(ProcessDefinitionRepository processDefinitionRepository, ProcessDefinitionMapper processDefinitionMapper) {
 
-     this.projectRepository = projectRepository;
      this.processDefinitionRepository = processDefinitionRepository;
      this.processDefinitionMapper = processDefinitionMapper;
    }
 
-   @IgrpCommandHandler
+
+  @IgrpCommandHandler
    public ResponseEntity<ProcessDefinitionResponseDTO> handle(DiagramEditorProcessDefinitionCommand command) {
      //var projectId = ProjectId.of(command.getProjectId());
 
-     var content = command.getBpmdiagram().getContent();
+     var contentDto = command.getBpmdiagram().getContent(); // todo, method to clean xml, remove space, and enter space.
 
-     byte[] bpmnBytes = content.getBytes(StandardCharsets.UTF_8);
+    LOGGER.debug("content : {}", contentDto);
+
+     byte[] bpmnBytes = contentDto.getBytes(StandardCharsets.UTF_8);
 
      var processDefinitionId = ProcessDefinitionId.of(command.getProcessId());
-
-      /*if (!projectRepository.existsById(projectId))
-        throw IgrpResponseStatusException.notFound("Project not found with id: " + projectId.getIdentifier().getValue());*/
-
 
      var processDefinition = processDefinitionRepository.findById(processDefinitionId)
          .orElseThrow(() ->
              IgrpResponseStatusException.notFound("Process Definition not found with id: " + processDefinitionId.getIdentifier().getValue()));
-
 
 
      try (InputStream inputStream = new ByteArrayInputStream(bpmnBytes)) {
@@ -77,7 +79,7 @@ public class DiagramEditorProcessDefinitionCommandHandler implements CommandHand
          throw IgrpResponseStatusException.badRequest("No process found in BPMN file.");
        }
 
-       // Pega o primeiro processo (assumindo que há só um)
+
        Process process = processes.iterator().next();
 
        String processKey  = process.getId(); // processKey
@@ -87,13 +89,12 @@ public class DiagramEditorProcessDefinitionCommandHandler implements CommandHand
        LOGGER.debug("Process Name: {}", processName);
 
        // Verifica estado DRAF
-
        if (processDefinition.isDraft()) {
          LOGGER.debug("processDefinition is draft: {}", processDefinition);
          processDefinition.cleanArtifacts(); // Limpa artifacts antigos
-         processDefinition.updateBpmnContent(BpmDriagram.of(content)); // Atualiza o conteúdo do BPMN
+         processDefinition.updateBpmnContent(BpmDriagram.of(contentDto)); // Atualiza o conteúdo do BPMN
        } else {
-         processDefinition = ProcessDefinition.create(processDefinition.getProjectId(), processDefinition.getProcessKey(), BpmDriagram.of(content));
+         processDefinition = ProcessDefinition.create(processDefinition.getProjectId(), processDefinition.getProcessKey(), BpmDriagram.of(contentDto));
          LOGGER.debug("processDefinition new: {}", processDefinition);
        }
 
