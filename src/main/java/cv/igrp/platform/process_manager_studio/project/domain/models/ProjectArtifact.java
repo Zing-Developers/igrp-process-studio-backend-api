@@ -1,5 +1,6 @@
 package cv.igrp.platform.process_manager_studio.project.domain.models;
 
+import cv.igrp.platform.process_manager_studio.shared.domain.exceptions.IgrpResponseStatusException;
 import cv.igrp.platform.process_manager_studio.shared.domain.valueobject.ArtifactVariableId;
 import cv.igrp.platform.process_manager_studio.shared.domain.valueobject.ProjectArtifactId;
 import cv.igrp.platform.process_manager_studio.shared.domain.valueobject.ProcessDefinitionId;
@@ -28,11 +29,11 @@ public class ProjectArtifact {
 
   public static ProjectArtifact create(ProcessDefinitionId processDefinitionId, String taskKey, String name) {
     if (taskKey == null || taskKey.isBlank()) {
-      throw new IllegalArgumentException("TaskKey cannot be null or blank");
+      throw IgrpResponseStatusException.badRequest("TaskKey cannot be null or blank");
     }
-    if (name == null || name.isBlank()) {
+    /*if (name == null || name.isBlank()) {
       throw new IllegalArgumentException("Name cannot be null or blank");
-    }
+    }*/
     return new ProjectArtifact(
         ProjectArtifactId.generate(),
         processDefinitionId,
@@ -48,11 +49,11 @@ public class ProjectArtifact {
 
   public void updateInfo(String taskKey, String name) {
     if (taskKey == null || taskKey.isBlank()) {
-      throw new IllegalArgumentException("TaskKey cannot be null or blank");
+      throw IgrpResponseStatusException.badRequest("TaskKey cannot be null or blank");
     }
-    if (name == null || name.isBlank()) {
+    /*if (name == null || name.isBlank()) {
       throw new IllegalArgumentException("Name cannot be null or blank");
-    }
+    }*/
     this.taskKey = taskKey;
     this.name = name;
   }

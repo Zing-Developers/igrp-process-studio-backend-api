@@ -1,5 +1,6 @@
 package cv.igrp.platform.process_manager_studio.project.domain.models;
 
+import cv.igrp.platform.process_manager_studio.shared.domain.exceptions.IgrpResponseStatusException;
 import cv.igrp.platform.process_manager_studio.shared.domain.valueobject.ArtifactVariableId;
 import cv.igrp.platform.process_manager_studio.shared.domain.valueobject.ProjectArtifactId;
 import lombok.Getter;
@@ -41,9 +42,9 @@ public class ArtifactVariable {
       String type,
       String defaultValue,
       boolean isRequired) {
-    if (name == null || name.isBlank()) {
+    /*if (name == null || name.isBlank()) {
       throw new IllegalArgumentException("Name cannot be null or blank");
-    }
+    }*/
     return new ArtifactVariable(
         ArtifactVariableId.generate(),
         artifactId,
@@ -68,7 +69,7 @@ public class ArtifactVariable {
 
   public void updateInfo(String name, String type, String defaultValue, boolean isRequired) {
     if (name == null || name.isBlank()) {
-      throw new IllegalArgumentException("Name cannot be null or blank");
+      throw IgrpResponseStatusException.badRequest("Name cannot be null or blank");
     }
     this.name = name;
     this.type = type;
