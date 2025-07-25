@@ -190,6 +190,47 @@
           "isRequired": true
         }
       ]
+    },
+    {
+      "actionName": "updateProcessDefinition",
+      "path": "process-definitions/{processId}",
+      "method": "PUT",
+      "requestBody": {
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "ProcessDefinitionRequest",
+              "collectionType": "none",
+              "name": "data",
+              "objectType": "dto",
+              "module": "project"
+            }
+          }
+        }
+      },
+      "responses": {
+        "200": {
+          "name": "OK",
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "ProcessDefinitionResponse",
+                "objectType": "dto",
+                "name": "data",
+                "collectionType": "none",
+                "module": "project"
+              }
+            }
+          }
+        }
+      },
+      "pathVariables": [
+        {
+          "name": "processId",
+          "type": "string",
+          "isRequired": true
+        }
+      ]
     }
   ],
   "id": "rq125xn7ri-CONTROLLER"

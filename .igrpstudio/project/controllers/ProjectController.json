@@ -107,7 +107,7 @@
     },
     {
       "actionName": "enableProject",
-      "path": "{projectId}/ativar",
+      "path": "{projectId}/enable",
       "method": "PATCH",
       "responses": {
         "200": {
@@ -133,7 +133,7 @@
     },
     {
       "actionName": "disableProject",
-      "path": "{projectId}/desativar",
+      "path": "{projectId}/disable",
       "method": "PATCH",
       "responses": {
         "200": {

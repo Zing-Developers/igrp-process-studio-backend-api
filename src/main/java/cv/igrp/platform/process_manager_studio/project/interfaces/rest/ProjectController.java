@@ -159,7 +159,7 @@ public class ProjectController {
   }
 
   @PatchMapping(
-    value = "{projectId}/ativar"
+    value = "{projectId}/enable"
   )
   @Operation(
     summary = "PATCH method to handle operations for enableProject",
@@ -196,7 +196,7 @@ public class ProjectController {
   }
 
   @PatchMapping(
-    value = "{projectId}/desativar"
+    value = "{projectId}/disable"
   )
   @Operation(
     summary = "PATCH method to handle operations for disableProject",

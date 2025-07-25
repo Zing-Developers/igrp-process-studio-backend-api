@@ -8,6 +8,7 @@ import cv.igrp.platform.process_manager_studio.shared.domain.valueobject.BpmDria
 import lombok.Getter;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.*;
 
 @Getter
@@ -22,13 +23,13 @@ public class ProcessDefinition {
   private BpmDriagram bpmDriagram;
   private Integer version;
   private ProcessDefinitionState state;
-  private final LocalDate deploymentDate;
-  private final String deploymentId;
+  private LocalDateTime deploymentDate;
+  private String deploymentId;
 
   private final List<ProjectArtifact> artifacts;
 
   private ProcessDefinition(ProcessDefinitionId id, ProjectId projectId, String processKey, String bpmnDiagramUrl,BpmDriagram bpmDriagram, Integer version,
-                            List<ProjectArtifact> artifacts, ProcessDefinitionState state, LocalDate deploymentDate, String deploymentId, String title, String description) {
+                            List<ProjectArtifact> artifacts, ProcessDefinitionState state, LocalDateTime deploymentDate, String deploymentId, String title, String description) {
     this.id = Objects.requireNonNull(id, "id cannot be null");
     this.projectId = Objects.requireNonNull(projectId);
     this.processKey = processKey;
@@ -84,24 +85,8 @@ public class ProcessDefinition {
   }
 
   public static ProcessDefinition rebuild(ProcessDefinitionId id, ProjectId projectId, String processKey, String bpmnDiagramUrl,  BpmDriagram bpmDriagram, Integer version,
-                                          List<ProjectArtifact> artifacts, ProcessDefinitionState state, LocalDate deploymentDate, String deploymentId, String title, String description) {
+                                          List<ProjectArtifact> artifacts, ProcessDefinitionState state, LocalDateTime deploymentDate, String deploymentId, String title, String description) {
     return new ProcessDefinition(id, projectId, processKey, bpmnDiagramUrl, bpmDriagram, version, artifacts, state, deploymentDate, deploymentId, title, description);
-  }
-
-  public void updateInfo(String bpmnDiagramUrl, Integer version, BpmDriagram bpmDriagram) {
-    this.bpmDriagram = bpmDriagram;
-    this.bpmnDiagramUrl = bpmnDiagramUrl;
-    this.version = version;
-  }
-
-  public void updateInfo(Integer version, BpmDriagram bpmDriagram) {
-    this.bpmDriagram = bpmDriagram;
-    this.version = version;
-  }
-
-  public void updateInfo(String processKey, String bpmnDiagramUrl) {
-    this.processKey = processKey;
-    this.bpmnDiagramUrl = bpmnDiagramUrl;
   }
 
 
@@ -125,10 +110,6 @@ public class ProcessDefinition {
 
   public void removeArtifact(ProjectArtifact artifact) {
     this.artifacts.remove(artifact);
-  }
-
-  public void publish() {
-    this.state = ProcessDefinitionState.PUBLISHED;
   }
 
   public void updateArtifacts(List<ProjectArtifact> updatedArtifacts) {
@@ -177,5 +158,18 @@ public class ProcessDefinition {
 
   public boolean isDraft() {
     return this.state == ProcessDefinitionState.DRAFT;
+  }
+
+  public void deploy(String deploymentId, LocalDateTime deployedAt, String version) {
+    this.deploymentId = deploymentId;
+    this.deploymentDate = deployedAt;
+    this.version = Integer.parseInt(version);
+    this.state = ProcessDefinitionState.PUBLISHED;
+  }
+
+  public void updateBaseInfo(String processKey, String title, String description ) {
+    this.processKey = processKey;
+    this.title = title;
+    this.description = description;
   }
 }

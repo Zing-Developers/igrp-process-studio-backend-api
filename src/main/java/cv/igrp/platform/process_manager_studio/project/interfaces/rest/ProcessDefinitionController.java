@@ -233,4 +233,41 @@ public class ProcessDefinitionController {
               .body(response.getBody());
   }
 
+  @PutMapping(
+    value = "process-definitions/{processId}"
+  )
+  @Operation(
+    summary = "PUT method to handle operations for updateProcessDefinition",
+    description = "PUT method to handle operations for updateProcessDefinition",
+    responses = {
+      @ApiResponse(
+          responseCode = "200",
+          description = "",
+          content = @Content(
+              mediaType = "application/json",
+              schema = @Schema(
+                  implementation = ProcessDefinitionResponseDTO.class,
+                  type = "object")
+          )
+      )
+    }
+  )
+  
+  public ResponseEntity<ProcessDefinitionResponseDTO> updateProcessDefinition(@Valid @RequestBody ProcessDefinitionRequestDTO updateProcessDefinitionRequest
+    , @PathVariable(value = "processId") String processId)
+  {
+
+      LOGGER.debug("Operation started");
+
+      final var command = new UpdateProcessDefinitionCommand(updateProcessDefinitionRequest, processId);
+
+       ResponseEntity<ProcessDefinitionResponseDTO> response = commandBus.send(command);
+
+       LOGGER.debug("Operation finished");
+
+        return ResponseEntity.status(response.getStatusCode())
+              .headers(response.getHeaders())
+              .body(response.getBody());
+  }
+
 }
