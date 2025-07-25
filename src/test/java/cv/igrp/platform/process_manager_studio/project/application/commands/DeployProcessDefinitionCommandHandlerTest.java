@@ -47,7 +47,6 @@ public class DeployProcessDefinitionCommandHandlerTest {
     // 2. Create a new instance of the class under test
     //    Manually inject dependencies via the constructor
     commandHandler = new DeployProcessDefinitionCommandHandler(
-        null, // Pass null for ProjectRepository since we assume it's not used in this flow. If it is, we would also mock it.
         processDefinitionRepository,   // The mock created by Mockito
         processDefinitionMapper,       // The mock created by Mockito
         mockProcessDefinitionAdapter   // The real instance of our mock client
