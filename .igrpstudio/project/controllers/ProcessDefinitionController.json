@@ -48,8 +48,21 @@
     },
     {
       "actionName": "deployProcessDefinition",
-      "path": "{projectId}/process-definitions/{processId}/deploy",
+      "path": "process-definitions/{processId}/deploy",
       "method": "POST",
+      "requestBody": {
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "BpmDiagram",
+              "collectionType": "none",
+              "name": "data",
+              "objectType": "dto",
+              "module": "project"
+            }
+          }
+        }
+      },
       "responses": {
         "200": {
           "name": "OK",
@@ -68,33 +81,15 @@
       },
       "pathVariables": [
         {
-          "name": "projectId",
-          "type": "string",
-          "isRequired": true
-        },
-        {
           "name": "processId",
           "type": "string",
           "isRequired": true
         }
-      ],
-      "requestBody": {
-        "content": {
-          "application/json": {
-            "schema": {
-              "type": "BpmDiagram",
-              "collectionType": "none",
-              "name": "data",
-              "objectType": "dto",
-              "module": "project"
-            }
-          }
-        }
-      }
+      ]
     },
     {
       "actionName": "diagramEditorProcessDefinition",
-      "path": "{projectId}/process-definitions/{processId}/diagram",
+      "path": "process-definitions/{processId}/diagram",
       "method": "PUT",
       "requestBody": {
         "content": {
@@ -127,11 +122,6 @@
       },
       "pathVariables": [
         {
-          "name": "projectId",
-          "type": "string",
-          "isRequired": true
-        },
-        {
           "name": "processId",
           "type": "string",
           "isRequired": true
@@ -140,7 +130,7 @@
     },
     {
       "actionName": "getProcessDefinitionById",
-      "path": "{projectId}/process-definitions/{processId}",
+      "path": "process-definitions/{processId}",
       "method": "GET",
       "responses": {
         "200": {
@@ -159,11 +149,6 @@
         }
       },
       "pathVariables": [
-        {
-          "name": "projectId",
-          "type": "string",
-          "isRequired": true
-        },
         {
           "name": "processId",
           "type": "string",

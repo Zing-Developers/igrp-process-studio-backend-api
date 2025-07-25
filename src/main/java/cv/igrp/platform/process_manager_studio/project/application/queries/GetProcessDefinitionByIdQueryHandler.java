@@ -21,25 +21,20 @@ public class GetProcessDefinitionByIdQueryHandler implements QueryHandler<GetPro
 
   private static final Logger LOGGER = LoggerFactory.getLogger(GetProcessDefinitionByIdQueryHandler.class);
 
-  private final ProjectRepository projectRepository;
 
   private final ProcessDefinitionRepository processDefinitionRepository;
   private final ProcessDefinitionMapper processDefinitionMapper;
 
-  public GetProcessDefinitionByIdQueryHandler(ProjectRepository projectRepository, ProcessDefinitionRepository processDefinitionRepository, ProcessDefinitionMapper processDefinitionMapper) {
+  public GetProcessDefinitionByIdQueryHandler(ProcessDefinitionRepository processDefinitionRepository, ProcessDefinitionMapper processDefinitionMapper) {
 
-    this.projectRepository = projectRepository;
     this.processDefinitionRepository = processDefinitionRepository;
     this.processDefinitionMapper = processDefinitionMapper;
   }
 
    @IgrpQueryHandler
   public ResponseEntity<ProcessDefinitionResponseDTO> handle(GetProcessDefinitionByIdQuery query) {
-     var projectId = ProjectId.of(query.getProjectId());
-     var processDefinitionId = ProcessDefinitionId.of(query.getProcessId());
 
-     if (!projectRepository.existsById(projectId))
-       throw IgrpResponseStatusException.notFound("Project not found with id: " + projectId.getIdentifier().getValue());
+     var processDefinitionId = ProcessDefinitionId.of(query.getProcessId());
 
      var processDefinition = processDefinitionRepository.findById(processDefinitionId)
          .orElseThrow(() ->

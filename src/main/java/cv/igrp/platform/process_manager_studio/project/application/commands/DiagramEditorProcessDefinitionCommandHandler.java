@@ -50,7 +50,7 @@ public class DiagramEditorProcessDefinitionCommandHandler implements CommandHand
 
    @IgrpCommandHandler
    public ResponseEntity<ProcessDefinitionResponseDTO> handle(DiagramEditorProcessDefinitionCommand command) {
-     var projectId = ProjectId.of(command.getProjectId());
+     //var projectId = ProjectId.of(command.getProjectId());
 
      var content = command.getBpmdiagram().getContent();
 
@@ -58,8 +58,8 @@ public class DiagramEditorProcessDefinitionCommandHandler implements CommandHand
 
      var processDefinitionId = ProcessDefinitionId.of(command.getProcessId());
 
-      if (!projectRepository.existsById(projectId))
-        throw IgrpResponseStatusException.notFound("Project not found with id: " + projectId.getIdentifier().getValue());
+      /*if (!projectRepository.existsById(projectId))
+        throw IgrpResponseStatusException.notFound("Project not found with id: " + projectId.getIdentifier().getValue());*/
 
 
      var processDefinition = processDefinitionRepository.findById(processDefinitionId)
@@ -93,7 +93,7 @@ public class DiagramEditorProcessDefinitionCommandHandler implements CommandHand
          processDefinition.cleanArtifacts(); // Limpa artifacts antigos
          processDefinition.updateBpmnContent(BpmDriagram.of(content)); // Atualiza o conteúdo do BPMN
        } else {
-         processDefinition = ProcessDefinition.create(projectId, processDefinition.getProcessKey(), BpmDriagram.of(content));
+         processDefinition = ProcessDefinition.create(processDefinition.getProjectId(), processDefinition.getProcessKey(), BpmDriagram.of(content));
          LOGGER.debug("processDefinition new: {}", processDefinition);
        }
 

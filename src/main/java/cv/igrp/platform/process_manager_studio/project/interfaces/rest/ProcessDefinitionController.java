@@ -85,7 +85,7 @@ public class ProcessDefinitionController {
   }
 
   @PostMapping(
-    value = "{projectId}/process-definitions/{processId}/deploy"
+    value = "process-definitions/{processId}/deploy"
   )
   @Operation(
     summary = "POST method to handle operations for deployProcessDefinition",
@@ -105,12 +105,12 @@ public class ProcessDefinitionController {
   )
   
   public ResponseEntity<ProcessDefinitionResponseDTO> deployProcessDefinition(@Valid @RequestBody BpmDiagramDTO deployProcessDefinitionRequest
-    , @PathVariable(value = "projectId") String projectId,@PathVariable(value = "processId") String processId)
+    , @PathVariable(value = "processId") String processId)
   {
 
       LOGGER.debug("Operation started");
 
-      final var command = new DeployProcessDefinitionCommand(deployProcessDefinitionRequest, projectId, processId);
+      final var command = new DeployProcessDefinitionCommand(deployProcessDefinitionRequest, processId);
 
        ResponseEntity<ProcessDefinitionResponseDTO> response = commandBus.send(command);
 
@@ -122,7 +122,7 @@ public class ProcessDefinitionController {
   }
 
   @PutMapping(
-    value = "{projectId}/process-definitions/{processId}/diagram"
+    value = "process-definitions/{processId}/diagram"
   )
   @Operation(
     summary = "PUT method to handle operations for diagramEditorProcessDefinition",
@@ -142,12 +142,12 @@ public class ProcessDefinitionController {
   )
   
   public ResponseEntity<ProcessDefinitionResponseDTO> diagramEditorProcessDefinition(@Valid @RequestBody BpmDiagramDTO diagramEditorProcessDefinitionRequest
-    , @PathVariable(value = "projectId") String projectId,@PathVariable(value = "processId") String processId)
+    , @PathVariable(value = "processId") String processId)
   {
 
       LOGGER.debug("Operation started");
 
-      final var command = new DiagramEditorProcessDefinitionCommand(diagramEditorProcessDefinitionRequest, projectId, processId);
+      final var command = new DiagramEditorProcessDefinitionCommand(diagramEditorProcessDefinitionRequest, processId);
 
        ResponseEntity<ProcessDefinitionResponseDTO> response = commandBus.send(command);
 
@@ -159,7 +159,7 @@ public class ProcessDefinitionController {
   }
 
   @GetMapping(
-    value = "{projectId}/process-definitions/{processId}"
+    value = "process-definitions/{processId}"
   )
   @Operation(
     summary = "GET method to handle operations for getProcessDefinitionById",
@@ -179,12 +179,12 @@ public class ProcessDefinitionController {
   )
   
   public ResponseEntity<ProcessDefinitionResponseDTO> getProcessDefinitionById(
-    @PathVariable(value = "projectId") String projectId,@PathVariable(value = "processId") String processId)
+    @PathVariable(value = "processId") String processId)
   {
 
       LOGGER.debug("Operation started");
 
-      final var query = new GetProcessDefinitionByIdQuery(projectId, processId);
+      final var query = new GetProcessDefinitionByIdQuery(processId);
 
       ResponseEntity<ProcessDefinitionResponseDTO> response = queryBus.handle(query);
 

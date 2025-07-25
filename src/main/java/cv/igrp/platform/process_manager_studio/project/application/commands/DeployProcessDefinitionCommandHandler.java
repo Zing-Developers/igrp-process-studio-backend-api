@@ -52,21 +52,14 @@ public class DeployProcessDefinitionCommandHandler implements CommandHandler<Dep
    @IgrpCommandHandler
    public ResponseEntity<ProcessDefinitionResponseDTO> handle(DeployProcessDefinitionCommand command) {
 
-     var projectId = ProjectId.of(command.getProjectId());
-
      var processDefinitionId = ProcessDefinitionId.of(command.getProcessId());
 
      var content = command.getBpmdiagram().getContent();
      byte[] bpmnBytes = content.getBytes(StandardCharsets.UTF_8);
 
-     if (!projectRepository.existsById(projectId))
-       throw IgrpResponseStatusException.notFound("Project not found with id: " + projectId.getIdentifier().getValue());
-
-
      var processDefinition = processDefinitionRepository.findById(processDefinitionId)
          .orElseThrow(() ->
              IgrpResponseStatusException.notFound("Process Definition not found with id: " + processDefinitionId.getIdentifier().getValue()));
-
 
 
      try (InputStream inputStream = new ByteArrayInputStream(bpmnBytes)) {
@@ -94,7 +87,7 @@ public class DeployProcessDefinitionCommandHandler implements CommandHandler<Dep
          processDefinition.cleanArtifacts(); // Limpa artifacts antigos
          processDefinition.updateBpmnContent(BpmDriagram.of(content)); // Atualiza o conteúdo do BPMN
        } else {
-         processDefinition = ProcessDefinition.create(projectId, processDefinition.getProcessKey(), BpmDriagram.of(content));
+         processDefinition = ProcessDefinition.create(processDefinition.getProjectId(), processDefinition.getProcessKey(), BpmDriagram.of(content));
          LOGGER.debug("processDefinition new: {}", processDefinition);
        }
 
