@@ -24,7 +24,7 @@ public class ProcessDefinitionRequestDTO {
   private String title ;
   
   
-  private String code ;
+  private String processKey ;
   
   
   private String description ;

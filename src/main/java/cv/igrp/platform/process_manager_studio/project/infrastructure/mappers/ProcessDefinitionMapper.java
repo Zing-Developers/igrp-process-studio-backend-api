@@ -94,7 +94,7 @@ public class ProcessDefinitionMapper {
 
     ProcessDefinitionResponseDTO pdDto = new ProcessDefinitionResponseDTO();
     pdDto.setProcessDefinitionId(processDefinition.getId().getIdentifier().getValueAsString());
-    pdDto.setCode(processDefinition.getProcessKey());
+    pdDto.setProcessKey(processDefinition.getProcessKey());
     pdDto.setBpmnDiagramUrl(processDefinition.getBpmnDiagramUrl());
     pdDto.setVersion(processDefinition.getVersion());
     pdDto.setStatus(processDefinition.getState()!= null ? processDefinition.getState().getCode() : null);

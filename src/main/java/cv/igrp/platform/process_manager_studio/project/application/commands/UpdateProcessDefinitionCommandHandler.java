@@ -37,7 +37,7 @@ public class UpdateProcessDefinitionCommandHandler implements CommandHandler<Upd
          .orElseThrow(() ->
              IgrpResponseStatusException.notFound("Process Definition not found with id: " + processDefinitionId.getIdentifier().getValue()));
 
-     processDefinition.updateBaseInfo(dto.getCode(), dto.getTitle(), dto.getDescription());
+     processDefinition.updateBaseInfo(dto.getProcessKey(), dto.getTitle(), dto.getDescription());
 
      var saved = processDefinitionRepository.save(processDefinition);
 

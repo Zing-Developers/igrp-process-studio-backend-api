@@ -29,7 +29,7 @@ public class ProcessDefinitionResponseDTO {
   private String projectId ;
   
   
-  private String code ;
+  private String processKey ;
   
   
   private String bpmnDiagramUrl ;

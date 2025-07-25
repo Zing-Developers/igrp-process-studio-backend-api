@@ -30,7 +30,7 @@
       "primaryKey": false
     },
     {
-      "name": "code",
+      "name": "processKey",
       "objectType": "java",
       "type": "string",
       "required": false,

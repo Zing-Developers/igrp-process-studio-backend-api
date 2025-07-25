@@ -43,7 +43,7 @@ public class SaveProcessDefinitionCommandHandler implements CommandHandler<SaveP
          .orElseThrow(() ->
              IgrpResponseStatusException.notFound("Project not found with id: " + projectId.getIdentifier().getValue()));
 
-     var processDefinition = ProcessDefinition.create(projectId, dto.getCode(), dto.getTitle(), dto.getDescription());
+     var processDefinition = ProcessDefinition.create(projectId, dto.getProcessKey(), dto.getTitle(), dto.getDescription());
 
     processDefinitionRepository.save(processDefinition);
 
