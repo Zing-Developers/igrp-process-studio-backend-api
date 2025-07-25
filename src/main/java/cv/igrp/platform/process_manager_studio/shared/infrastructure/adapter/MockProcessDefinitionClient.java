@@ -14,7 +14,6 @@ import java.util.Objects;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
-
 public class MockProcessDefinitionClient implements IProcessDefinitionAdapter {
 
   private final Map<String, ProcessDefinitionRepresentation> deployedProcesses = new HashMap<>();
@@ -23,7 +22,7 @@ public class MockProcessDefinitionClient implements IProcessDefinitionAdapter {
   @Override
   public ProcessDefinitionRepresentation deploy(ProcessDefinitionRepresentation processToDeploy) throws ProcessDefinitionException {
     if (processToDeploy == null || processToDeploy.getKey() == null) {
-      throw new ProcessDefinitionClientException("A representação e a chave do processo não podem ser nulas.");
+      throw new ProcessDefinitionClientException("Process representation and key cannot be null.");
     }
 
     String processKey = processToDeploy.getKey();
@@ -46,42 +45,43 @@ public class MockProcessDefinitionClient implements IProcessDefinitionAdapter {
         .deployedAt(LocalDateTime.now())
         .build();
 
-    // Usamos o deploymentId como chave, pois é único.
+    // We use the deploymentId as the key, since it's unique.
     deployedProcesses.put(deploymentId, deployedResult);
 
     return deployedResult;
   }
 
   /**
-   * Simula o undeploy de TODAS as versões de um processo.
-   * Ele usa o deploymentId fornecido para encontrar a chave do processo (processKey)
-   * e, em seguida, remove todos os deployments associados a essa chave.
-   * @param deploymentId O ID de qualquer um dos deployments do processo a ser removido.
-   * @throws ProcessDefinitionException se o deploymentId não for encontrado.
+   * Simulates undeploying ALL versions of a process.
+   * It uses the given deploymentId to find the process key (processKey),
+   * then removes all deployments associated with that key.
+   *
+   * @param deploymentId The ID of any of the deployments of the process to be removed.
+   * @throws ProcessDefinitionException if the deploymentId is not found.
    */
   @Override
   public void undeploy(String deploymentId) throws ProcessDefinitionException {
     if (deploymentId == null || deploymentId.isBlank()) {
-      throw new ProcessDefinitionClientException("O ID do deploy não pode ser nulo ou vazio.");
+      throw new ProcessDefinitionClientException("Deployment ID cannot be null or blank.");
     }
 
-    // 1. Encontra o processo correspondente ao deploymentId para descobrir a chave.
+    // 1. Find the process associated with the deploymentId to get the key.
     ProcessDefinitionRepresentation processToUndeploy = deployedProcesses.get(deploymentId);
     if (processToUndeploy == null) {
-      throw new ProcessDefinitionClientException("Falha ao remover a definição de processo. Deploy não encontrado para o ID: " + deploymentId);
+      throw new ProcessDefinitionClientException("Failed to undeploy process definition. No deployment found for ID: " + deploymentId);
     }
     String processKeyToRemove = processToUndeploy.getKey();
 
-    // 2. Encontra todos os deploymentIds que correspondem a essa chave.
+    // 2. Find all deploymentIds that match this key.
     var idsToRemove = deployedProcesses.values().stream()
         .filter(p -> Objects.equals(p.getKey(), processKeyToRemove))
         .map(ProcessDefinitionRepresentation::getDeploymentId)
         .collect(Collectors.toList());
 
-    // 3. Remove todos os deployments encontrados.
+    // 3. Remove all matching deployments.
     idsToRemove.forEach(deployedProcesses::remove);
 
-    // 4. Remove a chave do nosso mapa de versionamento.
+    // 4. Remove the key from the version tracking map.
     processVersions.remove(processKeyToRemove);
 
     System.out.printf("--- MOCK: Undeployed %d version(s) for process key '%s' ---\n", idsToRemove.size(), processKeyToRemove);

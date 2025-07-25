@@ -39,16 +39,14 @@ public class DeployProcessDefinitionCommandHandler implements CommandHandler<Dep
 
   private static final Logger LOGGER = LoggerFactory.getLogger(DeployProcessDefinitionCommandHandler.class);
 
-  private final ProjectRepository projectRepository;
 
   private final ProcessDefinitionRepository processDefinitionRepository;
   private final ProcessDefinitionMapper processDefinitionMapper;
 
   private final IProcessDefinitionAdapter processDefinitionAdapter;
 
-  public DeployProcessDefinitionCommandHandler(ProjectRepository projectRepository, ProcessDefinitionRepository processDefinitionRepository, ProcessDefinitionMapper processDefinitionMapper, IProcessDefinitionAdapter processDefinitionAdapter) {
+  public DeployProcessDefinitionCommandHandler( ProcessDefinitionRepository processDefinitionRepository, ProcessDefinitionMapper processDefinitionMapper, IProcessDefinitionAdapter processDefinitionAdapter) {
 
-    this.projectRepository = projectRepository;
     this.processDefinitionRepository = processDefinitionRepository;
     this.processDefinitionMapper = processDefinitionMapper;
     this.processDefinitionAdapter = processDefinitionAdapter;

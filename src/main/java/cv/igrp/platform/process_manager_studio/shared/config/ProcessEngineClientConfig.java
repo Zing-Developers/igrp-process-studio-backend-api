@@ -15,33 +15,32 @@ import java.net.http.HttpClient;
 @Configuration
 public class ProcessEngineClientConfig {
 
-  @Value("${igrp.process.engine.base-url}" )
+  @Value("${igrp.process.engine.base-url}")
   private String processEngineBaseUrl;
 
-
   /**
-   * Este método cria e configura uma instância do ProcessDefinitionClient.
-   * O Spring irá chamar este método e gerir o objeto retornado.
-   * Quando outra classe (como o seu CommandHandler) pedir um IProcessDefinitionAdapter,
-   * o Spring vai entregar este objeto.
+   * This method creates and configures an instance of ProcessDefinitionClient.
+   * Spring will call this method and manage the returned object.
+   * When another class (like your CommandHandler) requests an IProcessDefinitionAdapter,
+   * Spring will provide this object.
    *
-   * @param objectMapper O Spring vai injetar automaticamente o seu bean ObjectMapper padrão.
-   * @return Uma instância pronta a usar do ProcessDefinitionClient.
+   * @param objectMapper Spring will automatically inject the default ObjectMapper bean.
+   * @return A ready-to-use instance of ProcessDefinitionClient.
    */
   @Bean
   public IProcessDefinitionAdapter processDefinitionAdapter(ObjectMapper objectMapper) {
     return ProcessDefinitionClient.builder()
         .baseUrl(processEngineBaseUrl)
-        .objectMapper(objectMapper) // Reutilizamos o ObjectMapper já configurado pelo Spring.
-        .httpClient(HttpClient.newHttpClient( )) // Usamos o cliente HTTP padrão do Java.
+        .objectMapper(objectMapper) // Reuse the ObjectMapper already configured by Spring.
+        .httpClient(HttpClient.newHttpClient()) // Use Java's default HTTP client.
         .build();
   }
 
   /**
-   * É uma boa prática garantir que o ObjectMapper do Spring está configurado
-   * para lidar com os tipos de data e hora do Java 8 (como LocalDateTime),
-   * que são usados pelo seu SDK. Se o Spring Boot já não o fizer por si,
-   * este bean garante essa compatibilidade.
+   * It’s good practice to ensure that Spring's ObjectMapper is configured
+   * to handle Java 8 date and time types (like LocalDateTime),
+   * which are used by your SDK. If Spring Boot doesn’t already do this for you,
+   * this bean ensures that compatibility.
    */
   @Bean
   @Primary
@@ -51,10 +50,13 @@ public class ProcessEngineClientConfig {
     return mapper;
   }
 
+  /**
+   * Bean for XML processing using Jackson's XmlMapper.
+   * Useful for handling XML payloads in requests or responses.
+   */
   @Bean
   public XmlMapper xmlMapper() {
     return new XmlMapper();
   }
-
 
 }
