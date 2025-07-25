@@ -1,6 +1,7 @@
 package cv.igrp.platform.process_manager_studio.shared.config;
 
 import cv.igrp.framework.process.management.integration.core.adapter.IProcessDefinitionAdapter;
+import cv.igrp.platform.process_manager_studio.project.domain.repository.ProcessDefinitionRepository;
 import cv.igrp.platform.process_manager_studio.shared.infrastructure.adapter.MockProcessDefinitionClient;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -25,13 +26,13 @@ public class TestBeanConfiguration {
    */
   @Bean
   @Primary
-  public IProcessDefinitionAdapter mockProcessDefinitionAdapter() {
+  public IProcessDefinitionAdapter mockProcessDefinitionAdapter(ProcessDefinitionRepository processDefinitionRepository) {
     // Print a message to indicate that this configuration is being used
     System.out.println("==========================================================");
     System.out.println("=== LOCAL TEST MODE ACTIVE: Real SDK is disabled. ===");
     System.out.println("==========================================================");
 
     // Return our test stub
-    return new MockProcessDefinitionClient();
+    return new MockProcessDefinitionClient(processDefinitionRepository);
   }
 }

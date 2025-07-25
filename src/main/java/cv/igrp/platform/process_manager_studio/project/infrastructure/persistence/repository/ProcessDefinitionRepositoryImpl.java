@@ -3,6 +3,7 @@ package cv.igrp.platform.process_manager_studio.project.infrastructure.persisten
 import cv.igrp.platform.process_manager_studio.project.domain.models.ProcessDefinition;
 import cv.igrp.platform.process_manager_studio.project.domain.repository.ProcessDefinitionRepository;
 import cv.igrp.platform.process_manager_studio.project.infrastructure.mappers.ProcessDefinitionMapper;
+import cv.igrp.platform.process_manager_studio.shared.application.constants.ProcessDefinitionState;
 import cv.igrp.platform.process_manager_studio.shared.domain.valueobject.ProcessDefinitionId;
 import cv.igrp.platform.process_manager_studio.shared.domain.valueobject.ProjectId;
 import cv.igrp.platform.process_manager_studio.shared.infrastructure.persistence.repository.ProcessDefinitionEntityRepository;
@@ -65,5 +66,10 @@ public class ProcessDefinitionRepositoryImpl implements ProcessDefinitionReposit
   @Override
   public void delete(ProcessDefinitionId id) {
     // todo: Implement delete later
+  }
+
+  @Override
+  public Optional<Integer> findLatestPublishedVersionByProcessKey(String processKey, ProcessDefinitionState state) {
+    return processDefinitionEntityRepository.findLatestPublishedVersionByProcessKey(processKey, state);
   }
 }

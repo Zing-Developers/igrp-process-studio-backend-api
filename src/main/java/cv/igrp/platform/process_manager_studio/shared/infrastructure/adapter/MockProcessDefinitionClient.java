@@ -6,6 +6,8 @@ import cv.igrp.framework.process.management.integration.core.model.BpmnSourceTyp
 import cv.igrp.framework.process.management.integration.core.model.IgrpProcessDefinitionRepresentation;
 import cv.igrp.framework.process.management.integration.core.model.ProcessDefinitionRepresentation;
 import cv.igrp.framework.process.studio.sdk.client.exception.ProcessDefinitionClientException;
+import cv.igrp.platform.process_manager_studio.project.domain.repository.ProcessDefinitionRepository;
+import cv.igrp.platform.process_manager_studio.shared.application.constants.ProcessDefinitionState;
 
 import java.time.LocalDateTime;
 import java.util.HashMap;
@@ -19,6 +21,12 @@ public class MockProcessDefinitionClient implements IProcessDefinitionAdapter {
   private final Map<String, ProcessDefinitionRepresentation> deployedProcesses = new HashMap<>();
   private final Map<String, Integer> processVersions = new HashMap<>();
 
+  private final ProcessDefinitionRepository processDefinitionRepository;
+
+  public MockProcessDefinitionClient(ProcessDefinitionRepository processDefinitionRepository) {
+    this.processDefinitionRepository = processDefinitionRepository;
+  }
+
   @Override
   public ProcessDefinitionRepresentation deploy(ProcessDefinitionRepresentation processToDeploy) throws ProcessDefinitionException {
     if (processToDeploy == null || processToDeploy.getKey() == null) {
@@ -26,8 +34,16 @@ public class MockProcessDefinitionClient implements IProcessDefinitionAdapter {
     }
 
     String processKey = processToDeploy.getKey();
-    int newVersion = processVersions.getOrDefault(processKey, 0) + 1;
-    processVersions.put(processKey, newVersion);
+    // 1. Consulta a BD para a última versão PUBLICADA.
+    int latestPublishedVersion = processDefinitionRepository
+        .findLatestPublishedVersionByProcessKey(processKey, ProcessDefinitionState.PUBLISHED)
+        .orElse(0); // Se não encontrar nenhuma, a última versão publicada é 0.
+
+    // 2. Pega a versão atual do nosso mapa em memória (que pode ser maior se já fizemos deploys nesta sessão).
+    int currentInMemoryVersion = processVersions.getOrDefault(processKey, 0);
+
+    // 3. A nova versão será 1 a mais que o MÁXIMO entre a BD e a memória.
+    int newVersion = Math.max(latestPublishedVersion, currentInMemoryVersion) + 1;
 
     String deploymentId = "mock-deployment-" + UUID.randomUUID().toString();
     String processId = "mock-proc-def-" + UUID.randomUUID().toString();

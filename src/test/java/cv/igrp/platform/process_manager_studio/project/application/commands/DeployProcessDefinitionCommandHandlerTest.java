@@ -42,7 +42,7 @@ public class DeployProcessDefinitionCommandHandlerTest {
   @BeforeEach
   void setUp() {
     // Ensure each test starts with a clean mock client instance
-    mockProcessDefinitionAdapter = new MockProcessDefinitionClient();
+    mockProcessDefinitionAdapter = new MockProcessDefinitionClient(processDefinitionRepository);
 
     // 2. Create a new instance of the class under test
     //    Manually inject dependencies via the constructor
