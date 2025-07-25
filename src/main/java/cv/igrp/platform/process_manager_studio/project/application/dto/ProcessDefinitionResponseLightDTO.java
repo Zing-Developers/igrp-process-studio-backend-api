@@ -30,9 +30,6 @@ public class ProcessDefinitionResponseLightDTO {
   private String processKey ;
   
   
-  private String code ;
-  
-  
   private String bpmnDiagramUrl ;
   
   

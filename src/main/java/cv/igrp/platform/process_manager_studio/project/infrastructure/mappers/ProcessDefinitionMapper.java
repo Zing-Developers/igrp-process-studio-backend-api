@@ -94,7 +94,6 @@ public class ProcessDefinitionMapper {
 
     ProcessDefinitionResponseDTO pdDto = new ProcessDefinitionResponseDTO();
     pdDto.setProcessDefinitionId(processDefinition.getId().getIdentifier().getValueAsString());
-    pdDto.setProcessKey(processDefinition.getProcessKey());
     pdDto.setCode(processDefinition.getProcessKey());
     pdDto.setBpmnDiagramUrl(processDefinition.getBpmnDiagramUrl());
     pdDto.setVersion(processDefinition.getVersion());
@@ -127,7 +126,6 @@ public class ProcessDefinitionMapper {
     var pdDto = new ProcessDefinitionResponseLightDTO();
     pdDto.setProcessDefinitionId(processDefinition.getId().getIdentifier().getValueAsString());
     pdDto.setProcessKey(processDefinition.getProcessKey());
-    pdDto.setCode(processDefinition.getProcessKey());
     pdDto.setBpmnDiagramUrl(processDefinition.getBpmnDiagramUrl());
     pdDto.setVersion(processDefinition.getVersion());
     pdDto.setStatus(processDefinition.getState()!= null ? processDefinition.getState().getCode() : null);

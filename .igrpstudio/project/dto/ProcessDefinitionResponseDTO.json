@@ -30,18 +30,6 @@
       "primaryKey": false
     },
     {
-      "name": "processKey",
-      "objectType": "java",
-      "type": "string",
-      "required": false,
-      "before": false,
-      "after": false,
-      "positive": false,
-      "isEmail": false,
-      "isUrl": false,
-      "primaryKey": false
-    },
-    {
       "name": "code",
       "objectType": "java",
       "type": "string",
