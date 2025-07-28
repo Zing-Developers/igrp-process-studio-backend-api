@@ -164,6 +164,11 @@ public class ProcessDefinition {
     return this.state == ProcessDefinitionState.DRAFT;
   }
 
+  public boolean isPublish() {
+    return this.state == ProcessDefinitionState.PUBLISHED;
+  }
+
+
   public void deploy(String deploymentId, LocalDateTime deployedAt, String version) {
     this.deploymentId = deploymentId;
     this.deploymentDate = deployedAt;
@@ -174,6 +179,11 @@ public class ProcessDefinition {
 
   public void updateBaseInfo(String processKey, String title, String description) {
     this.processKey = processKey;
+    this.title = title;
+    this.description = description;
+  }
+
+  public void updateBaseInfo(String title, String description) {
     this.title = title;
     this.description = description;
   }
