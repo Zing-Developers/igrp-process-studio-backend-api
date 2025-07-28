@@ -13,6 +13,12 @@ import lombok.AllArgsConstructor;
 @AllArgsConstructor
 public class GetProcessDefinitionQuery implements Query {
 
+  @NotBlank(message = "The field <appCode> is required.")
+  private String appCode;
+  @NotBlank(message = "The field <processKey> is required.")
+  private String processKey;
+  @NotBlank(message = "The field <processName> is required.")
+  private String processName;
   @NotBlank(message = "The field <pageNumber> is required.")
   private String pageNumber;
   @NotBlank(message = "The field <pageSize> is required.")
