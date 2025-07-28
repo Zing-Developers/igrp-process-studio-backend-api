@@ -58,6 +58,10 @@ public class ProcessDefinitionEntity extends AuditEntity {
     private Integer version;
 
 
+    @Column(name="is_latest")
+    private boolean isLatest;
+
+
     @Enumerated(EnumType.STRING)
     @Column(name="state")
     private ProcessDefinitionState state;

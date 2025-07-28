@@ -179,6 +179,21 @@
       "requestParams": [
         {
           "type": "string",
+          "name": "appCode",
+          "isRequired": false
+        },
+        {
+          "type": "string",
+          "name": "processKey",
+          "isRequired": false
+        },
+        {
+          "type": "string",
+          "name": "processName",
+          "isRequired": false
+        },
+        {
+          "type": "string",
           "name": "pageNumber",
           "value": "0",
           "isRequired": true
