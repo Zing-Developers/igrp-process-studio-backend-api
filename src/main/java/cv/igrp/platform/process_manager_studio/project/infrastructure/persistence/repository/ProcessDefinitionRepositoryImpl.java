@@ -37,6 +37,11 @@ public class ProcessDefinitionRepositoryImpl implements ProcessDefinitionReposit
         .map(processDefinitionMapper::toDomain);
   }
 
+  @Override
+  public boolean existsByKey(String key) {
+    return processDefinitionEntityRepository.existsByProcessKey(key);
+  }
+
   @Transactional(readOnly = true)
   @Override
   public List<ProcessDefinition> findAll() {

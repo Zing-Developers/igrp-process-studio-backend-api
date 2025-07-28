@@ -45,6 +45,12 @@ public class IgrpResponseStatusException extends ErrorResponseException {
     return new IgrpResponseStatusException(HttpStatus.BAD_REQUEST, problemDetail, null);
   }
 
+  public static IgrpResponseStatusException conflict(String title) {
+    var problemDetail = ProblemDetail.forStatus(HttpStatus.CONFLICT);
+    problemDetail.setTitle(title);
+    return new IgrpResponseStatusException(HttpStatus.CONFLICT, problemDetail, null);
+  }
+
   public static IgrpResponseStatusException internalServerError(String title) {
     var problemDetail = ProblemDetail.forStatus(HttpStatus.INTERNAL_SERVER_ERROR);
     problemDetail.setTitle(title);

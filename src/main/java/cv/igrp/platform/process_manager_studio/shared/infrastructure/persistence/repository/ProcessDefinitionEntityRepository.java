@@ -23,6 +23,8 @@ public interface ProcessDefinitionEntityRepository extends
 
   List<ProcessDefinitionEntity> findByProjectId_Id(UUID projectIdId);
 
+  boolean existsByProcessKey(String processKey);
+
   @Query("SELECT MAX(pd.version) FROM ProcessDefinitionEntity pd WHERE pd.processKey = :processKey")
   Optional<Integer> findLatestVersionByProcessKey(String processKey);
 

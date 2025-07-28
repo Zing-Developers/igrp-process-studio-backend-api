@@ -15,6 +15,8 @@ public interface ProcessDefinitionRepository {
 
   Optional<ProcessDefinition> findByKey(String key);
 
+  boolean existsByKey(String key);
+
   List<ProcessDefinition> findAll();
 
   List<ProcessDefinition> findByProjectId(ProjectId projectId);
@@ -23,5 +25,5 @@ public interface ProcessDefinitionRepository {
 
   void delete(ProcessDefinitionId id);
 
-  Optional<Integer> findLatestPublishedVersionByProcessKey(@Param("processKey") String processKey, @Param("state") ProcessDefinitionState state);
+  Optional<Integer> findLatestPublishedVersionByProcessKey(String processKey, ProcessDefinitionState state);
 }
