@@ -90,6 +90,16 @@ public class ProcessDefinitionRepositoryImpl implements ProcessDefinitionReposit
             cb.like(cb.lower(root.get("projectId").get("name")), "%" + filter.getProjectName().trim() + "%"));
       }
 
+      if (filter.getState() != null) {
+        predicates = cb.and(predicates,
+            cb.equal(root.get("state"), filter.getState()));
+      }
+
+      predicates = cb.and(predicates, cb.or(
+          cb.notEqual(root.get("state"), ProcessDefinitionState.PUBLISHED),
+          cb.isTrue(root.get("isLatest"))
+      ));
+
       return predicates;
     };
 
@@ -109,6 +119,12 @@ public class ProcessDefinitionRepositoryImpl implements ProcessDefinitionReposit
         .stream()
         .map(processDefinitionMapper::toDomain)
         .collect(Collectors.toList());
+  }
+
+  @Transactional
+  @Override
+  public void unsetLatestForOtherVersions(String processKey, ProcessDefinitionId excludeId) {
+    processDefinitionEntityRepository.unsetLatestForOtherVersions(processKey, excludeId.getIdentifier().getValue());
   }
 
   @Transactional

@@ -2,6 +2,7 @@ package cv.igrp.platform.process_manager_studio.shared.infrastructure.persistenc
 
 import cv.igrp.platform.process_manager_studio.shared.application.constants.ProcessDefinitionState;
 import cv.igrp.platform.process_manager_studio.shared.infrastructure.persistence.entity.ProcessDefinitionEntity;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
@@ -24,6 +25,20 @@ public interface ProcessDefinitionEntityRepository extends
   List<ProcessDefinitionEntity> findByProjectId_Id(UUID projectIdId);
 
   boolean existsByProcessKey(String processKey);
+
+  @Modifying
+  @Query("""
+  UPDATE ProcessDefinitionEntity p
+  SET p.isLatest = false
+  WHERE p.processKey = :processKey
+    AND p.id != :excludeId
+    AND p.isLatest = true
+""")
+  void unsetLatestForOtherVersions(
+      @Param("processKey") String processKey,
+      @Param("excludeId") UUID excludeId
+  );
+
 
   @Query("SELECT MAX(pd.version) FROM ProcessDefinitionEntity pd WHERE pd.processKey = :processKey")
   Optional<Integer> findLatestVersionByProcessKey(String processKey);

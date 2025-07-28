@@ -204,6 +204,11 @@
         },
         {
           "type": "string",
+          "name": "state",
+          "isRequired": false
+        },
+        {
+          "type": "string",
           "name": "pageNumber",
           "value": "0",
           "isRequired": true

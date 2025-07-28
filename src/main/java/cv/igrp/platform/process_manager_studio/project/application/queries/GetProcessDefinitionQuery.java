@@ -23,6 +23,8 @@ public class GetProcessDefinitionQuery implements Query {
   private String projectCode;
   @NotBlank(message = "The field <projectName> is required.")
   private String projectName;
+  @NotBlank(message = "The field <state> is required.")
+  private String state;
   @NotBlank(message = "The field <pageNumber> is required.")
   private String pageNumber;
   @NotBlank(message = "The field <pageSize> is required.")

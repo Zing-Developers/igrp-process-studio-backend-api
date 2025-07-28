@@ -25,11 +25,13 @@ public class ProcessDefinition {
   private ProcessDefinitionState state;
   private LocalDateTime deploymentDate;
   private String deploymentId;
+  private boolean isLatest;
 
   private final List<ProjectArtifact> artifacts;
 
-  private ProcessDefinition(ProcessDefinitionId id, ProjectId projectId, String processKey, String bpmnDiagramUrl,BpmDriagram bpmDriagram, Integer version,
-                            List<ProjectArtifact> artifacts, ProcessDefinitionState state, LocalDateTime deploymentDate, String deploymentId, String title, String description) {
+  private ProcessDefinition(ProcessDefinitionId id, ProjectId projectId, String processKey, String bpmnDiagramUrl, BpmDriagram bpmDriagram, Integer version,
+                            List<ProjectArtifact> artifacts, ProcessDefinitionState state, LocalDateTime deploymentDate, String deploymentId,
+                            String title, String description, boolean isLatest) {
     this.id = Objects.requireNonNull(id, "id cannot be null");
     this.projectId = Objects.requireNonNull(projectId);
     this.processKey = processKey;
@@ -42,9 +44,8 @@ public class ProcessDefinition {
     this.deploymentId = deploymentId;
     this.title = title;
     this.description = description;
+    this.isLatest = isLatest;
   }
-
-
 
 
   public static ProcessDefinition create(ProjectId projectId, String processKey, BpmDriagram bpmDriagram) {
@@ -61,12 +62,13 @@ public class ProcessDefinition {
         null,
         null,
         null,
-        null
+        null,
+        false
     );
   }
 
 
-  public static ProcessDefinition create(ProjectId projectId, String processKey, String title, String description ) {
+  public static ProcessDefinition create(ProjectId projectId, String processKey, String title, String description) {
 
     return new ProcessDefinition(
         ProcessDefinitionId.generate(),
@@ -80,13 +82,15 @@ public class ProcessDefinition {
         null,
         null,
         title,
-        description
+        description,
+        false
     );
   }
 
-  public static ProcessDefinition rebuild(ProcessDefinitionId id, ProjectId projectId, String processKey, String bpmnDiagramUrl,  BpmDriagram bpmDriagram, Integer version,
-                                          List<ProjectArtifact> artifacts, ProcessDefinitionState state, LocalDateTime deploymentDate, String deploymentId, String title, String description) {
-    return new ProcessDefinition(id, projectId, processKey, bpmnDiagramUrl, bpmDriagram, version, artifacts, state, deploymentDate, deploymentId, title, description);
+  public static ProcessDefinition rebuild(ProcessDefinitionId id, ProjectId projectId, String processKey, String bpmnDiagramUrl, BpmDriagram bpmDriagram, Integer version,
+                                          List<ProjectArtifact> artifacts, ProcessDefinitionState state, LocalDateTime deploymentDate,
+                                          String deploymentId, String title, String description, boolean isLatest) {
+    return new ProcessDefinition(id, projectId, processKey, bpmnDiagramUrl, bpmDriagram, version, artifacts, state, deploymentDate, deploymentId, title, description, isLatest);
   }
 
 
@@ -152,7 +156,7 @@ public class ProcessDefinition {
   }
 
 
-  public void updateBpmnContent(BpmDriagram bpmDriagram ) {
+  public void updateBpmnContent(BpmDriagram bpmDriagram) {
     this.bpmDriagram = bpmDriagram;
   }
 
@@ -165,9 +169,10 @@ public class ProcessDefinition {
     this.deploymentDate = deployedAt;
     this.version = Integer.parseInt(version);
     this.state = ProcessDefinitionState.PUBLISHED;
+    this.isLatest = true;
   }
 
-  public void updateBaseInfo(String processKey, String title, String description ) {
+  public void updateBaseInfo(String processKey, String title, String description) {
     this.processKey = processKey;
     this.title = title;
     this.description = description;

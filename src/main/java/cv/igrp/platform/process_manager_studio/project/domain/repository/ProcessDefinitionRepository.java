@@ -24,6 +24,8 @@ public interface ProcessDefinitionRepository {
 
   List<ProcessDefinition> findByProjectId(ProjectId projectId);
 
+  void unsetLatestForOtherVersions(String processKey, ProcessDefinitionId excludeId);
+
   ProcessDefinition save(ProcessDefinition processDefinition);
 
   void delete(ProcessDefinitionId id);

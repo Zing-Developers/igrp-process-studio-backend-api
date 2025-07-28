@@ -43,6 +43,7 @@ public class ProcessDefinitionMapper {
     entity.setDeploymentId(domain.getDeploymentId());
     entity.setTitle(domain.getTitle());
     entity.setDescription(domain.getDescription());
+    entity.setLatest(domain.isLatest());
     ProjectEntity pr = new ProjectEntity();
     pr.setId(domain.getProjectId().getIdentifier().getValue());
     entity.setProjectId(pr);
@@ -84,7 +85,8 @@ public class ProcessDefinitionMapper {
         entity.getDeploymentDate(),
         entity.getDeploymentId(),
         entity.getTitle(),
-        entity.getDescription()
+        entity.getDescription(),
+        entity.isLatest()
     );
   }
 

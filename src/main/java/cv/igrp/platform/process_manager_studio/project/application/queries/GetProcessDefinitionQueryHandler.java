@@ -6,6 +6,7 @@ import cv.igrp.platform.process_manager_studio.project.application.dto.WrapperLi
 import cv.igrp.platform.process_manager_studio.project.domain.filter.ProcessDefinitionFilter;
 import cv.igrp.platform.process_manager_studio.project.domain.repository.ProcessDefinitionRepository;
 import cv.igrp.platform.process_manager_studio.project.infrastructure.mappers.ProcessDefinitionMapper;
+import cv.igrp.platform.process_manager_studio.shared.application.constants.ProcessDefinitionState;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import cv.igrp.framework.core.domain.QueryHandler;
@@ -44,6 +45,7 @@ public class GetProcessDefinitionQueryHandler implements QueryHandler<GetProcess
          .appCode(query.getAppCode())
          .projectCode(query.getProjectCode())
          .projectName(query.getProjectName())
+         .state(query.getState() != null ? ProcessDefinitionState.fromCodeOrThrow(query.getState()) : null)
          .pageNumber(pageNumber)
          .pageSize(pageSize)
          .build();

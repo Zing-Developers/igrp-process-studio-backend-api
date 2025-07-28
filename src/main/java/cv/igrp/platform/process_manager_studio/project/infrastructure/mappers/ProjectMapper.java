@@ -98,6 +98,21 @@ public class ProjectMapper {
   }
 
 
+  public ProjectResponseDTO toResponseDTOLight(Project project) {
+    if (project == null) return null;
+
+    var dto = new ProjectResponseDTO();
+    dto.setProjectId(project.getId().getIdentifier().getValueAsString());
+    dto.setCode(project.getCode());
+    dto.setName(project.getName());
+    dto.setDescription(project.getDescription());
+    dto.setActive(project.isActive());
+    dto.setAppCode(project.getAppCode());
+
+    return dto;
+  }
+
+
 
 
 }

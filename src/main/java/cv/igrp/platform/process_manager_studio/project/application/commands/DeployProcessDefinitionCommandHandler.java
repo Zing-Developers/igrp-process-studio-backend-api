@@ -160,6 +160,11 @@ public class DeployProcessDefinitionCommandHandler implements CommandHandler<Dep
         throw IgrpResponseStatusException.badRequest("Process not deployed successfully.");
       }
 
+      processDefinitionRepository.unsetLatestForOtherVersions(
+          processDefinition.getProcessKey(),
+          processDefinition.getId()
+      );
+
       processDefinitionRepository.save(processDefinition);
 
       var response = processDefinitionMapper.toResponseDTO(processDefinition);

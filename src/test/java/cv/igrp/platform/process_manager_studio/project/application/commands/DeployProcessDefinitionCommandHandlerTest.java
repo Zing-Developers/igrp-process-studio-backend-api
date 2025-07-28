@@ -91,7 +91,8 @@ public class DeployProcessDefinitionCommandHandlerTest {
         new ArrayList<>(),
         ProcessDefinitionState.DRAFT, // The process is in draft state in the DB
         null, null,
-        "Test Process", "A process for testing"
+        "Test Process", "A process for testing",
+        false
     );
 
     // 3. "Teach" the mock repository: when `findById` is called,

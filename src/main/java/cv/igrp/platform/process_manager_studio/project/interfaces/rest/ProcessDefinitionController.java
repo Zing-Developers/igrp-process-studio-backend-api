@@ -221,13 +221,14 @@ public class ProcessDefinitionController {
     @RequestParam(value = "processName", required = false) String processName,
     @RequestParam(value = "projectCode", required = false) String projectCode,
     @RequestParam(value = "projectName", required = false) String projectName,
+    @RequestParam(value = "state", required = false) String state,
     @RequestParam(value = "pageNumber", defaultValue = "0") String pageNumber,
     @RequestParam(value = "pageSize", defaultValue = "20") String pageSize)
   {
 
       LOGGER.debug("Operation started");
 
-      final var query = new GetProcessDefinitionQuery(appCode, processKey, processName, projectCode, projectName, pageNumber, pageSize);
+      final var query = new GetProcessDefinitionQuery(appCode, processKey, processName, projectCode, projectName, state, pageNumber, pageSize);
 
       ResponseEntity<WrapperListaProcessDefinitionDTO> response = queryBus.handle(query);
 
