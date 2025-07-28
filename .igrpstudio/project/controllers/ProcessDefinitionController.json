@@ -194,6 +194,16 @@
         },
         {
           "type": "string",
+          "name": "projectCode",
+          "isRequired": false
+        },
+        {
+          "type": "string",
+          "name": "projectName",
+          "isRequired": false
+        },
+        {
+          "type": "string",
           "name": "pageNumber",
           "value": "0",
           "isRequired": true

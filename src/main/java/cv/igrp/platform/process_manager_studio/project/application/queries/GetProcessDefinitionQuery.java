@@ -19,6 +19,10 @@ public class GetProcessDefinitionQuery implements Query {
   private String processKey;
   @NotBlank(message = "The field <processName> is required.")
   private String processName;
+  @NotBlank(message = "The field <projectCode> is required.")
+  private String projectCode;
+  @NotBlank(message = "The field <projectName> is required.")
+  private String projectName;
   @NotBlank(message = "The field <pageNumber> is required.")
   private String pageNumber;
   @NotBlank(message = "The field <pageSize> is required.")

@@ -1,14 +1,13 @@
 package cv.igrp.platform.process_manager_studio.project.application.queries;
 
 import cv.igrp.platform.process_manager_studio.project.application.dto.WrapperListaProjectDTO;
-import cv.igrp.platform.process_manager_studio.project.domain.filter.FilterProject;
+import cv.igrp.platform.process_manager_studio.project.domain.filter.ProjectFilter;
 import cv.igrp.platform.process_manager_studio.project.domain.repository.ProjectRepository;
 import cv.igrp.platform.process_manager_studio.project.infrastructure.mappers.ProjectMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import cv.igrp.framework.core.domain.QueryHandler;
 import cv.igrp.framework.stereotype.IgrpQueryHandler;
-import org.springframework.context.event.EventListener;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 
@@ -32,7 +31,7 @@ public class GetProjectsQueryHandler implements QueryHandler<GetProjectsQuery, R
    @IgrpQueryHandler
   public ResponseEntity<WrapperListaProjectDTO> handle(GetProjectsQuery query) {
 
-     FilterProject filter = FilterProject.builder()
+     ProjectFilter filter = ProjectFilter.builder()
           .appCode(query.getAppCode())
           .pageNumber(Integer.parseInt(query.getPageNumber()))
           .pageSize(Integer.parseInt(query.getPageSize()))

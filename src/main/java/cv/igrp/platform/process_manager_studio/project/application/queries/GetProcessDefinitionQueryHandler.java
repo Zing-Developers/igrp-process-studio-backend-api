@@ -3,6 +3,7 @@ package cv.igrp.platform.process_manager_studio.project.application.queries;
 import cv.igrp.platform.process_manager_studio.project.application.dto.ProcessDefinitionResponseLightDTO;
 import cv.igrp.platform.process_manager_studio.project.application.dto.ProjectResponseDTO;
 import cv.igrp.platform.process_manager_studio.project.application.dto.WrapperListaProjectDTO;
+import cv.igrp.platform.process_manager_studio.project.domain.filter.ProcessDefinitionFilter;
 import cv.igrp.platform.process_manager_studio.project.domain.repository.ProcessDefinitionRepository;
 import cv.igrp.platform.process_manager_studio.project.infrastructure.mappers.ProcessDefinitionMapper;
 import org.slf4j.Logger;
@@ -37,7 +38,18 @@ public class GetProcessDefinitionQueryHandler implements QueryHandler<GetProcess
     var pageNumber=  Integer.parseInt(query.getPageNumber());
      var pageSize = Integer.parseInt(query.getPageSize());
 
-     List<ProcessDefinitionResponseLightDTO> projects = processDefinitionRepository.findAll().stream()
+     var filter = ProcessDefinitionFilter.builder()
+         .processName(query.getProcessName())
+         .processKey(query.getProcessKey())
+         .appCode(query.getAppCode())
+         .projectCode(query.getProjectCode())
+         .projectName(query.getProjectName())
+         .pageNumber(pageNumber)
+         .pageSize(pageSize)
+         .build();
+
+     List<ProcessDefinitionResponseLightDTO> projects = processDefinitionRepository
+         .findAll(filter).stream()
          .map(processDefinitionMapper::toResponseDTOLight)
          .toList();
 

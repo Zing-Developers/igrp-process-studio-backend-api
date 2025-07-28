@@ -1,6 +1,6 @@
 package cv.igrp.platform.process_manager_studio.project.infrastructure.persistence.repository;
 
-import cv.igrp.platform.process_manager_studio.project.domain.filter.FilterProject;
+import cv.igrp.platform.process_manager_studio.project.domain.filter.ProjectFilter;
 import cv.igrp.platform.process_manager_studio.project.domain.models.Project;
 import cv.igrp.platform.process_manager_studio.project.domain.repository.ProjectRepository;
 import cv.igrp.platform.process_manager_studio.project.infrastructure.mappers.ProjectMapper;
@@ -55,7 +55,7 @@ public class ProjectRepositoryImpl implements ProjectRepository {
 
   @Transactional(readOnly = true)
   @Override
-  public List<Project> findAll(FilterProject filter) {
+  public List<Project> findAll(ProjectFilter filter) {
     var pageable = PageRequest.of(
         filter.getPageNumber() != null ? filter.getPageNumber() : 0,
         filter.getPageSize() != null ? filter.getPageSize() : 20
@@ -71,17 +71,17 @@ public class ProjectRepositoryImpl implements ProjectRepository {
 
       if (filter.getName() != null && !filter.getName().isBlank()) {
         predicates = cb.and(predicates,
-            cb.like(cb.lower(root.get("name")), "%" + filter.getName().trim().toLowerCase() + "%"));
+            cb.like(cb.lower(root.get("name")), "%" + filter.getName().trim() + "%"));
       }
 
       if (filter.getDescription() != null && !filter.getDescription().isBlank()) {
         predicates = cb.and(predicates,
-            cb.like(cb.lower(root.get("description")), "%" + filter.getDescription().trim().toLowerCase() + "%"));
+            cb.like(cb.lower(root.get("description")), "%" + filter.getDescription().trim() + "%"));
       }
 
       if (filter.getAppCode() != null && !filter.getAppCode().isBlank()) {
         predicates = cb.and(predicates,
-            cb.equal(cb.lower(root.get("appCode")), filter.getAppCode().trim().toLowerCase()));
+            cb.equal(cb.lower(root.get("appCode")), filter.getAppCode()));
       }
 
       return predicates;

@@ -5,13 +5,13 @@ import lombok.Getter;
 
 @Builder
 @Getter
-public class FilterProject {
+public class ProcessDefinitionFilter {
 
-  private String code;
-  private String name;
-  private String description;
-  private Boolean active;
+  private String processKey;
+  private String processName;
   private String appCode;
+  private String projectCode;
+  private String projectName;
   private Integer pageNumber;
   private Integer pageSize;
 }
