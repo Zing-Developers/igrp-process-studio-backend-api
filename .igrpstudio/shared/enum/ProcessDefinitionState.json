@@ -51,6 +51,13 @@
         "ERROR",
         "Erro no parsing"
       ]
+    },
+    {
+      "name": "DELETED",
+      "attributes": [
+        "DELETED",
+        "Eliminado"
+      ]
     }
   ],
   "attributes": [

@@ -95,6 +95,11 @@ public class ProcessDefinitionRepositoryImpl implements ProcessDefinitionReposit
             cb.equal(root.get("state"), filter.getState()));
       }
 
+
+      predicates = cb.and(predicates,
+          cb.notEqual(root.get("state"), ProcessDefinitionState.DELETED));
+
+
       predicates = cb.and(predicates, cb.or(
           cb.notEqual(root.get("state"), ProcessDefinitionState.PUBLISHED),
           cb.isTrue(root.get("isLatest"))

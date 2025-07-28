@@ -104,5 +104,16 @@ public class Project {
   }
 
 
+    public void disable() {
+    this.active = false;
+    }
 
+  public void enable() {
+    this.active = true;
+  }
+
+  public boolean hasAtLeastOnePublishedProcess() {
+    return processDefinitions.stream()
+        .anyMatch(pd -> pd.getState() == ProcessDefinitionState.PUBLISHED);
+  }
 }

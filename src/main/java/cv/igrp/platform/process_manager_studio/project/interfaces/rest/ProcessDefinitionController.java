@@ -26,6 +26,7 @@ import cv.igrp.platform.process_manager_studio.project.application.dto.ProcessDe
 import cv.igrp.platform.process_manager_studio.project.application.dto.ProcessDefinitionResponseDTO;
 import cv.igrp.platform.process_manager_studio.project.application.dto.BpmDiagramDTO;
 import cv.igrp.platform.process_manager_studio.project.application.dto.WrapperListaProcessDefinitionDTO;
+import java.util.Map;
 
 @IgrpController
 @RestController
@@ -268,6 +269,80 @@ public class ProcessDefinitionController {
       final var command = new UpdateProcessDefinitionCommand(updateProcessDefinitionRequest, processId);
 
        ResponseEntity<ProcessDefinitionResponseDTO> response = commandBus.send(command);
+
+       LOGGER.debug("Operation finished");
+
+        return ResponseEntity.status(response.getStatusCode())
+              .headers(response.getHeaders())
+              .body(response.getBody());
+  }
+
+  @PatchMapping(
+    value = "process-definitions/{processId}/delete"
+  )
+  @Operation(
+    summary = "PATCH method to handle operations for deleteProcessDefinition",
+    description = "PATCH method to handle operations for deleteProcessDefinition",
+    responses = {
+      @ApiResponse(
+          responseCode = "200",
+          description = "",
+          content = @Content(
+              mediaType = "application/json",
+              schema = @Schema(
+                  implementation = String.class,
+                  type = "String")
+          )
+      )
+    }
+  )
+  
+  public ResponseEntity<Map<String, ?>> deleteProcessDefinition(
+    @PathVariable(value = "processId") String processId)
+  {
+
+      LOGGER.debug("Operation started");
+
+      final var command = new DeleteProcessDefinitionCommand(processId);
+
+       ResponseEntity<Map<String, ?>> response = commandBus.send(command);
+
+       LOGGER.debug("Operation finished");
+
+        return ResponseEntity.status(response.getStatusCode())
+              .headers(response.getHeaders())
+              .body(response.getBody());
+  }
+
+  @PatchMapping(
+    value = "process-definitions/{processId}/restore"
+  )
+  @Operation(
+    summary = "PATCH method to handle operations for restoreProcessDefinition",
+    description = "PATCH method to handle operations for restoreProcessDefinition",
+    responses = {
+      @ApiResponse(
+          responseCode = "200",
+          description = "",
+          content = @Content(
+              mediaType = "application/json",
+              schema = @Schema(
+                  implementation = String.class,
+                  type = "String")
+          )
+      )
+    }
+  )
+  
+  public ResponseEntity<Map<String, ?>> restoreProcessDefinition(
+    @PathVariable(value = "processId") String processId)
+  {
+
+      LOGGER.debug("Operation started");
+
+      final var command = new RestoreProcessDefinitionCommand(processId);
+
+       ResponseEntity<Map<String, ?>> response = commandBus.send(command);
 
        LOGGER.debug("Operation finished");
 

@@ -19,7 +19,8 @@ public enum ProcessDefinitionState implements IgrpEnum<String> {
     DEPRECATED("DEPRECATED", "Obsoleto"),
     ARCHIVED("ARCHIVED", "Arquivado"),
     DISABLED("DISABLED", "Temporariamente desativado."),
-    ERROR("ERROR", "Erro no parsing")
+    ERROR("ERROR", "Erro no parsing"),
+    DELETED("DELETED", "Eliminado")
   ;
 
   private final String code;

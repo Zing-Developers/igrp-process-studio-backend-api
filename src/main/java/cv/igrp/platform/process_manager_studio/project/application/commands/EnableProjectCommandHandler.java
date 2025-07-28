@@ -2,6 +2,9 @@ package cv.igrp.platform.process_manager_studio.project.application.commands;
 
 import cv.igrp.framework.core.domain.CommandHandler;
 import cv.igrp.framework.stereotype.IgrpCommandHandler;
+import cv.igrp.platform.process_manager_studio.project.domain.repository.ProjectRepository;
+import cv.igrp.platform.process_manager_studio.shared.domain.exceptions.IgrpResponseStatusException;
+import cv.igrp.platform.process_manager_studio.shared.domain.valueobject.ProjectId;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import org.slf4j.Logger;
@@ -14,14 +17,23 @@ public class EnableProjectCommandHandler implements CommandHandler<EnableProject
 
    private static final Logger LOGGER = LoggerFactory.getLogger(EnableProjectCommandHandler.class);
 
-   public EnableProjectCommandHandler() {
+  private final ProjectRepository projectRepository;
+   public EnableProjectCommandHandler(ProjectRepository projectRepository) {
 
+     this.projectRepository = projectRepository;
    }
 
    @IgrpCommandHandler
    public ResponseEntity<Map<String, ?>> handle(EnableProjectCommand command) {
-      // TODO: Implement the command handling logic here
-      return null;
+     var projectId = ProjectId.of(command.getProjectId());
+
+     var project = projectRepository.findById(projectId)
+         .orElseThrow(() -> IgrpResponseStatusException.notFound("Project not found with id: " + projectId.getIdentifier().getValue()));
+
+     project.enable();
+     projectRepository.save(project);
+
+     return ResponseEntity.ok(Map.of("message", "Project enabled successfully."));
    }
 
 }
