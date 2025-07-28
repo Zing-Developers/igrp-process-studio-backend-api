@@ -43,8 +43,12 @@ public interface ProcessDefinitionEntityRepository extends
   @Query("SELECT MAX(pd.version) FROM ProcessDefinitionEntity pd WHERE pd.processKey = :processKey")
   Optional<Integer> findLatestVersionByProcessKey(String processKey);
 
-  @Query("SELECT MAX(pd.version) FROM ProcessDefinitionEntity pd " +
+  /*@Query("SELECT MAX(pd.version) FROM ProcessDefinitionEntity pd " +
       "WHERE pd.processKey = :processKey AND pd.state = :state")
+  Optional<Integer> findLatestPublishedVersionByProcessKey(@Param("processKey") String processKey, @Param("state") ProcessDefinitionState state);*/
+
+  @Query("SELECT MAX(pd.version) FROM ProcessDefinitionEntity pd " +
+      "WHERE pd.processKey = :processKey AND pd.state = :state and pd.isLatest=true")
   Optional<Integer> findLatestPublishedVersionByProcessKey(@Param("processKey") String processKey, @Param("state") ProcessDefinitionState state);
 
 
