@@ -25,6 +25,14 @@ public class ProcessDefinitionClientConfig {
   @Value("${igrp.process.engine.base-url}")
   private String processEngineBaseUrl;
 
+  @Value("${igrp.process.engine.use-real-sdk:false}")
+  private boolean useRealSdk;
+
+  private final ProcessDefinitionRepository processDefinitionRepository;
+
+  public ProcessDefinitionClientConfig(ProcessDefinitionRepository processDefinitionRepository) {
+    this.processDefinitionRepository = processDefinitionRepository;
+  }
   /**
    * This method creates and configures an instance of ProcessDefinitionClient.
    * Spring will call this method and manage the returned object.
@@ -34,21 +42,29 @@ public class ProcessDefinitionClientConfig {
    * @param objectMapper Spring will automatically inject the default ObjectMapper bean.
    * @return A ready-to-use instance of ProcessDefinitionClient.
    */
+
   @Bean
+  @Primary
   public IProcessDefinitionAdapter processDefinitionAdapter(ObjectMapper objectMapper) {
+    if (useRealSdk) {
+      log.info("==========================================================");
+      log.info("=== Real SDK enabled ===");
+      log.info("=== URL processEngineBaseUrl: {} ===", processEngineBaseUrl);
+      log.info("==========================================================");
 
-    log.info("==========================================================");
-    log.info("=== Real SDK enabled ===");
-    log.info("=== URL processEngineBaseUrl: {} ===", processEngineBaseUrl);
-    log.info("==========================================================");
+      return ProcessDefinitionClient.builder()
+          .baseUrl(processEngineBaseUrl)
+          .objectMapper(objectMapper)
+          .httpClient(HttpClient.newHttpClient())
+          .build();
+    } else {
+      log.info("==========================================================");
+      log.info("=== MOCK SDK enabled ===");
+      log.info("==========================================================");
 
-    return ProcessDefinitionClient.builder()
-        .baseUrl(processEngineBaseUrl)
-        .objectMapper(objectMapper) // Reuse the ObjectMapper already configured by Spring.
-        .httpClient(HttpClient.newHttpClient()) // Use Java's default HTTP client.
-        .build();
+      return new MockProcessDefinitionClient(processDefinitionRepository);
+    }
   }
-
   /**
    * It’s good practice to ensure that Spring's ObjectMapper is configured
    * to handle Java 8 date and time types (like LocalDateTime),
