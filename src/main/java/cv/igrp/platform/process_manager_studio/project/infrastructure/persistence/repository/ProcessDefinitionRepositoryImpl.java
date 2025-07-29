@@ -52,6 +52,12 @@ public class ProcessDefinitionRepositoryImpl implements ProcessDefinitionReposit
         .map(processDefinitionMapper::toDomain);
   }
 
+  @Override
+  public Optional<ProcessDefinition> findLastestByProcessKey(String processKey) {
+    return processDefinitionEntityRepository.findLatestPublishedByProcessKey(processKey, ProcessDefinitionState.PUBLISHED)
+        .map(processDefinitionMapper::toDomain);
+  }
+
   @Transactional(readOnly = true)
   @Override
   public List<ProcessDefinition> findAll() {

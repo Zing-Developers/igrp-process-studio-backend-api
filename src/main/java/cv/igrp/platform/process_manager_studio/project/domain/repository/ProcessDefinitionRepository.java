@@ -20,6 +20,8 @@ public interface ProcessDefinitionRepository {
 
   Optional<ProcessDefinition> findDraftByProcessKey(String processKey);
 
+  Optional<ProcessDefinition> findLastestByProcessKey(String processKey);
+
   List<ProcessDefinition> findAll();
 
   List<ProcessDefinition> findAll(ProcessDefinitionFilter processDefinitionFilter );
