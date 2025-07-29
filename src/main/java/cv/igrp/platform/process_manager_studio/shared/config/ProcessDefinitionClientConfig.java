@@ -5,15 +5,22 @@ import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import cv.igrp.framework.process.management.integration.core.adapter.IProcessDefinitionAdapter;
 import cv.igrp.framework.process.studio.sdk.client.ProcessDefinitionClient;
+import cv.igrp.platform.process_manager_studio.project.domain.repository.ProcessDefinitionRepository;
+import cv.igrp.platform.process_manager_studio.shared.infrastructure.adapter.MockProcessDefinitionClient;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
+import org.springframework.context.annotation.Profile;
 
 import java.net.http.HttpClient;
 
 @Configuration
-public class ProcessEngineClientConfig {
+public class ProcessDefinitionClientConfig {
+
+  private static final Logger log = LoggerFactory.getLogger(ProcessDefinitionClientConfig.class);
 
   @Value("${igrp.process.engine.base-url}")
   private String processEngineBaseUrl;
@@ -29,6 +36,12 @@ public class ProcessEngineClientConfig {
    */
   @Bean
   public IProcessDefinitionAdapter processDefinitionAdapter(ObjectMapper objectMapper) {
+
+    log.info("==========================================================");
+    log.info("=== Real SDK enabled ===");
+    log.info("=== URL processEngineBaseUrl: {} ===", processEngineBaseUrl);
+    log.info("==========================================================");
+
     return ProcessDefinitionClient.builder()
         .baseUrl(processEngineBaseUrl)
         .objectMapper(objectMapper) // Reuse the ObjectMapper already configured by Spring.
@@ -39,7 +52,7 @@ public class ProcessEngineClientConfig {
   /**
    * It’s good practice to ensure that Spring's ObjectMapper is configured
    * to handle Java 8 date and time types (like LocalDateTime),
-   * which are used by your SDK. If Spring Boot doesn’t already do this for you,
+   * which are used by the SDK.
    * this bean ensures that compatibility.
    */
   @Bean
