@@ -18,6 +18,8 @@ public interface ProcessDefinitionRepository {
 
   boolean existsByKey(String key);
 
+  Optional<ProcessDefinition> findDraftByProcessKey(String processKey);
+
   List<ProcessDefinition> findAll();
 
   List<ProcessDefinition> findAll(ProcessDefinitionFilter processDefinitionFilter );

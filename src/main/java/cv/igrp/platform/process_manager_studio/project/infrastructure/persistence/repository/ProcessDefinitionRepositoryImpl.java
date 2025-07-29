@@ -46,6 +46,12 @@ public class ProcessDefinitionRepositoryImpl implements ProcessDefinitionReposit
     return processDefinitionEntityRepository.existsByProcessKey(key);
   }
 
+  @Override
+  public Optional<ProcessDefinition> findDraftByProcessKey(String processKey) {
+    return processDefinitionEntityRepository.findDraftByProcessKey(processKey, ProcessDefinitionState.DRAFT)
+        .map(processDefinitionMapper::toDomain);
+  }
+
   @Transactional(readOnly = true)
   @Override
   public List<ProcessDefinition> findAll() {

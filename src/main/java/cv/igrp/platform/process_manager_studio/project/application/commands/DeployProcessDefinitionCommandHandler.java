@@ -2,6 +2,7 @@ package cv.igrp.platform.process_manager_studio.project.application.commands;
 
 import cv.igrp.framework.core.domain.CommandHandler;
 import cv.igrp.framework.process.management.integration.core.adapter.IProcessDefinitionAdapter;
+import cv.igrp.framework.process.management.integration.core.model.BpmnSourceType;
 import cv.igrp.framework.process.management.integration.core.model.IgrpProcessDefinitionRepresentation;
 import cv.igrp.framework.process.management.integration.core.model.ProcessDefinitionRepresentation;
 import cv.igrp.framework.stereotype.IgrpCommandHandler;
@@ -144,6 +145,7 @@ public class DeployProcessDefinitionCommandHandler implements CommandHandler<Dep
           .name(process.getName())
           .description(processDefinition.getDescription())
           .bpmnXml(content)
+          .bpmnSourceType(BpmnSourceType.INLINE_XML)
           .build();
 
       LOGGER.info("Attempting to deploy process with key: {}", definitionToDeploy.getKey());

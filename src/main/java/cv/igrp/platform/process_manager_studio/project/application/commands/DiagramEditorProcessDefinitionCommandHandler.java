@@ -55,7 +55,6 @@ public class DiagramEditorProcessDefinitionCommandHandler implements CommandHand
 
   @IgrpCommandHandler
    public ResponseEntity<ProcessDefinitionResponseDTO> handle(DiagramEditorProcessDefinitionCommand command) {
-     //var projectId = ProjectId.of(command.getProjectId());
 
      var contentDto = command.getBpmdiagram().getContent(); // todo, method to clean xml, remove space, and enter space.
 

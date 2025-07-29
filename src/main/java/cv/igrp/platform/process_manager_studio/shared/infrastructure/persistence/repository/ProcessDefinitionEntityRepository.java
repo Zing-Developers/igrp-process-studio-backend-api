@@ -51,5 +51,13 @@ public interface ProcessDefinitionEntityRepository extends
       "WHERE pd.processKey = :processKey AND pd.state = :state and pd.isLatest=true")
   Optional<Integer> findLatestPublishedVersionByProcessKey(@Param("processKey") String processKey, @Param("state") ProcessDefinitionState state);
 
+  @Query("""
+        SELECT p FROM ProcessDefinitionEntity p
+        WHERE p.processKey = :processKey
+          AND p.state = :state
+        ORDER BY p.createdDate DESC
+    """)
+  Optional<ProcessDefinitionEntity> findDraftByProcessKey(@Param("processKey") String processKey, @Param("state") ProcessDefinitionState state);
+
 
 }
