@@ -112,4 +112,9 @@ public class ProjectRepositoryImpl implements ProjectRepository {
   public void delete(ProjectId id) {
    // todo implement later
   }
+
+  @Override
+  public String getApplicationBaseByProjectId(ProjectId projectId) {
+    return projectEntityRepository.findAppCodeById(projectId.getIdentifier().getValue());
+  }
 }

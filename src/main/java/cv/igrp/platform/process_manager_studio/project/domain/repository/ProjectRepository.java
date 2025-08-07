@@ -22,4 +22,6 @@ public interface ProjectRepository {
   Project save(Project project);
 
   void delete(ProjectId id);
+
+  String getApplicationBaseByProjectId(ProjectId projectId);
 }

@@ -40,13 +40,14 @@ public class DeployProcessDefinitionCommandHandler implements CommandHandler<Dep
 
   private static final Logger LOGGER = LoggerFactory.getLogger(DeployProcessDefinitionCommandHandler.class);
 
-
+  private final ProjectRepository projectRepository;;
   private final ProcessDefinitionRepository processDefinitionRepository;
   private final ProcessDefinitionMapper processDefinitionMapper;
 
   private final IProcessDefinitionAdapter processDefinitionAdapter;
 
-  public DeployProcessDefinitionCommandHandler( ProcessDefinitionRepository processDefinitionRepository, ProcessDefinitionMapper processDefinitionMapper, IProcessDefinitionAdapter processDefinitionAdapter) {
+  public DeployProcessDefinitionCommandHandler(ProjectRepository projectRepository, ProcessDefinitionRepository processDefinitionRepository, ProcessDefinitionMapper processDefinitionMapper, IProcessDefinitionAdapter processDefinitionAdapter) {
+    this.projectRepository = projectRepository;
 
     this.processDefinitionRepository = processDefinitionRepository;
     this.processDefinitionMapper = processDefinitionMapper;
@@ -140,12 +141,18 @@ public class DeployProcessDefinitionCommandHandler implements CommandHandler<Dep
         }
       }
 
+      String fileName = processDefinition.getProcessKey().concat(".bpmn20.xml");
+      String applicationBase = projectRepository.getApplicationBaseByProjectId(processDefinition.getProjectId());
+
       IgrpProcessDefinitionRepresentation definitionToDeploy = IgrpProcessDefinitionRepresentation.builder()
+
           .key(processDefinition.getProcessKey())
           .name(process.getName())
           .description(processDefinition.getDescription())
+          .resourceName(fileName)
           .bpmnXml(content)
           .bpmnSourceType(BpmnSourceType.INLINE_XML)
+          .applicationBase(applicationBase)
           .build();
 
       LOGGER.info("Attempting to deploy process with key: {}", definitionToDeploy.getKey());

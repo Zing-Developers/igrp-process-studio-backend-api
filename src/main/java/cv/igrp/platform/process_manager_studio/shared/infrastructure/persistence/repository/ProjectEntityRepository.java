@@ -23,4 +23,7 @@ public interface ProjectEntityRepository extends
 
   boolean existsById(UUID id);
 
+  @Query("SELECT p.appCode FROM ProjectEntity p WHERE p.id = :id")
+  String findAppCodeById(@Param("id") UUID id);
+
 }

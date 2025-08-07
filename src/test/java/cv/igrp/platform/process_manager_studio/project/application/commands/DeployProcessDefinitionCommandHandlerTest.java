@@ -4,6 +4,7 @@ import static org.mockito.Mockito.*;
 import static org.junit.jupiter.api.Assertions.*;
 
 import cv.igrp.framework.process.management.integration.core.adapter.IProcessDefinitionAdapter;
+import cv.igrp.platform.process_manager_studio.project.domain.repository.ProjectRepository;
 import cv.igrp.platform.process_manager_studio.shared.infrastructure.adapter.MockProcessDefinitionClient;
 import cv.igrp.platform.process_manager_studio.project.application.dto.BpmDiagramDTO;
 import cv.igrp.platform.process_manager_studio.project.domain.models.ProcessDefinition;
@@ -33,6 +34,10 @@ public class DeployProcessDefinitionCommandHandlerTest {
   @Mock
   private ProcessDefinitionMapper processDefinitionMapper;
 
+  @Mock
+  private  ProjectRepository projectRepository;;
+
+
   // 2. Declare a variable for the mock client (without @Mock annotation)
   private IProcessDefinitionAdapter mockProcessDefinitionAdapter;
 
@@ -47,9 +52,11 @@ public class DeployProcessDefinitionCommandHandlerTest {
     // 2. Create a new instance of the class under test
     //    Manually inject dependencies via the constructor
     commandHandler = new DeployProcessDefinitionCommandHandler(
+        projectRepository,
         processDefinitionRepository,   // The mock created by Mockito
         processDefinitionMapper,       // The mock created by Mockito
-        mockProcessDefinitionAdapter   // The real instance of our mock client
+        mockProcessDefinitionAdapter // The real instance of our mock client
+
     );
   }
 
