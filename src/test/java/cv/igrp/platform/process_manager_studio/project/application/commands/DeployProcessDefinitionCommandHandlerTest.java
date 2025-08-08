@@ -14,6 +14,7 @@ import cv.igrp.platform.process_manager_studio.shared.application.constants.Proc
 import cv.igrp.platform.process_manager_studio.shared.domain.valueobject.BpmDriagram;
 import cv.igrp.platform.process_manager_studio.shared.domain.valueobject.ProcessDefinitionId;
 import cv.igrp.platform.process_manager_studio.shared.domain.valueobject.ProjectId;
+import cv.igrp.platform.process_manager_studio.shared.infrastructure.bpmn.BpmnProcessReader;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -37,6 +38,8 @@ public class DeployProcessDefinitionCommandHandlerTest {
   @Mock
   private  ProjectRepository projectRepository;;
 
+  @Mock
+  private BpmnProcessReader bpmnProcessReader;
 
   // 2. Declare a variable for the mock client (without @Mock annotation)
   private IProcessDefinitionAdapter mockProcessDefinitionAdapter;
@@ -55,7 +58,8 @@ public class DeployProcessDefinitionCommandHandlerTest {
         projectRepository,
         processDefinitionRepository,   // The mock created by Mockito
         processDefinitionMapper,       // The mock created by Mockito
-        mockProcessDefinitionAdapter // The real instance of our mock client
+        mockProcessDefinitionAdapter, // The real instance of our mock client
+        bpmnProcessReader
 
     );
   }
