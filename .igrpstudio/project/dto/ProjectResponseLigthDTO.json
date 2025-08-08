@@ -76,6 +76,20 @@
       "isEmail": false,
       "isUrl": false,
       "primaryKey": false
+    },
+    {
+      "name": "processDefinitions",
+      "objectType": "dto",
+      "type": "ProcessDefinitionResponseLight",
+      "required": false,
+      "before": false,
+      "after": false,
+      "positive": false,
+      "isEmail": false,
+      "isUrl": false,
+      "primaryKey": false,
+      "collectionType": "list",
+      "module": "project"
     }
   ],
   "id": "sekamzsfe6_copy"

@@ -3,6 +3,7 @@ package cv.igrp.platform.process_manager_studio.project.infrastructure.mappers;
 import cv.igrp.platform.process_manager_studio.project.application.dto.ProcessDefinitionResponseDTO;
 import cv.igrp.platform.process_manager_studio.project.application.dto.ProcessDefinitionResponseLightDTO;
 import cv.igrp.platform.process_manager_studio.project.application.dto.ProjectResponseDTO;
+import cv.igrp.platform.process_manager_studio.project.application.dto.ProjectResponseLigthDTO;
 import cv.igrp.platform.process_manager_studio.project.domain.models.ProcessDefinition;
 import cv.igrp.platform.process_manager_studio.project.domain.models.Project;
 import cv.igrp.platform.process_manager_studio.shared.domain.valueobject.ProjectId;
@@ -98,16 +99,26 @@ public class ProjectMapper {
   }
 
 
-  public ProjectResponseDTO toResponseDTOLight(Project project) {
+  public ProjectResponseLigthDTO toResponseDTOLight(Project project) {
     if (project == null) return null;
 
-    var dto = new ProjectResponseDTO();
+    var dto = new ProjectResponseLigthDTO();
     dto.setProjectId(project.getId().getIdentifier().getValueAsString());
     dto.setCode(project.getCode());
     dto.setName(project.getName());
     dto.setDescription(project.getDescription());
     dto.setActive(project.isActive());
     dto.setAppCode(project.getAppCode());
+
+    if (project.getProcessDefinitions() != null && !project.getProcessDefinitions().isEmpty()) {
+
+      var processDefinitionDTOs = project.getAllProcessAndLastestForProcessKey().stream()
+          .map(pd -> processDefinitionMapper.toResponseDTOLight(pd))
+          .collect(Collectors.toList());
+      dto.setProcessDefinitions(processDefinitionDTOs);
+    } else {
+      dto.setProcessDefinitions(Collections.emptyList());
+    }
 
     return dto;
   }
