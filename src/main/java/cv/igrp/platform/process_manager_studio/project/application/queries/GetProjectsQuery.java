@@ -13,11 +13,11 @@ import lombok.AllArgsConstructor;
 @AllArgsConstructor
 public class GetProjectsQuery implements Query {
 
-  @NotBlank(message = "The field <appCode> is required.")
+  @NotBlank(message = "The field <appCode> is required")
   private String appCode;
-  @NotBlank(message = "The field <pageNumber> is required.")
+  @NotBlank(message = "The field <pageNumber> is required")
   private String pageNumber;
-  @NotBlank(message = "The field <pageSize> is required.")
+  @NotBlank(message = "The field <pageSize> is required")
   private String pageSize;
 
 }

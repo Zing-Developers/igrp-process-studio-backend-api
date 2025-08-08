@@ -13,7 +13,7 @@ import lombok.AllArgsConstructor;
 @AllArgsConstructor
 public class GetProcessDefinitionByIdQuery implements Query {
 
-  @NotBlank(message = "The field <processId> is required.")
+  @NotBlank(message = "The field <processId> is required")
   private String processId;
 
 }

@@ -12,7 +12,7 @@ import lombok.AllArgsConstructor;
 @AllArgsConstructor
 public class RestoreProcessDefinitionCommand implements Command {
 
-  @NotBlank(message = "The field <processId> is required.")
+  @NotBlank(message = "The field <processId> is required")
   private String processId;
 
 }

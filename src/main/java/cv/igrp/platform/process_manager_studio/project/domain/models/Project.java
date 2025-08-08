@@ -126,4 +126,11 @@ public class Project {
         .filter(pd -> !(pd.getState() == ProcessDefinitionState.PUBLISHED && !pd.isLatest()))
         .collect(Collectors.toList());
   }
+
+  public List<ProcessDefinition> getLatestPublishedProcesses() {
+    return processDefinitions.stream()
+        .filter(pd -> pd.getState() == ProcessDefinitionState.PUBLISHED && pd.isLatest())
+        .collect(Collectors.toList());
+  }
+
 }

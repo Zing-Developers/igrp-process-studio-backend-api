@@ -14,7 +14,7 @@ public class DiagramEditorProcessDefinitionCommand implements Command {
 
   
   private BpmDiagramDTO bpmdiagram;
-  @NotBlank(message = "The field <processId> is required.")
+  @NotBlank(message = "The field <processId> is required")
   private String processId;
 
 }

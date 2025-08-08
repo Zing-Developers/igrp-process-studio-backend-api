@@ -12,7 +12,7 @@ import lombok.AllArgsConstructor;
 @AllArgsConstructor
 public class EnableProjectCommand implements Command {
 
-  @NotBlank(message = "The field <projectId> is required.")
+  @NotBlank(message = "The field <projectId> is required")
   private String projectId;
 
 }

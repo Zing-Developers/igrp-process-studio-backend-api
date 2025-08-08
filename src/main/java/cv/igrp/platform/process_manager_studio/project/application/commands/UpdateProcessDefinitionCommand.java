@@ -14,7 +14,7 @@ public class UpdateProcessDefinitionCommand implements Command {
 
   
   private ProcessDefinitionRequestDTO processdefinitionrequest;
-  @NotBlank(message = "The field <processId> is required.")
+  @NotBlank(message = "The field <processId> is required")
   private String processId;
 
 }

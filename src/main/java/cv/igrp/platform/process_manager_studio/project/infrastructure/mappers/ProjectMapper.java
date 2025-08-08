@@ -98,6 +98,30 @@ public class ProjectMapper {
     return dto;
   }
 
+  public ProjectResponseDTO toResponseDTOWithLatestProcessDeployed(Project project) {
+    if (project == null) return null;
+
+    var dto = new ProjectResponseDTO();
+    dto.setProjectId(project.getId().getIdentifier().getValueAsString());
+    dto.setCode(project.getCode());
+    dto.setName(project.getName());
+    dto.setDescription(project.getDescription());
+    dto.setActive(project.isActive());
+    dto.setAppCode(project.getAppCode());
+
+    if (project.getProcessDefinitions() != null && !project.getProcessDefinitions().isEmpty()) {
+
+      List<ProcessDefinitionResponseDTO> processDefinitionDTOs = project.getLatestPublishedProcesses().stream()
+          .map(pd -> processDefinitionMapper.toResponseDTO(pd, false))
+          .collect(Collectors.toList());
+      dto.setProcessDefinitions(processDefinitionDTOs);
+    } else {
+      dto.setProcessDefinitions(Collections.emptyList());
+    }
+
+    return dto;
+  }
+
 
   public ProjectResponseLigthDTO toResponseDTOLight(Project project) {
     if (project == null) return null;

@@ -197,6 +197,58 @@
           "isRequired": true
         }
       ]
+    },
+    {
+      "actionName": "getDeployedProcessByProjectId",
+      "path": "{projectId}/deployed-process",
+      "method": "GET",
+      "responses": {
+        "200": {
+          "name": "OK",
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "ProjectResponse",
+                "objectType": "dto",
+                "name": "data",
+                "collectionType": "none",
+                "module": "project"
+              }
+            }
+          }
+        }
+      },
+      "requestParams": [
+        {
+          "type": "string",
+          "name": "processName",
+          "isRequired": false
+        },
+        {
+          "type": "string",
+          "name": "processKey",
+          "isRequired": false
+        },
+        {
+          "type": "string",
+          "name": "pageSize",
+          "value": "0",
+          "isRequired": true
+        },
+        {
+          "type": "string",
+          "name": "pageNumber",
+          "value": "20",
+          "isRequired": true
+        }
+      ],
+      "pathVariables": [
+        {
+          "name": "projectId",
+          "type": "string",
+          "isRequired": true
+        }
+      ]
     }
   ],
   "id": "jmv2dc8dm4-CONTROLLER"

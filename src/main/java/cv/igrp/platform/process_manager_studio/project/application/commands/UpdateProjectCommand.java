@@ -14,7 +14,7 @@ public class UpdateProjectCommand implements Command {
 
   
   private ProjectRequestDTO projectrequest;
-  @NotBlank(message = "The field <projectId> is required.")
+  @NotBlank(message = "The field <projectId> is required")
   private String projectId;
 
 }

@@ -13,7 +13,7 @@ import lombok.AllArgsConstructor;
 @AllArgsConstructor
 public class GetProjectByIdQuery implements Query {
 
-  @NotBlank(message = "The field <projectId> is required.")
+  @NotBlank(message = "The field <projectId> is required")
   private String projectId;
 
 }

@@ -14,7 +14,7 @@ public class SaveProcessDefinitionCommand implements Command {
 
   
   private ProcessDefinitionRequestDTO processdefinitionrequest;
-  @NotBlank(message = "The field <projectId> is required.")
+  @NotBlank(message = "The field <projectId> is required")
   private String projectId;
 
 }
