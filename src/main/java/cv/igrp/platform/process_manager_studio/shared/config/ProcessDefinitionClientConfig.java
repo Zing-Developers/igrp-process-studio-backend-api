@@ -25,8 +25,6 @@ public class ProcessDefinitionClientConfig {
   @Value("${igrp.process.engine.base-url}")
   private String processEngineBaseUrl;
 
-  @Value("${igrp.process.engine.use-real-sdk:false}")
-  private boolean useRealSdk;
 
   private final ProcessDefinitionRepository processDefinitionRepository;
 
@@ -46,7 +44,7 @@ public class ProcessDefinitionClientConfig {
   @Bean
   @Primary
   public IProcessDefinitionAdapter processDefinitionAdapter(ObjectMapper objectMapper) {
-    if (useRealSdk) {
+    if (processEngineBaseUrl!=null && !processEngineBaseUrl.isEmpty()) {
       log.info("==========================================================");
       log.info("=== Real SDK enabled ===");
       log.info("=== URL processEngineBaseUrl: {} ===", processEngineBaseUrl);
