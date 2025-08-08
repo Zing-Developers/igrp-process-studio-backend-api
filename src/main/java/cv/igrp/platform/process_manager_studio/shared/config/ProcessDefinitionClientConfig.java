@@ -46,7 +46,7 @@ public class ProcessDefinitionClientConfig {
   public IProcessDefinitionAdapter processDefinitionAdapter(ObjectMapper objectMapper) {
     if (processEngineBaseUrl!=null && !processEngineBaseUrl.isEmpty()) {
       log.info("==========================================================");
-      log.info("=== Real SDK enabled ===");
+      log.info("=== SDK Client enabled ===");
       log.info("=== URL processEngineBaseUrl: {} ===", processEngineBaseUrl);
       log.info("==========================================================");
 
