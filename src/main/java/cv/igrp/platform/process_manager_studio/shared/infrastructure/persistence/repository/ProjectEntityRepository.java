@@ -1,5 +1,6 @@
 package cv.igrp.platform.process_manager_studio.shared.infrastructure.persistence.repository;
 
+import cv.igrp.platform.process_manager_studio.shared.application.constants.ProcessDefinitionState;
 import cv.igrp.platform.process_manager_studio.shared.infrastructure.persistence.entity.ProjectEntity;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -25,5 +26,33 @@ public interface ProjectEntityRepository extends
 
   @Query("SELECT p.appCode FROM ProjectEntity p WHERE p.id = :id")
   String findAppCodeById(@Param("id") UUID id);
+
+
+  @Query("""
+    SELECT p FROM ProjectEntity p
+    LEFT JOIN FETCH p.processdefinitions pd
+    WHERE p.id = :projectId
+      AND pd.isLatest = true
+      AND pd.state = :state
+""")
+  Optional<ProjectEntity> findByIdWithLatestPublishedProcessDefinitions(
+      @Param("projectId") UUID projectId,
+      @Param("state") ProcessDefinitionState state
+  );
+
+  @Query("""
+    SELECT DISTINCT p FROM ProjectEntity p
+    LEFT JOIN FETCH p.processdefinitions pd
+    WHERE p.id = :projectId
+      AND (pd IS NULL OR NOT (pd.state = :state AND pd.isLatest = false))
+""")
+  Optional<ProjectEntity> findByIdExcludingByStateAndNotLatest(
+      @Param("projectId") UUID projectId,
+      @Param("state") ProcessDefinitionState state
+  );
+
+
+
+
 
 }

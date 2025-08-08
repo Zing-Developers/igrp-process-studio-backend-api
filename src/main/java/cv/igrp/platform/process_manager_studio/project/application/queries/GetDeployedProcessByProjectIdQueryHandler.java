@@ -33,10 +33,13 @@ public class GetDeployedProcessByProjectIdQueryHandler implements QueryHandler<G
   public ResponseEntity<ProjectResponseDTO> handle(GetDeployedProcessByProjectIdQuery query) {
      var projectId = ProjectId.of(query.getProjectId());
 
-     var project = projectRepository.findById(projectId)
+     var processName = query.getProcessName();
+     var processKey = query.getProcessKey();
+
+     var project = projectRepository.findByIdWithLatestDeployedProcess(projectId)
          .orElseThrow(() -> IgrpResponseStatusException.notFound("Project not found with id: " + projectId.getIdentifier().getValue()));
 
-     return ResponseEntity.ok(projectMapper.toResponseDTOWithLatestProcessDeployed(project));
+     return ResponseEntity.ok(projectMapper.toResponseDTO(project));
   }
 
 }

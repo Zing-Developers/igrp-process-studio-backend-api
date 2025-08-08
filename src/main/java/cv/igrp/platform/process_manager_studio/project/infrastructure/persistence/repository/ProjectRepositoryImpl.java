@@ -4,6 +4,7 @@ import cv.igrp.platform.process_manager_studio.project.domain.filter.ProjectFilt
 import cv.igrp.platform.process_manager_studio.project.domain.models.Project;
 import cv.igrp.platform.process_manager_studio.project.domain.repository.ProjectRepository;
 import cv.igrp.platform.process_manager_studio.project.infrastructure.mappers.ProjectMapper;
+import cv.igrp.platform.process_manager_studio.shared.application.constants.ProcessDefinitionState;
 import cv.igrp.platform.process_manager_studio.shared.domain.valueobject.ProjectId;
 import cv.igrp.platform.process_manager_studio.shared.infrastructure.persistence.entity.ProjectEntity;
 import cv.igrp.platform.process_manager_studio.shared.infrastructure.persistence.repository.ProjectEntityRepository;
@@ -29,6 +30,22 @@ public class ProjectRepositoryImpl implements ProjectRepository {
   public Optional<Project> findById(ProjectId id) {
     if (id == null) return Optional.empty();
     return projectEntityRepository.findById(id.getIdentifier().getValue())
+        .map(projectMapper::toDomain);
+  }
+
+  @Transactional(readOnly = true)
+  @Override
+  public Optional<Project> findByIdWithLatestDeployedProcess(ProjectId id) {
+    if (id == null) return Optional.empty();
+    return projectEntityRepository.findByIdWithLatestPublishedProcessDefinitions(id.getIdentifier().getValue(), ProcessDefinitionState.PUBLISHED)
+        .map(projectMapper::toDomain);
+  }
+
+  @Transactional(readOnly = true)
+  @Override
+  public Optional<Project> findByIdWithAllProcessAndLatestDeployedProcess(ProjectId id) {
+    if (id == null) return Optional.empty();
+    return projectEntityRepository.findByIdExcludingByStateAndNotLatest(id.getIdentifier().getValue(), ProcessDefinitionState.PUBLISHED)
         .map(projectMapper::toDomain);
   }
 

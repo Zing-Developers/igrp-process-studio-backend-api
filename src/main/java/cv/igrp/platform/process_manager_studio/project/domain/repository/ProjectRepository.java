@@ -11,6 +11,10 @@ public interface ProjectRepository {
 
   Optional<Project> findById(ProjectId id);
 
+  Optional<Project> findByIdWithLatestDeployedProcess(ProjectId id);
+
+  Optional<Project> findByIdWithAllProcessAndLatestDeployedProcess(ProjectId id);
+
   boolean existsById(ProjectId id);
 
   Optional<Project> findByCode(String code);
