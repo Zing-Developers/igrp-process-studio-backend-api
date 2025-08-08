@@ -232,14 +232,66 @@
         {
           "type": "string",
           "name": "pageSize",
-          "value": "0",
+          "value": "20",
           "isRequired": true
         },
         {
           "type": "string",
           "name": "pageNumber",
-          "value": "20",
+          "value": "0",
           "isRequired": true
+        }
+      ],
+      "pathVariables": [
+        {
+          "name": "projectId",
+          "type": "string",
+          "isRequired": true
+        }
+      ]
+    },
+    {
+      "actionName": "getProcessHistoryByProjectId",
+      "path": "{projectId}/history-process",
+      "method": "GET",
+      "responses": {
+        "200": {
+          "name": "OK",
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "ProjectResponse",
+                "objectType": "dto",
+                "name": "data",
+                "collectionType": "none",
+                "module": "project"
+              }
+            }
+          }
+        }
+      },
+      "requestParams": [
+        {
+          "type": "string",
+          "name": "processName",
+          "isRequired": false
+        },
+        {
+          "type": "string",
+          "name": "processKey",
+          "isRequired": false
+        },
+        {
+          "type": "string",
+          "name": "pageSize",
+          "isRequired": true,
+          "value": "20"
+        },
+        {
+          "type": "string",
+          "name": "pageNumber",
+          "isRequired": true,
+          "value": "0"
         }
       ],
       "pathVariables": [

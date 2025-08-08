@@ -292,13 +292,53 @@ public class ProjectController {
   public ResponseEntity<ProjectResponseDTO> getDeployedProcessByProjectId(
     @RequestParam(value = "processName", required = false) String processName,
     @RequestParam(value = "processKey", required = false) String processKey,
-    @RequestParam(value = "pageSize", defaultValue = "0") String pageSize,
-    @RequestParam(value = "pageNumber", defaultValue = "20") String pageNumber, @PathVariable(value = "projectId") String projectId)
+    @RequestParam(value = "pageSize", defaultValue = "20") String pageSize,
+    @RequestParam(value = "pageNumber", defaultValue = "0") String pageNumber, @PathVariable(value = "projectId") String projectId)
   {
 
       LOGGER.debug("Operation started");
 
       final var query = new GetDeployedProcessByProjectIdQuery(processName, processKey, pageSize, pageNumber, projectId);
+
+      ResponseEntity<ProjectResponseDTO> response = queryBus.handle(query);
+
+      LOGGER.debug("Operation finished");
+
+      return ResponseEntity.status(response.getStatusCode())
+              .headers(response.getHeaders())
+              .body(response.getBody());
+  }
+
+  @GetMapping(
+    value = "{projectId}/history-process"
+  )
+  @Operation(
+    summary = "GET method to handle operations for getProcessHistoryByProjectId",
+    description = "GET method to handle operations for getProcessHistoryByProjectId",
+    responses = {
+      @ApiResponse(
+          responseCode = "200",
+          description = "",
+          content = @Content(
+              mediaType = "application/json",
+              schema = @Schema(
+                  implementation = ProjectResponseDTO.class,
+                  type = "object")
+          )
+      )
+    }
+  )
+  
+  public ResponseEntity<ProjectResponseDTO> getProcessHistoryByProjectId(
+    @RequestParam(value = "processName", required = false) String processName,
+    @RequestParam(value = "processKey", required = false) String processKey,
+    @RequestParam(value = "pageSize", defaultValue = "20") String pageSize,
+    @RequestParam(value = "pageNumber", defaultValue = "0") String pageNumber, @PathVariable(value = "projectId") String projectId)
+  {
+
+      LOGGER.debug("Operation started");
+
+      final var query = new GetProcessHistoryByProjectIdQuery(processName, processKey, pageSize, pageNumber, projectId);
 
       ResponseEntity<ProjectResponseDTO> response = queryBus.handle(query);
 
