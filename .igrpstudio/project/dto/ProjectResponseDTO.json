@@ -80,7 +80,7 @@
     {
       "name": "processDefinitions",
       "objectType": "dto",
-      "type": "ProcessDefinitionResponseLight",
+      "type": "ProcessDefinitionResponse",
       "required": false,
       "before": false,
       "after": false,

@@ -9,7 +9,7 @@ import jakarta.validation.constraints.*;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.AllArgsConstructor;
-import cv.igrp.platform.process_manager_studio.project.application.dto.ProcessDefinitionResponseLightDTO;
+import cv.igrp.platform.process_manager_studio.project.application.dto.ProcessDefinitionResponseDTO;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -19,7 +19,7 @@ import java.util.List;
 
 
 @IgrpDTO
-public class ProjectResponseDTO {
+public class ProjectResponseDTO  {
 
   
   
@@ -41,6 +41,6 @@ public class ProjectResponseDTO {
   private String appCode ;
   
   @Valid
-  private List<ProcessDefinitionResponseLightDTO> processDefinitions = new ArrayList<>();
+  private List<ProcessDefinitionResponseDTO> processDefinitions = new ArrayList<>();
 
 }

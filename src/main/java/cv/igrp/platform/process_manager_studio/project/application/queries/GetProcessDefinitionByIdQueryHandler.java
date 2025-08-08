@@ -40,7 +40,7 @@ public class GetProcessDefinitionByIdQueryHandler implements QueryHandler<GetPro
          .orElseThrow(() ->
              IgrpResponseStatusException.notFound("Process Definition not found with id: " + processDefinitionId.getIdentifier().getValue()));
 
-     var response = processDefinitionMapper.toResponseDTO(processDefinition);
+     var response = processDefinitionMapper.toResponseDTO(processDefinition, true);
      return ResponseEntity.ok(response);
   }
 

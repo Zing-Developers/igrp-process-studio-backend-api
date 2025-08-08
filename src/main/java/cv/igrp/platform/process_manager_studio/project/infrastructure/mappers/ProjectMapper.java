@@ -86,8 +86,8 @@ public class ProjectMapper {
 
     if (project.getProcessDefinitions() != null && !project.getProcessDefinitions().isEmpty()) {
 
-      List<ProcessDefinitionResponseLightDTO> processDefinitionDTOs = project.getAllProcessAndLastestForProcessKey().stream()
-          .map(processDefinitionMapper::toResponseDTOLight)
+      List<ProcessDefinitionResponseDTO> processDefinitionDTOs = project.getAllProcessAndLastestForProcessKey().stream()
+          .map(pd -> processDefinitionMapper.toResponseDTO(pd, false))
           .collect(Collectors.toList());
       dto.setProcessDefinitions(processDefinitionDTOs);
     } else {

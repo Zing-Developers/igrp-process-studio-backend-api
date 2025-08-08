@@ -90,7 +90,7 @@ public class ProcessDefinitionMapper {
     );
   }
 
-  public ProcessDefinitionResponseDTO toResponseDTO(ProcessDefinition processDefinition) {
+  public ProcessDefinitionResponseDTO toResponseDTO(ProcessDefinition processDefinition, boolean showBpmContent) {
 
     DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
 
@@ -103,7 +103,9 @@ public class ProcessDefinitionMapper {
     pdDto.setStatusDesc(processDefinition.getState()!= null ? processDefinition.getState().getDescription() : null);
     pdDto.setDeploymentId(processDefinition.getDeploymentId()!= null ? processDefinition.getDeploymentId() : null);
     pdDto.setDeploymentDate(processDefinition.getDeploymentDate()!= null ? processDefinition.getDeploymentDate().format(formatter) : null);
-    pdDto.setBpmFileContent(processDefinition.getBpmDriagram()!=null ? processDefinition.getBpmDriagram().getContent(): null);
+    if (showBpmContent) {
+      pdDto.setBpmFileContent(processDefinition.getBpmDriagram()!=null ? processDefinition.getBpmDriagram().getContent(): null);
+    }
     pdDto.setTitle(processDefinition.getTitle());
     pdDto.setDescripiton(processDefinition.getDescription());
     pdDto.setProjectId(processDefinition.getProjectId().getIdentifier().getValueAsString());

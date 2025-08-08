@@ -53,7 +53,7 @@ public class SaveProcessDefinitionCommandHandler implements CommandHandler<SaveP
 
     LOGGER.info("Process definition saved with ID: {}", processDefinition.getId().getIdentifier().getValue());
 
-    ProcessDefinitionResponseDTO responseDTO = processDefinitionMapper.toResponseDTO(processDefinition);
+    ProcessDefinitionResponseDTO responseDTO = processDefinitionMapper.toResponseDTO(processDefinition, true);
 
      return ResponseEntity.ok(responseDTO);
    }

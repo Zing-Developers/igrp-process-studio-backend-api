@@ -108,7 +108,7 @@ public class DiagramEditorProcessDefinitionCommandHandler implements CommandHand
 
     processDefinitionRepository.save(processDefinition);
 
-    var response = processDefinitionMapper.toResponseDTO(processDefinition);
+    var response = processDefinitionMapper.toResponseDTO(processDefinition, true);
     return ResponseEntity.ok(response);
 
 
