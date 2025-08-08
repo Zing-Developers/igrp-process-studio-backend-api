@@ -14,7 +14,7 @@ public class DeployProcessDefinitionCommand implements Command {
 
   
   private BpmDiagramDTO bpmdiagram;
-  @NotBlank(message = "The field <processId> is required")
-  private String processId;
+  @NotBlank(message = "The field <processKey> is required")
+  private String processKey;
 
 }

@@ -86,7 +86,7 @@ public class ProcessDefinitionController {
   }
 
   @PostMapping(
-    value = "process-definitions/{processId}/deploy"
+    value = "process-definitions/{processKey}/deploy"
   )
   @Operation(
     summary = "POST method to handle operations for deployProcessDefinition",
@@ -106,12 +106,12 @@ public class ProcessDefinitionController {
   )
   
   public ResponseEntity<ProcessDefinitionResponseDTO> deployProcessDefinition(@Valid @RequestBody BpmDiagramDTO deployProcessDefinitionRequest
-    , @PathVariable(value = "processId") String processId)
+    , @PathVariable(value = "processKey") String processKey)
   {
 
       LOGGER.debug("Operation started");
 
-      final var command = new DeployProcessDefinitionCommand(deployProcessDefinitionRequest, processId);
+      final var command = new DeployProcessDefinitionCommand(deployProcessDefinitionRequest, processKey);
 
        ResponseEntity<ProcessDefinitionResponseDTO> response = commandBus.send(command);
 

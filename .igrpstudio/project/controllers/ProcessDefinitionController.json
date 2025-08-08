@@ -48,7 +48,7 @@
     },
     {
       "actionName": "deployProcessDefinition",
-      "path": "process-definitions/{processId}/deploy",
+      "path": "process-definitions/{processKey}/deploy",
       "method": "POST",
       "requestBody": {
         "content": {
@@ -81,7 +81,7 @@
       },
       "pathVariables": [
         {
-          "name": "processId",
+          "name": "processKey",
           "type": "string",
           "isRequired": true
         }

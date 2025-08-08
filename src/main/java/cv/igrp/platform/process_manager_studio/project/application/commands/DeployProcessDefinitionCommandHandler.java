@@ -49,14 +49,14 @@ public class DeployProcessDefinitionCommandHandler implements CommandHandler<Dep
   @IgrpCommandHandler
   public ResponseEntity<ProcessDefinitionResponseDTO> handle(DeployProcessDefinitionCommand command) {
 
-    var processDefinitionId = ProcessDefinitionId.of(command.getProcessId());
+    var processKey = command.getProcessKey();
 
     var content = command.getBpmdiagram().getContent();
     ParsedProcess parsedProcess = bpmnProcessReader.readFromXml(content);
 
-    var processDefinition = processDefinitionRepository.findById(processDefinitionId)
-        .orElseThrow(() ->
-            IgrpResponseStatusException.notFound("Process Definition not found with id: " + processDefinitionId.getIdentifier().getValue()));
+    var processDefinition = processDefinitionRepository.findDraftByProcessKey(processKey)
+        .or(() -> processDefinitionRepository.findLastestByProcessKey(processKey))
+        .orElseThrow(() ->  IgrpResponseStatusException.badRequest("No process found in draft or published state for the given process key: " + processKey));
 
       // Verifica estado DRAF
 
