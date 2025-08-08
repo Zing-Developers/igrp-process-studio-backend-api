@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Getter
 public class Project {
@@ -115,5 +116,14 @@ public class Project {
   public boolean hasAtLeastOnePublishedProcess() {
     return processDefinitions.stream()
         .anyMatch(pd -> pd.getState() == ProcessDefinitionState.PUBLISHED);
+  }
+
+  public List<ProcessDefinition> getAllProcessAndLastestForProcessKey(){
+    if (this.getProcessDefinitions() == null || this.getProcessDefinitions().isEmpty())
+      return new ArrayList<>();
+
+    return processDefinitions.stream()
+        .filter(pd -> !(pd.getState() == ProcessDefinitionState.PUBLISHED && !pd.isLatest()))
+        .collect(Collectors.toList());
   }
 }
