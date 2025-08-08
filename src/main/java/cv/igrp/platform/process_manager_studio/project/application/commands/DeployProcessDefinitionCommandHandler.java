@@ -65,7 +65,7 @@ public class DeployProcessDefinitionCommandHandler implements CommandHandler<Dep
         processDefinition.cleanArtifacts(); // Limpa artifacts antigos
         processDefinition.updateBpmnContent(BpmDriagram.of(content)); // Atualiza o conteúdo do BPMN
       } else {
-        processDefinition = ProcessDefinition.createToDeploy(processDefinition.getProjectId(), processDefinition.getProcessKey(), BpmDriagram.of(content),
+        processDefinition = ProcessDefinition.create(processDefinition.getProjectId(), processDefinition.getProcessKey(), BpmDriagram.of(content),
             processDefinition.getTitle(), processDefinition.getDescription());
 
         LOGGER.debug("processDefinition new: {}", processDefinition);

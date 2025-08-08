@@ -1,6 +1,7 @@
 package cv.igrp.platform.process_manager_studio.project.domain.models;
 
 import cv.igrp.platform.process_manager_studio.shared.application.constants.ProcessDefinitionState;
+import cv.igrp.platform.process_manager_studio.shared.domain.exceptions.IgrpResponseStatusException;
 import cv.igrp.platform.process_manager_studio.shared.domain.valueobject.ProcessDefinitionId;
 import cv.igrp.platform.process_manager_studio.shared.domain.valueobject.ProjectArtifactId;
 import cv.igrp.platform.process_manager_studio.shared.domain.valueobject.ProjectId;
@@ -50,24 +51,9 @@ public class ProcessDefinition {
 
   public static ProcessDefinition create(ProjectId projectId, String processKey, BpmDriagram bpmDriagram, String title, String description) {
 
-    return new ProcessDefinition(
-        ProcessDefinitionId.generate(),
-        projectId,
-        processKey,
-        null,
-        bpmDriagram,
-        null,
-        new ArrayList<>(),
-        ProcessDefinitionState.DRAFT,
-        null,
-        null,
-        null,
-        null,
-        false
-    );
-  }
-
-  public static ProcessDefinition createToDeploy(ProjectId projectId, String processKey, BpmDriagram bpmDriagram, String title, String description) {
+    if (processKey == null || processKey.isBlank()) {
+      throw IgrpResponseStatusException.badRequest("Process key cannot be null or empty");
+    }
 
     return new ProcessDefinition(
         ProcessDefinitionId.generate(),
@@ -89,6 +75,9 @@ public class ProcessDefinition {
 
   public static ProcessDefinition createNew(ProjectId projectId, String processKey, String title, String description) {
 
+    if (processKey == null || processKey.isBlank()) {
+      throw IgrpResponseStatusException.badRequest("Process key cannot be null or empty");
+    }
     return new ProcessDefinition(
         ProcessDefinitionId.generate(),
         projectId,

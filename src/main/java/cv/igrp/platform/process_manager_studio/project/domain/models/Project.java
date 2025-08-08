@@ -1,6 +1,7 @@
 package cv.igrp.platform.process_manager_studio.project.domain.models;
 
 import cv.igrp.platform.process_manager_studio.shared.application.constants.ProcessDefinitionState;
+import cv.igrp.platform.process_manager_studio.shared.domain.exceptions.IgrpResponseStatusException;
 import cv.igrp.platform.process_manager_studio.shared.domain.valueobject.ProcessDefinitionId;
 import cv.igrp.platform.process_manager_studio.shared.domain.valueobject.ProjectId;
 import lombok.Getter;
@@ -25,7 +26,7 @@ public class Project {
 
   private Project(ProjectId id, String code, String name, String description, boolean active, String appCode, List<ProcessDefinition> processDefinitions) {
     this.id = Objects.requireNonNull(id, "id cannot be null");
-    this.code = code;
+    this.code = Objects.requireNonNull(code, "oode cannot be null");
     this.name = name;
     this.description = description;
     this.active = active;
@@ -40,13 +41,18 @@ public class Project {
 
   public static Project create(String code, String name, String description, String appCode) {
 
+    if (code == null || code.isBlank()) {
+      throw IgrpResponseStatusException.badRequest("Project code cannot be null or empty");
+    }
+    var applicationBase = appCode!= null  && !appCode.isEmpty() ? appCode : code; // todo figure out how to handle appCode properly
+
     return new Project(
         ProjectId.generate(),
         code,
         name,
         description,
         true,
-        appCode,
+        applicationBase,
         new ArrayList<>()
     );
   }
