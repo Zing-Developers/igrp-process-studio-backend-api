@@ -12,6 +12,8 @@ public class ProjectFilter {
   private String description;
   private Boolean active;
   private String appCode;
+  private String processKey;
+  private String processName;
   private Integer pageNumber;
   private Integer pageSize;
 }

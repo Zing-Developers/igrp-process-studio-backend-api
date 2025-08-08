@@ -33,6 +33,11 @@ public class ProjectRepositoryImpl implements ProjectRepository {
         .map(projectMapper::toDomain);
   }
 
+  @Override
+  public Optional<Project> findById(ProjectId id, ProjectFilter filter) {
+    return Optional.empty();
+  }
+
   @Transactional(readOnly = true)
   @Override
   public Optional<Project> findByIdWithLatestDeployedProcess(ProjectId id) {

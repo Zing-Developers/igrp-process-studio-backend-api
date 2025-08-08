@@ -11,6 +11,8 @@ public interface ProjectRepository {
 
   Optional<Project> findById(ProjectId id);
 
+  Optional<Project> findById(ProjectId id, ProjectFilter filter);
+
   Optional<Project> findByIdWithLatestDeployedProcess(ProjectId id);
 
   Optional<Project> findByIdWithAllProcessAndLatestDeployedProcess(ProjectId id);

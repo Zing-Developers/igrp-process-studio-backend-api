@@ -34,6 +34,7 @@ public class GetProcessHistoryByProjectIdQueryHandler implements QueryHandler<Ge
   public ResponseEntity<ProjectResponseDTO> handle(GetProcessHistoryByProjectIdQuery query) {
      var projectId = ProjectId.of(query.getProjectId());
 
+
      var processName = query.getProcessName();
      var processKey = query.getProcessKey();
      var pageSize = Integer.parseInt(query.getPageSize());
