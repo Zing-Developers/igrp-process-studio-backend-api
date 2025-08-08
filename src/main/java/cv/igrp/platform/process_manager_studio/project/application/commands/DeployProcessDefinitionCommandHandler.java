@@ -54,6 +54,18 @@ public class DeployProcessDefinitionCommandHandler implements CommandHandler<Dep
     this.processDefinitionAdapter = processDefinitionAdapter;
   }
 
+
+  private String sanitizeBpmnXml(String rawXml) {
+    try (InputStream is = new ByteArrayInputStream(rawXml.getBytes(StandardCharsets.UTF_8))) {
+      BpmnModelInstance modelInstance = Bpmn.readModelFromStream(is);
+      return Bpmn.convertToString(modelInstance);
+    } catch (Exception e) {
+      LOGGER.error("Failed to sanitize BPMN XML", e);
+      throw IgrpResponseStatusException.badRequest("Invalid BPMN XML: " + e.getMessage());
+    }
+  }
+
+
   @IgrpCommandHandler
   public ResponseEntity<ProcessDefinitionResponseDTO> handle(DeployProcessDefinitionCommand command) {
 
@@ -143,14 +155,14 @@ public class DeployProcessDefinitionCommandHandler implements CommandHandler<Dep
 
       String fileName = processDefinition.getProcessKey().concat(".bpmn20.xml");
       String applicationBase = projectRepository.getApplicationBaseByProjectId(processDefinition.getProjectId());
-
+      String sanitizedContent = sanitizeBpmnXml(content);
       IgrpProcessDefinitionRepresentation definitionToDeploy = IgrpProcessDefinitionRepresentation.builder()
 
           .key(processDefinition.getProcessKey())
           .name(process.getName())
           .description(processDefinition.getDescription())
           .resourceName(fileName)
-          .bpmnXml(content)
+          .bpmnXml(sanitizedContent)
           .bpmnSourceType(BpmnSourceType.INLINE_XML)
           .applicationBase(applicationBase)
           .build();
