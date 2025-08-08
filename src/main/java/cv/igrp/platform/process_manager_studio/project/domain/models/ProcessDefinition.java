@@ -67,8 +67,27 @@ public class ProcessDefinition {
     );
   }
 
+  public static ProcessDefinition createToDeploy(ProjectId projectId, String processKey, BpmDriagram bpmDriagram, String title, String description) {
 
-  public static ProcessDefinition create(ProjectId projectId, String processKey, String title, String description) {
+    return new ProcessDefinition(
+        ProcessDefinitionId.generate(),
+        projectId,
+        processKey,
+        null,
+        bpmDriagram,
+        null,
+        new ArrayList<>(),
+        ProcessDefinitionState.DRAFT,
+        null,
+        null,
+        title,
+        description,
+        false
+    );
+  }
+
+
+  public static ProcessDefinition createNew(ProjectId projectId, String processKey, String title, String description) {
 
     return new ProcessDefinition(
         ProcessDefinitionId.generate(),

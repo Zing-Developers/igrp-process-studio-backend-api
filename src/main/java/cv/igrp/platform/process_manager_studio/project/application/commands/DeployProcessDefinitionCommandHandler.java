@@ -88,7 +88,7 @@ public class DeployProcessDefinitionCommandHandler implements CommandHandler<Dep
         throw IgrpResponseStatusException.badRequest("No process found in BPMN file.");
       }
 
-      // Pega o primeiro processo (assumindo que há só um)
+      //primeiro processo key (assumindo que há só um)
       Process process = processes.iterator().next();
 
       String processKey = process.getId(); // processKey
@@ -104,7 +104,9 @@ public class DeployProcessDefinitionCommandHandler implements CommandHandler<Dep
         processDefinition.cleanArtifacts(); // Limpa artifacts antigos
         processDefinition.updateBpmnContent(BpmDriagram.of(content)); // Atualiza o conteúdo do BPMN
       } else {
-        processDefinition = ProcessDefinition.create(processDefinition.getProjectId(), processDefinition.getProcessKey(), BpmDriagram.of(content));
+        processDefinition = ProcessDefinition.createToDeploy(processDefinition.getProjectId(), processDefinition.getProcessKey(), BpmDriagram.of(content),
+            processDefinition.getTitle(), processDefinition.getDescription());
+
         LOGGER.debug("processDefinition new: {}", processDefinition);
       }
 
