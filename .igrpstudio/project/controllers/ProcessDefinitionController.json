@@ -89,7 +89,7 @@
     },
     {
       "actionName": "diagramEditorProcessDefinition",
-      "path": "process-definitions/{processId}/diagram",
+      "path": "process-definitions/{processKey}/diagram",
       "method": "PUT",
       "requestBody": {
         "content": {
@@ -122,7 +122,7 @@
       },
       "pathVariables": [
         {
-          "name": "processId",
+          "name": "processKey",
           "type": "string",
           "isRequired": true
         }

@@ -48,7 +48,7 @@ public class ProcessDefinition {
   }
 
 
-  public static ProcessDefinition create(ProjectId projectId, String processKey, BpmDriagram bpmDriagram) {
+  public static ProcessDefinition create(ProjectId projectId, String processKey, BpmDriagram bpmDriagram, String title, String description) {
 
     return new ProcessDefinition(
         ProcessDefinitionId.generate(),

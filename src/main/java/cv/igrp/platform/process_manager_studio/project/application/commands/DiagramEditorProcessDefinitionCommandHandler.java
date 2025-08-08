@@ -66,11 +66,11 @@ public class DiagramEditorProcessDefinitionCommandHandler implements CommandHand
 
     LOGGER.debug("content : {}", contentDto);
 
-    var processDefinitionId = ProcessDefinitionId.of(command.getProcessId());
+     var processKey = command.getProcessKey();
 
-    var processDefinition = processDefinitionRepository.findById(processDefinitionId)
-        .orElseThrow(() ->
-            IgrpResponseStatusException.notFound("Process Definition not found with id: " + processDefinitionId.getIdentifier().getValue()));
+    var processDefinition = processDefinitionRepository.findDraftByProcessKey(processKey)
+        .or(() -> processDefinitionRepository.findLastestByProcessKey(processKey))
+        .orElseThrow(() ->  IgrpResponseStatusException.badRequest("No process found in draft or published state for the given process key: " + processKey));
 
     // Verifica estado DRAF
     if (processDefinition.isDraft()) {
@@ -78,7 +78,8 @@ public class DiagramEditorProcessDefinitionCommandHandler implements CommandHand
       processDefinition.cleanArtifacts(); // Limpa artifacts antigos
       processDefinition.updateBpmnContent(BpmDriagram.of(contentDto)); // Atualiza o conteúdo do BPMN
     } else {
-      processDefinition = ProcessDefinition.create(processDefinition.getProjectId(), processDefinition.getProcessKey(), BpmDriagram.of(contentDto));
+      processDefinition = ProcessDefinition.create(processDefinition.getProjectId(), processDefinition.getProcessKey(), BpmDriagram.of(contentDto),
+          processDefinition.getTitle(), processDefinition.getDescription());
       LOGGER.debug("processDefinition new: {}", processDefinition);
     }
 

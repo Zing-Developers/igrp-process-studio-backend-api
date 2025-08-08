@@ -46,12 +46,14 @@ public class ProcessDefinitionRepositoryImpl implements ProcessDefinitionReposit
     return processDefinitionEntityRepository.existsByProcessKey(key);
   }
 
+  @Transactional(readOnly = true)
   @Override
   public Optional<ProcessDefinition> findDraftByProcessKey(String processKey) {
     return processDefinitionEntityRepository.findDraftByProcessKey(processKey, ProcessDefinitionState.DRAFT)
         .map(processDefinitionMapper::toDomain);
   }
 
+  @Transactional(readOnly = true)
   @Override
   public Optional<ProcessDefinition> findLastestByProcessKey(String processKey) {
     return processDefinitionEntityRepository.findLatestPublishedByProcessKey(processKey, ProcessDefinitionState.PUBLISHED)

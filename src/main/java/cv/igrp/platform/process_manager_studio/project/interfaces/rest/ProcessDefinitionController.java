@@ -123,7 +123,7 @@ public class ProcessDefinitionController {
   }
 
   @PutMapping(
-    value = "process-definitions/{processId}/diagram"
+    value = "process-definitions/{processKey}/diagram"
   )
   @Operation(
     summary = "PUT method to handle operations for diagramEditorProcessDefinition",
@@ -143,12 +143,12 @@ public class ProcessDefinitionController {
   )
   
   public ResponseEntity<ProcessDefinitionResponseDTO> diagramEditorProcessDefinition(@Valid @RequestBody BpmDiagramDTO diagramEditorProcessDefinitionRequest
-    , @PathVariable(value = "processId") String processId)
+    , @PathVariable(value = "processKey") String processKey)
   {
 
       LOGGER.debug("Operation started");
 
-      final var command = new DiagramEditorProcessDefinitionCommand(diagramEditorProcessDefinitionRequest, processId);
+      final var command = new DiagramEditorProcessDefinitionCommand(diagramEditorProcessDefinitionRequest, processKey);
 
        ResponseEntity<ProcessDefinitionResponseDTO> response = commandBus.send(command);
 
