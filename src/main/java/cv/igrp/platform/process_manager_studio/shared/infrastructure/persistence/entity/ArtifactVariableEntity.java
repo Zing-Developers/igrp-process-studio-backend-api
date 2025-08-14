@@ -3,14 +3,14 @@
 
 package cv.igrp.platform.process_manager_studio.shared.infrastructure.persistence.entity;
 
-import cv.igrp.platform.process_manager_studio.shared.config.AuditEntity;
 import cv.igrp.framework.stereotype.IgrpEntity;
+import cv.igrp.platform.process_manager_studio.shared.config.AuditEntity;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
 import lombok.*;
 import org.hibernate.envers.Audited;
+
 import java.util.UUID;
-import jakarta.validation.constraints.NotBlank;
-import java.util.List;
 
 @Audited
 @Getter

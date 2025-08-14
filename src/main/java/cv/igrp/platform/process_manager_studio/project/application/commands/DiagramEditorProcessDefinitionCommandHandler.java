@@ -1,8 +1,5 @@
 package cv.igrp.platform.process_manager_studio.project.application.commands;
 
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 import cv.igrp.framework.core.domain.CommandHandler;
 import cv.igrp.framework.stereotype.IgrpCommandHandler;
 import cv.igrp.platform.process_manager_studio.project.application.dto.ProcessDefinitionResponseDTO;
@@ -10,34 +7,15 @@ import cv.igrp.platform.process_manager_studio.project.domain.models.ArtifactVar
 import cv.igrp.platform.process_manager_studio.project.domain.models.ProcessDefinition;
 import cv.igrp.platform.process_manager_studio.project.domain.models.ProjectArtifact;
 import cv.igrp.platform.process_manager_studio.project.domain.repository.ProcessDefinitionRepository;
-import cv.igrp.platform.process_manager_studio.project.domain.repository.ProjectRepository;
 import cv.igrp.platform.process_manager_studio.project.infrastructure.mappers.ProcessDefinitionMapper;
 import cv.igrp.platform.process_manager_studio.shared.domain.exceptions.IgrpResponseStatusException;
-import cv.igrp.platform.process_manager_studio.shared.domain.valueobject.ProcessDefinitionId;
-import cv.igrp.platform.process_manager_studio.shared.domain.valueobject.ProjectId;
 import cv.igrp.platform.process_manager_studio.shared.domain.valueobject.BpmDriagram;
 import cv.igrp.platform.process_manager_studio.shared.infrastructure.bpmn.BpmnProcessReader;
 import cv.igrp.platform.process_manager_studio.shared.infrastructure.bpmn.ParsedProcess;
-import org.camunda.bpm.model.bpmn.Bpmn;
-import org.camunda.bpm.model.bpmn.BpmnModelInstance;
-import org.camunda.bpm.model.bpmn.instance.ExtensionElements;
-import org.camunda.bpm.model.bpmn.instance.Process;
-import org.camunda.bpm.model.bpmn.instance.UserTask;
-import org.camunda.bpm.model.bpmn.instance.camunda.CamundaFormData;
-import org.camunda.bpm.model.bpmn.instance.camunda.CamundaFormField;
-import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Component;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import javax.xml.transform.OutputKeys;
-import javax.xml.transform.Transformer;
-import javax.xml.transform.TransformerFactory;
-import javax.xml.transform.stream.StreamResult;
-import javax.xml.transform.stream.StreamSource;
-import java.io.*;
-import java.nio.charset.StandardCharsets;
-import java.util.Collection;
+import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Component;
 
 @Component
 public class DiagramEditorProcessDefinitionCommandHandler implements CommandHandler<DiagramEditorProcessDefinitionCommand, ResponseEntity<ProcessDefinitionResponseDTO>> {

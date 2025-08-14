@@ -1,19 +1,16 @@
 package cv.igrp.platform.process_manager_studio.project.application.commands;
 
-import static org.mockito.Mockito.*;
-import static org.junit.jupiter.api.Assertions.*;
-
 import cv.igrp.framework.process.management.integration.core.adapter.IProcessDefinitionAdapter;
-import cv.igrp.platform.process_manager_studio.project.domain.repository.ProjectRepository;
-import cv.igrp.platform.process_manager_studio.shared.infrastructure.adapter.MockProcessDefinitionClient;
 import cv.igrp.platform.process_manager_studio.project.application.dto.BpmDiagramDTO;
 import cv.igrp.platform.process_manager_studio.project.domain.models.ProcessDefinition;
 import cv.igrp.platform.process_manager_studio.project.domain.repository.ProcessDefinitionRepository;
+import cv.igrp.platform.process_manager_studio.project.domain.repository.ProjectRepository;
 import cv.igrp.platform.process_manager_studio.project.infrastructure.mappers.ProcessDefinitionMapper;
 import cv.igrp.platform.process_manager_studio.shared.application.constants.ProcessDefinitionState;
 import cv.igrp.platform.process_manager_studio.shared.domain.valueobject.BpmDriagram;
 import cv.igrp.platform.process_manager_studio.shared.domain.valueobject.ProcessDefinitionId;
 import cv.igrp.platform.process_manager_studio.shared.domain.valueobject.ProjectId;
+import cv.igrp.platform.process_manager_studio.shared.infrastructure.adapter.MockProcessDefinitionClient;
 import cv.igrp.platform.process_manager_studio.shared.infrastructure.bpmn.BpmnProcessReader;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -25,6 +22,9 @@ import org.springframework.http.ResponseEntity;
 
 import java.util.ArrayList;
 import java.util.Optional;
+
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 public class DeployProcessDefinitionCommandHandlerTest {

@@ -62,7 +62,7 @@ public class ProjectMapper {
         pdEntities.stream()
             .filter(pdEntity -> pdEntity.getState() != ProcessDefinitionState.DELETED)
             .map(processDefinitionMapper::toDomain)
-            .collect(Collectors.toList());
+            .toList();
 
     return Project.rebuild(
         ProjectId.of(entity.getId()),

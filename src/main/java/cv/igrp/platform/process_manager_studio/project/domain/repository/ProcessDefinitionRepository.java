@@ -5,7 +5,6 @@ import cv.igrp.platform.process_manager_studio.project.domain.models.ProcessDefi
 import cv.igrp.platform.process_manager_studio.shared.application.constants.ProcessDefinitionState;
 import cv.igrp.platform.process_manager_studio.shared.domain.valueobject.ProcessDefinitionId;
 import cv.igrp.platform.process_manager_studio.shared.domain.valueobject.ProjectId;
-import org.springframework.data.repository.query.Param;
 
 import java.util.List;
 import java.util.Optional;

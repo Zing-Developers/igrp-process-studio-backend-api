@@ -2,15 +2,17 @@ package cv.igrp.platform.process_manager_studio.project.domain.models;
 
 import cv.igrp.platform.process_manager_studio.shared.application.constants.ProcessDefinitionState;
 import cv.igrp.platform.process_manager_studio.shared.domain.exceptions.IgrpResponseStatusException;
+import cv.igrp.platform.process_manager_studio.shared.domain.valueobject.BpmDriagram;
 import cv.igrp.platform.process_manager_studio.shared.domain.valueobject.ProcessDefinitionId;
 import cv.igrp.platform.process_manager_studio.shared.domain.valueobject.ProjectArtifactId;
 import cv.igrp.platform.process_manager_studio.shared.domain.valueobject.ProjectId;
-import cv.igrp.platform.process_manager_studio.shared.domain.valueobject.BpmDriagram;
 import lombok.Getter;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
 
 @Getter
 public class ProcessDefinition {

@@ -2,11 +2,14 @@ package cv.igrp.platform.process_manager_studio.project.domain.models;
 
 import cv.igrp.platform.process_manager_studio.shared.domain.exceptions.IgrpResponseStatusException;
 import cv.igrp.platform.process_manager_studio.shared.domain.valueobject.ArtifactVariableId;
-import cv.igrp.platform.process_manager_studio.shared.domain.valueobject.ProjectArtifactId;
 import cv.igrp.platform.process_manager_studio.shared.domain.valueobject.ProcessDefinitionId;
+import cv.igrp.platform.process_manager_studio.shared.domain.valueobject.ProjectArtifactId;
 import lombok.Getter;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
 
 @Getter
 public class ProjectArtifact {

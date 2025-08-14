@@ -3,16 +3,17 @@
 
 package cv.igrp.platform.process_manager_studio.shared.infrastructure.persistence.entity;
 
-import cv.igrp.platform.process_manager_studio.shared.config.AuditEntity;
 import cv.igrp.framework.stereotype.IgrpEntity;
+import cv.igrp.platform.process_manager_studio.shared.config.AuditEntity;
 import jakarta.persistence.*;
-import lombok.*;
-import org.hibernate.envers.Audited;
-import java.util.UUID;
 import jakarta.validation.constraints.NotBlank;
-import java.util.List;
+import lombok.*;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
+import org.hibernate.envers.Audited;
+
+import java.util.List;
+import java.util.UUID;
 
 @Audited
 @Getter

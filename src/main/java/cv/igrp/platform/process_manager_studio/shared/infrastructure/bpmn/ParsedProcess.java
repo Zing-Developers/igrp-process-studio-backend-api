@@ -2,7 +2,6 @@ package cv.igrp.platform.process_manager_studio.shared.infrastructure.bpmn;
 
 import lombok.Getter;
 import lombok.Setter;
-import lombok.ToString;
 
 import java.util.ArrayList;
 import java.util.List;

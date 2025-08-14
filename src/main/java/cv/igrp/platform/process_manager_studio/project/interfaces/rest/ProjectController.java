@@ -3,28 +3,31 @@
 
 package cv.igrp.platform.process_manager_studio.project.interfaces.rest;
 
+import cv.igrp.framework.core.domain.CommandBus;
+import cv.igrp.framework.core.domain.QueryBus;
 import cv.igrp.framework.stereotype.IgrpController;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
-import org.springframework.http.HttpStatus;
-import io.swagger.v3.oas.annotations.tags.Tag;
+import cv.igrp.platform.process_manager_studio.project.application.commands.CreateProjectCommand;
+import cv.igrp.platform.process_manager_studio.project.application.commands.DisableProjectCommand;
+import cv.igrp.platform.process_manager_studio.project.application.commands.EnableProjectCommand;
+import cv.igrp.platform.process_manager_studio.project.application.commands.UpdateProjectCommand;
+import cv.igrp.platform.process_manager_studio.project.application.dto.ProjectRequestDTO;
+import cv.igrp.platform.process_manager_studio.project.application.dto.ProjectResponseDTO;
+import cv.igrp.platform.process_manager_studio.project.application.dto.WrapperListaProjectDTO;
+import cv.igrp.platform.process_manager_studio.project.application.queries.GetDeployedProcessByProjectIdQuery;
+import cv.igrp.platform.process_manager_studio.project.application.queries.GetProcessHistoryByProjectIdQuery;
+import cv.igrp.platform.process_manager_studio.project.application.queries.GetProjectByIdQuery;
+import cv.igrp.platform.process_manager_studio.project.application.queries.GetProjectsQuery;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
-import io.swagger.v3.oas.annotations.media.ExampleObject;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import cv.igrp.framework.core.domain.CommandBus;
-import cv.igrp.framework.core.domain.QueryBus;
-import cv.igrp.platform.process_manager_studio.project.application.commands.*;
-import cv.igrp.platform.process_manager_studio.project.application.queries.*;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
 
-
-import cv.igrp.platform.process_manager_studio.project.application.dto.ProjectRequestDTO;
-import cv.igrp.platform.process_manager_studio.project.application.dto.ProjectResponseDTO;
-import cv.igrp.platform.process_manager_studio.project.application.dto.WrapperListaProjectDTO;
 import java.util.Map;
 
 @IgrpController
@@ -35,11 +38,11 @@ public class ProjectController {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(ProjectController.class);
 
-  
+
   private final CommandBus commandBus;
   private final QueryBus queryBus;
 
-  
+
   public ProjectController(
     CommandBus commandBus, QueryBus queryBus
   ) {
@@ -65,7 +68,7 @@ public class ProjectController {
       )
     }
   )
-  
+
   public ResponseEntity<ProjectResponseDTO> createProject(@Valid @RequestBody ProjectRequestDTO createProjectRequest
     )
   {
@@ -102,7 +105,7 @@ public class ProjectController {
       )
     }
   )
-  
+
   public ResponseEntity<ProjectResponseDTO> getProjectById(
     @PathVariable(value = "projectId") String projectId)
   {
@@ -138,7 +141,7 @@ public class ProjectController {
       )
     }
   )
-  
+
   public ResponseEntity<WrapperListaProjectDTO> getProjects(
     @RequestParam(value = "appCode", required = false) String appCode,
     @RequestParam(value = "pageNumber", defaultValue = "0") String pageNumber,
@@ -177,7 +180,7 @@ public class ProjectController {
       )
     }
   )
-  
+
   public ResponseEntity<Map<String, ?>> enableProject(
     @PathVariable(value = "projectId") String projectId)
   {
@@ -214,7 +217,7 @@ public class ProjectController {
       )
     }
   )
-  
+
   public ResponseEntity<Map<String, ?>> disableProject(
     @PathVariable(value = "projectId") String projectId)
   {
@@ -251,7 +254,7 @@ public class ProjectController {
       )
     }
   )
-  
+
   public ResponseEntity<ProjectResponseDTO> updateProject(@Valid @RequestBody ProjectRequestDTO updateProjectRequest
     , @PathVariable(value = "projectId") String projectId)
   {
@@ -288,7 +291,7 @@ public class ProjectController {
       )
     }
   )
-  
+
   public ResponseEntity<ProjectResponseDTO> getDeployedProcessByProjectId(
     @RequestParam(value = "processName", required = false) String processName,
     @RequestParam(value = "processKey", required = false) String processKey,
@@ -328,7 +331,7 @@ public class ProjectController {
       )
     }
   )
-  
+
   public ResponseEntity<ProjectResponseDTO> getProcessHistoryByProjectId(
     @RequestParam(value = "processName", required = false) String processName,
     @RequestParam(value = "processKey", required = false) String processKey,

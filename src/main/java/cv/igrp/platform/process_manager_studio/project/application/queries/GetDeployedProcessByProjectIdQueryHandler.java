@@ -1,5 +1,7 @@
 package cv.igrp.platform.process_manager_studio.project.application.queries;
 
+import cv.igrp.framework.core.domain.QueryHandler;
+import cv.igrp.framework.stereotype.IgrpQueryHandler;
 import cv.igrp.platform.process_manager_studio.project.application.dto.ProjectResponseDTO;
 import cv.igrp.platform.process_manager_studio.project.domain.repository.ProjectRepository;
 import cv.igrp.platform.process_manager_studio.project.infrastructure.mappers.ProjectMapper;
@@ -7,13 +9,8 @@ import cv.igrp.platform.process_manager_studio.shared.domain.exceptions.IgrpResp
 import cv.igrp.platform.process_manager_studio.shared.domain.valueobject.ProjectId;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import cv.igrp.framework.core.domain.QueryHandler;
-import cv.igrp.framework.stereotype.IgrpQueryHandler;
-import org.springframework.context.event.EventListener;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
-
-import cv.igrp.platform.process_manager_studio.project.application.dto.WrapperListaProjectDTO;
 
 @Component
 public class GetDeployedProcessByProjectIdQueryHandler implements QueryHandler<GetDeployedProcessByProjectIdQuery, ResponseEntity<ProjectResponseDTO>>{

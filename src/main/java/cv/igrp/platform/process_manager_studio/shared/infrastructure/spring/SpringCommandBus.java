@@ -3,12 +3,13 @@ package cv.igrp.platform.process_manager_studio.shared.infrastructure.spring;
 import cv.igrp.framework.core.domain.Command;
 import cv.igrp.framework.core.domain.CommandBus;
 import cv.igrp.framework.core.domain.CommandHandler;
+import org.springframework.stereotype.Component;
+
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import org.springframework.stereotype.Component;
 
 @SuppressWarnings("unchecked")
 @Component

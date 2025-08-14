@@ -5,9 +5,9 @@ import cv.igrp.platform.process_manager_studio.project.application.dto.ProcessDe
 import cv.igrp.platform.process_manager_studio.project.application.dto.ProjectArtifactResponseDTO;
 import cv.igrp.platform.process_manager_studio.project.domain.models.ProcessDefinition;
 import cv.igrp.platform.process_manager_studio.project.domain.models.ProjectArtifact;
+import cv.igrp.platform.process_manager_studio.shared.domain.valueobject.BpmDriagram;
 import cv.igrp.platform.process_manager_studio.shared.domain.valueobject.ProcessDefinitionId;
 import cv.igrp.platform.process_manager_studio.shared.domain.valueobject.ProjectId;
-import cv.igrp.platform.process_manager_studio.shared.domain.valueobject.BpmDriagram;
 import cv.igrp.platform.process_manager_studio.shared.infrastructure.persistence.entity.ProcessDefinitionEntity;
 import cv.igrp.platform.process_manager_studio.shared.infrastructure.persistence.entity.ProjectArtifactEntity;
 import cv.igrp.platform.process_manager_studio.shared.infrastructure.persistence.entity.ProjectEntity;

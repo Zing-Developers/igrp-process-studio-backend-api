@@ -4,15 +4,14 @@
 package cv.igrp.platform.process_manager_studio.project.application.dto;
 
 import cv.igrp.framework.stereotype.IgrpDTO;
-import jakarta.validation.*;
-import jakarta.validation.constraints.*;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
-import cv.igrp.platform.process_manager_studio.project.application.dto.ProjectResponseDTO;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
+
 import java.util.ArrayList;
 import java.util.List;
-import lombok.EqualsAndHashCode;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -21,7 +20,7 @@ import lombok.EqualsAndHashCode;
 @IgrpDTO
 public class WrapperListaProjectDTO extends PageDTO{
 
-  
+
   @Valid
   private List<ProjectResponseDTO> content = new ArrayList<>();
 

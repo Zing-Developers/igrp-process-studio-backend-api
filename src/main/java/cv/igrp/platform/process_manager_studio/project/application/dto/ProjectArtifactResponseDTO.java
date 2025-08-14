@@ -4,12 +4,11 @@
 package cv.igrp.platform.process_manager_studio.project.application.dto;
 
 import cv.igrp.framework.stereotype.IgrpDTO;
-import jakarta.validation.*;
-import jakarta.validation.constraints.*;
+import jakarta.validation.Valid;
+import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.AllArgsConstructor;
-import cv.igrp.platform.process_manager_studio.project.application.dto.ArtifactVariableResponseDTO;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -21,16 +20,16 @@ import java.util.List;
 @IgrpDTO
 public class ProjectArtifactResponseDTO {
 
-  
-  
+
+
   private String projectArtifactId ;
-  
-  
+
+
   private String taskKey ;
-  
-  
+
+
   private String name ;
-  
+
   @Valid
   private List<ArtifactVariableResponseDTO> artifactVariables = new ArrayList<>();
 

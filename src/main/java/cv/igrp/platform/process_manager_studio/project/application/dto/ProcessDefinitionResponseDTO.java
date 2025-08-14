@@ -4,12 +4,11 @@
 package cv.igrp.platform.process_manager_studio.project.application.dto;
 
 import cv.igrp.framework.stereotype.IgrpDTO;
-import jakarta.validation.*;
-import jakarta.validation.constraints.*;
+import jakarta.validation.Valid;
+import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.AllArgsConstructor;
-import cv.igrp.platform.process_manager_studio.project.application.dto.ProjectArtifactResponseDTO;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -21,43 +20,43 @@ import java.util.List;
 @IgrpDTO
 public class ProcessDefinitionResponseDTO {
 
-  
-  
+
+
   private String processDefinitionId ;
-  
-  
+
+
   private String projectId ;
-  
-  
+
+
   private String processKey ;
-  
-  
+
+
   private String bpmnDiagramUrl ;
-  
-  
+
+
   private String bpmFileContent ;
-  
-  
+
+
   private String title ;
-  
-  
+
+
   private String descripiton ;
-  
-  
+
+
   private Integer version ;
-  
-  
+
+
   private String status ;
-  
-  
+
+
   private String statusDesc ;
-  
-  
+
+
   private String deploymentId ;
-  
-  
+
+
   private String deploymentDate ;
-  
+
   @Valid
   private List<ProjectArtifactResponseDTO> projectArtifacts = new ArrayList<>();
 
