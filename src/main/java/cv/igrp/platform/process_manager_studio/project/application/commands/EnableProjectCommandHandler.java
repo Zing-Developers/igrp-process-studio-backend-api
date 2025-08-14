@@ -28,7 +28,7 @@ public class EnableProjectCommandHandler implements CommandHandler<EnableProject
      var projectId = ProjectId.of(command.getProjectId());
 
      var project = projectRepository.findById(projectId)
-         .orElseThrow(() -> IgrpResponseStatusException.notFound("Project not found with id: " + projectId.getIdentifier().getValue()));
+         .orElseThrow(() -> IgrpResponseStatusException.notFound("Project not found with id: " + projectId.identifier().value()));
 
      project.enable();
      projectRepository.save(project);

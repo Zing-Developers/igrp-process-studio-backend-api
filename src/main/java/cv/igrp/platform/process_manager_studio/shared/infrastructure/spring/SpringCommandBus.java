@@ -23,12 +23,10 @@ public class SpringCommandBus implements CommandBus {
       Type[] interfaces = targetClass.getGenericInterfaces();
 
       for (Type iface : interfaces) {
-        if (iface instanceof ParameterizedType) {
-           ParameterizedType pt = (ParameterizedType) iface;
-           Type actualType = pt.getActualTypeArguments()[0];
-           if (actualType instanceof Class<?>) {
-              Class<?> commandType = (Class<?>) actualType;
-              handlers.put((Class<? extends Command>) commandType, handler);
+        if (iface instanceof ParameterizedType pt) {
+          Type actualType = pt.getActualTypeArguments()[0];
+           if (actualType instanceof Class<?> commandType) {
+             handlers.put((Class<? extends Command>) commandType, handler);
            }
         }
       }

@@ -31,7 +31,7 @@ public class ProcessDefinitionRepositoryImpl implements ProcessDefinitionReposit
   @Override
   public Optional<ProcessDefinition> findById(ProcessDefinitionId id) {
     if (id == null) return Optional.empty();
-    return processDefinitionEntityRepository.findById(id.getIdentifier().getValue())
+    return processDefinitionEntityRepository.findById(id.identifier().value())
         .map(processDefinitionMapper::toDomain);
   }
   @Transactional(readOnly = true)
@@ -135,7 +135,7 @@ public class ProcessDefinitionRepositoryImpl implements ProcessDefinitionReposit
   @Override
   public List<ProcessDefinition> findByProjectId(ProjectId projectId) {
     if (projectId == null) return List.of();
-    return processDefinitionEntityRepository.findByProjectId_Id(projectId.getIdentifier().getValue())
+    return processDefinitionEntityRepository.findByProjectId_Id(projectId.identifier().value())
         .stream()
         .map(processDefinitionMapper::toDomain)
         .collect(Collectors.toList());
@@ -144,7 +144,7 @@ public class ProcessDefinitionRepositoryImpl implements ProcessDefinitionReposit
   @Transactional
   @Override
   public void unsetLatestForOtherVersions(String processKey, ProcessDefinitionId excludeId) {
-    processDefinitionEntityRepository.unsetLatestForOtherVersions(processKey, excludeId.getIdentifier().getValue());
+    processDefinitionEntityRepository.unsetLatestForOtherVersions(processKey, excludeId.identifier().value());
   }
 
   @Transactional
@@ -159,7 +159,7 @@ public class ProcessDefinitionRepositoryImpl implements ProcessDefinitionReposit
   @Override
   public void delete(ProcessDefinitionId id) {
 
-    var uuid = id.getIdentifier().getValue();
+    var uuid = id.identifier().value();
 
     var processDefinition = processDefinitionEntityRepository.findById(uuid)
         .orElseThrow(() ->

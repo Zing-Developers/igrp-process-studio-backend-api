@@ -34,9 +34,6 @@ public class ProjectArtifact {
     if (taskKey == null || taskKey.isBlank()) {
       throw IgrpResponseStatusException.badRequest("TaskKey cannot be null or blank");
     }
-    /*if (name == null || name.isBlank()) {
-      throw new IllegalArgumentException("Name cannot be null or blank");
-    }*/
     return new ProjectArtifact(
         ProjectArtifactId.generate(),
         processDefinitionId,
@@ -54,9 +51,6 @@ public class ProjectArtifact {
     if (taskKey == null || taskKey.isBlank()) {
       throw IgrpResponseStatusException.badRequest("TaskKey cannot be null or blank");
     }
-    /*if (name == null || name.isBlank()) {
-      throw new IllegalArgumentException("Name cannot be null or blank");
-    }*/
     this.taskKey = taskKey;
     this.name = name;
   }

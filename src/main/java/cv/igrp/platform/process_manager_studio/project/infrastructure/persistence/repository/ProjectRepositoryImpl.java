@@ -16,7 +16,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Repository
 @RequiredArgsConstructor
@@ -29,7 +28,7 @@ public class ProjectRepositoryImpl implements ProjectRepository {
   @Override
   public Optional<Project> findById(ProjectId id) {
     if (id == null) return Optional.empty();
-    return projectEntityRepository.findById(id.getIdentifier().getValue())
+    return projectEntityRepository.findById(id.identifier().value())
         .map(projectMapper::toDomain);
   }
 
@@ -42,7 +41,7 @@ public class ProjectRepositoryImpl implements ProjectRepository {
   @Override
   public Optional<Project> findByIdWithLatestDeployedProcess(ProjectId id) {
     if (id == null) return Optional.empty();
-    return projectEntityRepository.findByIdWithLatestPublishedProcessDefinitions(id.getIdentifier().getValue(), ProcessDefinitionState.PUBLISHED)
+    return projectEntityRepository.findByIdWithLatestPublishedProcessDefinitions(id.identifier().value(), ProcessDefinitionState.PUBLISHED)
         .map(projectMapper::toDomain);
   }
 
@@ -50,13 +49,13 @@ public class ProjectRepositoryImpl implements ProjectRepository {
   @Override
   public Optional<Project> findByIdWithAllProcessAndLatestDeployedProcess(ProjectId id) {
     if (id == null) return Optional.empty();
-    return projectEntityRepository.findByIdExcludingByStateAndNotLatest(id.getIdentifier().getValue(), ProcessDefinitionState.PUBLISHED)
+    return projectEntityRepository.findByIdExcludingByStateAndNotLatest(id.identifier().value(), ProcessDefinitionState.PUBLISHED)
         .map(projectMapper::toDomain);
   }
 
   @Override
   public boolean existsById(ProjectId id) {
-    return id != null && projectEntityRepository.existsById(id.getIdentifier().getValue());
+    return id != null && projectEntityRepository.existsById(id.identifier().value());
   }
 
   @Transactional(readOnly = true)
@@ -65,14 +64,6 @@ public class ProjectRepositoryImpl implements ProjectRepository {
     if (code == null || code.isBlank()) return Optional.empty();
     return projectEntityRepository.findByCode(code)
         .map(projectMapper::toDomain);
-  }
-
-  @Transactional(readOnly = true)
-  @Override
-  public List<Project> findAll() {
-    return projectEntityRepository.findAll().stream()
-        .map(projectMapper::toDomain)
-        .collect(Collectors.toList());
   }
 
   @Transactional(readOnly = true)
@@ -136,6 +127,6 @@ public class ProjectRepositoryImpl implements ProjectRepository {
 
   @Override
   public String getApplicationBaseByProjectId(ProjectId projectId) {
-    return projectEntityRepository.findAppCodeById(projectId.getIdentifier().getValue());
+    return projectEntityRepository.findAppCodeById(projectId.identifier().value());
   }
 }

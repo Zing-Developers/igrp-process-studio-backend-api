@@ -1,13 +1,8 @@
 package cv.igrp.platform.process_manager_studio.shared.domain.valueobject;
 
-import lombok.Value;
-
 import java.util.UUID;
 
-@Value
-public class ArtifactVariableId {
-
-  Identifier identifier;
+public record ArtifactVariableId(Identifier identifier) {
 
   public static ArtifactVariableId of(String id) {
     return new ArtifactVariableId(Identifier.from(id));

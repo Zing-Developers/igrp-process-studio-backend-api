@@ -1,13 +1,8 @@
 package cv.igrp.platform.process_manager_studio.shared.domain.valueobject;
 
-import lombok.Value;
-
 import java.util.UUID;
 
-@Value
-public class ProjectId {
-
-  Identifier identifier;
+public record ProjectId(Identifier identifier) {
 
   public static ProjectId generate() {
     return new ProjectId(Identifier.generateNew());

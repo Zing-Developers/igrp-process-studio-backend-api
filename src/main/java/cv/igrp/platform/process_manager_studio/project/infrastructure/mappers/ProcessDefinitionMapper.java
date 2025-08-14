@@ -33,11 +33,11 @@ public class ProcessDefinitionMapper {
     //System.out.println("bpm content " +domain.getBpmDriagram()!=null ? domain.getBpmDriagram().getContent() : "sem conteudo");
 
     ProcessDefinitionEntity entity = new ProcessDefinitionEntity();
-    entity.setId(domain.getId().getIdentifier().getValue());
+    entity.setId(domain.getId().identifier().value());
     entity.setProcessKey(domain.getProcessKey());
     entity.setBpmnDiagramUrl(domain.getBpmnDiagramUrl());
     entity.setVersion(domain.getVersion());
-    entity.setBpmFileContent(domain.getBpmDriagram()!=null ? domain.getBpmDriagram().getContent() : null);
+    entity.setBpmFileContent(domain.getBpmDriagram()!=null ? domain.getBpmDriagram().content() : null);
     entity.setState(domain.getState());
     entity.setDeploymentDate(domain.getDeploymentDate());
     entity.setDeploymentId(domain.getDeploymentId());
@@ -45,7 +45,7 @@ public class ProcessDefinitionMapper {
     entity.setDescription(domain.getDescription());
     entity.setLatest(domain.isLatest());
     ProjectEntity pr = new ProjectEntity();
-    pr.setId(domain.getProjectId().getIdentifier().getValue());
+    pr.setId(domain.getProjectId().identifier().value());
     entity.setProjectId(pr);
 
     if (domain.getArtifacts() != null && !domain.getArtifacts().isEmpty()) {
@@ -95,7 +95,7 @@ public class ProcessDefinitionMapper {
     DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
 
     ProcessDefinitionResponseDTO pdDto = new ProcessDefinitionResponseDTO();
-    pdDto.setProcessDefinitionId(processDefinition.getId().getIdentifier().getValueAsString());
+    pdDto.setProcessDefinitionId(processDefinition.getId().identifier().getValueAsString());
     pdDto.setProcessKey(processDefinition.getProcessKey());
     pdDto.setBpmnDiagramUrl(processDefinition.getBpmnDiagramUrl());
     pdDto.setVersion(processDefinition.getVersion());
@@ -104,11 +104,11 @@ public class ProcessDefinitionMapper {
     pdDto.setDeploymentId(processDefinition.getDeploymentId()!= null ? processDefinition.getDeploymentId() : null);
     pdDto.setDeploymentDate(processDefinition.getDeploymentDate()!= null ? processDefinition.getDeploymentDate().format(formatter) : null);
     if (showBpmContent) {
-      pdDto.setBpmFileContent(processDefinition.getBpmDriagram()!=null ? processDefinition.getBpmDriagram().getContent(): null);
+      pdDto.setBpmFileContent(processDefinition.getBpmDriagram()!=null ? processDefinition.getBpmDriagram().content(): null);
     }
     pdDto.setTitle(processDefinition.getTitle());
     pdDto.setDescripiton(processDefinition.getDescription());
-    pdDto.setProjectId(processDefinition.getProjectId().getIdentifier().getValueAsString());
+    pdDto.setProjectId(processDefinition.getProjectId().identifier().getValueAsString());
 
 
     if (processDefinition.getArtifacts() != null && !processDefinition.getArtifacts().isEmpty()) {
@@ -128,7 +128,7 @@ public class ProcessDefinitionMapper {
     DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
 
     var pdDto = new ProcessDefinitionResponseLightDTO();
-    pdDto.setProcessDefinitionId(processDefinition.getId().getIdentifier().getValueAsString());
+    pdDto.setProcessDefinitionId(processDefinition.getId().identifier().getValueAsString());
     pdDto.setProcessKey(processDefinition.getProcessKey());
     pdDto.setBpmnDiagramUrl(processDefinition.getBpmnDiagramUrl());
     pdDto.setVersion(processDefinition.getVersion());
@@ -138,7 +138,7 @@ public class ProcessDefinitionMapper {
     pdDto.setDeploymentDate(processDefinition.getDeploymentDate()!= null ? processDefinition.getDeploymentDate().format(formatter) : null);
     pdDto.setTitle(processDefinition.getTitle());
     pdDto.setDescripiton(processDefinition.getDescription());
-    pdDto.setProjectId(processDefinition.getProjectId().getIdentifier().getValueAsString());
+    pdDto.setProjectId(processDefinition.getProjectId().identifier().getValueAsString());
 
     return pdDto;
   }

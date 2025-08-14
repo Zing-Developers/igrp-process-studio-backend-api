@@ -14,7 +14,6 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
 public class MockProcessDefinitionClient implements IProcessDefinitionAdapter {
 
@@ -45,8 +44,8 @@ public class MockProcessDefinitionClient implements IProcessDefinitionAdapter {
     // 3. A nova versão será 1 a mais que o MÁXIMO entre a BD e a memória.
     int newVersion = Math.max(latestPublishedVersion, currentInMemoryVersion) + 1;
 
-    String deploymentId = "mock-deployment-" + UUID.randomUUID().toString();
-    String processId = "mock-proc-def-" + UUID.randomUUID().toString();
+    String deploymentId = "mock-deployment-" + UUID.randomUUID();
+    String processId = "mock-proc-def-" + UUID.randomUUID();
 
     IgrpProcessDefinitionRepresentation deployedResult = IgrpProcessDefinitionRepresentation.builder()
         .id(processId)
@@ -92,7 +91,7 @@ public class MockProcessDefinitionClient implements IProcessDefinitionAdapter {
     var idsToRemove = deployedProcesses.values().stream()
         .filter(p -> Objects.equals(p.getKey(), processKeyToRemove))
         .map(ProcessDefinitionRepresentation::getDeploymentId)
-        .collect(Collectors.toList());
+        .toList();
 
     // 3. Remove all matching deployments.
     idsToRemove.forEach(deployedProcesses::remove);

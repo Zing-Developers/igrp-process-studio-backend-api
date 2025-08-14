@@ -43,14 +43,14 @@ public class SaveProcessDefinitionCommandHandler implements CommandHandler<SaveP
        }
 
        if (!projectRepository.existsById(projectId)){
-         throw IgrpResponseStatusException.notFound("Project not found with id: " + projectId.getIdentifier().getValue());
+         throw IgrpResponseStatusException.notFound("Project not found with id: " + projectId.identifier().value());
        }
 
      var processDefinition = ProcessDefinition.createNew(projectId, dto.getProcessKey(), dto.getTitle(), dto.getDescription());
 
     processDefinitionRepository.save(processDefinition);
 
-    LOGGER.info("Process definition saved with ID: {}", processDefinition.getId().getIdentifier().getValue());
+    LOGGER.info("Process definition saved with ID: {}", processDefinition.getId().identifier().value());
 
     ProcessDefinitionResponseDTO responseDTO = processDefinitionMapper.toResponseDTO(processDefinition, true);
 

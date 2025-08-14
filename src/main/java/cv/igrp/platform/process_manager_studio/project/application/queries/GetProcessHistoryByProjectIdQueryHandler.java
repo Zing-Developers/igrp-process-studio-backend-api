@@ -38,7 +38,7 @@ public class GetProcessHistoryByProjectIdQueryHandler implements QueryHandler<Ge
      var pageNumber = Integer.parseInt(query.getPageNumber());
 
      var project = projectRepository.findById(projectId)
-         .orElseThrow(() -> IgrpResponseStatusException.notFound("Project not found with id: " + projectId.getIdentifier().getValue()));
+         .orElseThrow(() -> IgrpResponseStatusException.notFound("Project not found with id: " + projectId.identifier().value()));
 
      return ResponseEntity.ok(projectMapper.toResponseDTO(project));
   }

@@ -1,13 +1,8 @@
 package cv.igrp.platform.process_manager_studio.shared.domain.valueobject;
 
-import lombok.Value;
-
 import java.util.UUID;
 
-@Value
-public class ProcessDefinitionId {
-  Identifier identifier;
-
+public record ProcessDefinitionId(Identifier identifier) {
   public static ProcessDefinitionId of(String id) {
     return new ProcessDefinitionId(Identifier.from(id));
   }

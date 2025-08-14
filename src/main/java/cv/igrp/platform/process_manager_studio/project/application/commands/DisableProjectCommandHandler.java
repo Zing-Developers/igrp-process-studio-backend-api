@@ -29,7 +29,7 @@ public class DisableProjectCommandHandler implements CommandHandler<DisableProje
      var projectId = ProjectId.of(command.getProjectId());
 
      var project = projectRepository.findById(projectId)
-         .orElseThrow(() -> IgrpResponseStatusException.notFound("Project not found with id: " + projectId.getIdentifier().getValue()));
+         .orElseThrow(() -> IgrpResponseStatusException.notFound("Project not found with id: " + projectId.identifier().value()));
 
      if (project.hasAtLeastOnePublishedProcess())
        throw IgrpResponseStatusException.conflict("Cannot disable project with published processes.");

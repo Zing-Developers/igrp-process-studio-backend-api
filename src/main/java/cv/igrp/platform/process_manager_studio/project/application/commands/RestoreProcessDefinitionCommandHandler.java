@@ -30,7 +30,7 @@ public class RestoreProcessDefinitionCommandHandler implements CommandHandler<Re
 
      var processDefinition = processDefinitionRepository.findById(processDefinitionId)
          .orElseThrow(() ->
-             IgrpResponseStatusException.notFound("Process Definition not found with id: " + processDefinitionId.getIdentifier().getValue()));
+             IgrpResponseStatusException.notFound("Process Definition not found with id: " + processDefinitionId.identifier().value()));
 
      //todo, when can i restore a process??
 

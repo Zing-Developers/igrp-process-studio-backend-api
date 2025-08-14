@@ -48,12 +48,12 @@ public class ProjectArtifactMapper {
     }
 
     ProjectArtifactEntity entity = new ProjectArtifactEntity();
-    entity.setId(domain.getId().getIdentifier().getValue());
+    entity.setId(domain.getId().identifier().value());
     entity.setTaskKey(domain.getTaskKey());
     entity.setName(domain.getName());
 
     ProcessDefinitionEntity processDefinitionEntity = new ProcessDefinitionEntity();
-    processDefinitionEntity.setId(domain.getProcessDefinitionId().getIdentifier().getValue());
+    processDefinitionEntity.setId(domain.getProcessDefinitionId().identifier().value());
     entity.setProcesDefinitionId(processDefinitionEntity);
 
     if (domain.getVariables() != null && !domain.getVariables().isEmpty()) {
@@ -71,7 +71,7 @@ public class ProjectArtifactMapper {
 
   public ProjectArtifactResponseDTO toResponseDTO(ProjectArtifact projectArtifact) {
     ProjectArtifactResponseDTO paDto = new ProjectArtifactResponseDTO();
-    paDto.setProjectArtifactId(projectArtifact.getId().getIdentifier().getValueAsString());
+    paDto.setProjectArtifactId(projectArtifact.getId().identifier().getValueAsString());
     paDto.setTaskKey(projectArtifact.getTaskKey());
     paDto.setName(projectArtifact.getName());
 

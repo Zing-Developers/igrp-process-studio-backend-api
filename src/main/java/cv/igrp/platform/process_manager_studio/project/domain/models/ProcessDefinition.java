@@ -22,7 +22,7 @@ public class ProcessDefinition {
   private String title;
   private String description;
   private String processKey;
-  private String bpmnDiagramUrl;
+  private final String bpmnDiagramUrl;
   private BpmDriagram bpmDriagram;
   private Integer version;
   private ProcessDefinitionState state;

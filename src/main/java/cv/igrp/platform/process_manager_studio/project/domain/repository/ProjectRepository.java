@@ -21,8 +21,6 @@ public interface ProjectRepository {
 
   Optional<Project> findByCode(String code);
 
-  List<Project> findAll();
-
   List<Project> findAll(ProjectFilter filter);
 
   Project save(Project project);

@@ -42,9 +42,6 @@ public class ArtifactVariable {
       String type,
       String defaultValue,
       boolean isRequired) {
-    /*if (name == null || name.isBlank()) {
-      throw new IllegalArgumentException("Name cannot be null or blank");
-    }*/
     return new ArtifactVariable(
         ArtifactVariableId.generate(),
         artifactId,

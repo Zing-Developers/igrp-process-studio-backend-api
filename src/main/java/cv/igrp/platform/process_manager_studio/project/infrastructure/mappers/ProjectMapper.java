@@ -29,7 +29,7 @@ public class ProjectMapper {
     if (domain == null) return null;
 
     ProjectEntity entity = new ProjectEntity();
-    entity.setId(domain.getId().getIdentifier().getValue());
+    entity.setId(domain.getId().identifier().value());
     entity.setCode(domain.getCode());
     entity.setName(domain.getName());
     entity.setDescription(domain.getDescription());
@@ -79,14 +79,14 @@ public class ProjectMapper {
     if (project == null) return null;
 
     var dto = new ProjectResponseDTO();
-    dto.setProjectId(project.getId().getIdentifier().getValueAsString());
+    dto.setProjectId(project.getId().identifier().getValueAsString());
     dto.setCode(project.getCode());
     dto.setName(project.getName());
     dto.setDescription(project.getDescription());
     dto.setActive(project.isActive());
     dto.setAppCode(project.getAppCode());
 
-    if (project.getProcessDefinitions() != null && !project.getProcessDefinitions().isEmpty()) {
+    if (project.getProcessDefinitions() != null) {
 
       List<ProcessDefinitionResponseDTO> processDefinitionDTOs = project.getAllProcessAndLastestForProcessKey().stream()
           .map(pd -> processDefinitionMapper.toResponseDTO(pd, false))
@@ -103,14 +103,14 @@ public class ProjectMapper {
     if (project == null) return null;
 
     var dto = new ProjectResponseDTO();
-    dto.setProjectId(project.getId().getIdentifier().getValueAsString());
+    dto.setProjectId(project.getId().identifier().getValueAsString());
     dto.setCode(project.getCode());
     dto.setName(project.getName());
     dto.setDescription(project.getDescription());
     dto.setActive(project.isActive());
     dto.setAppCode(project.getAppCode());
 
-    if (project.getProcessDefinitions() != null && !project.getProcessDefinitions().isEmpty()) {
+    if (project.getProcessDefinitions() != null) {
 
       List<ProcessDefinitionResponseDTO> processDefinitionDTOs = project.getLatestPublishedProcesses().stream()
           .map(pd -> processDefinitionMapper.toResponseDTO(pd, false))
@@ -128,17 +128,17 @@ public class ProjectMapper {
     if (project == null) return null;
 
     var dto = new ProjectResponseLigthDTO();
-    dto.setProjectId(project.getId().getIdentifier().getValueAsString());
+    dto.setProjectId(project.getId().identifier().getValueAsString());
     dto.setCode(project.getCode());
     dto.setName(project.getName());
     dto.setDescription(project.getDescription());
     dto.setActive(project.isActive());
     dto.setAppCode(project.getAppCode());
 
-    if (project.getProcessDefinitions() != null && !project.getProcessDefinitions().isEmpty()) {
+    if (project.getProcessDefinitions() != null) {
 
       var processDefinitionDTOs = project.getAllProcessAndLastestForProcessKey().stream()
-          .map(pd -> processDefinitionMapper.toResponseDTOLight(pd))
+          .map(processDefinitionMapper::toResponseDTOLight)
           .collect(Collectors.toList());
       dto.setProcessDefinitions(processDefinitionDTOs);
     } else {

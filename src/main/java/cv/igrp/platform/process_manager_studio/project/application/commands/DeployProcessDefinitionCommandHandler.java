@@ -27,7 +27,7 @@ public class DeployProcessDefinitionCommandHandler implements CommandHandler<Dep
 
   private static final Logger LOGGER = LoggerFactory.getLogger(DeployProcessDefinitionCommandHandler.class);
 
-  private final ProjectRepository projectRepository;;
+  private final ProjectRepository projectRepository;
   private final ProcessDefinitionRepository processDefinitionRepository;
   private final ProcessDefinitionMapper processDefinitionMapper;
 

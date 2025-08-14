@@ -88,7 +88,7 @@ public class DeployProcessDefinitionCommandHandlerTest {
         "</bpmn2:definitions>\n";
 
     BpmDiagramDTO bpmDiagramDTO = new BpmDiagramDTO(bpmnContent);
-    var command = new DeployProcessDefinitionCommand(bpmDiagramDTO, processId.getIdentifier().getValue().toString());
+    var command = new DeployProcessDefinitionCommand(bpmDiagramDTO, processId.identifier().value().toString());
 
     // 2. Simulate the object that the repository will return
     //    We use `rebuild` to simulate loading an object that ALREADY EXISTS in the database

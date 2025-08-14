@@ -32,7 +32,7 @@ public class GetProjectByIdQueryHandler implements QueryHandler<GetProjectByIdQu
     var projectId = ProjectId.of(query.getProjectId());
 
     var project = projectRepository.findByIdWithAllProcessAndLatestDeployedProcess(projectId)
-        .orElseThrow(() -> IgrpResponseStatusException.notFound("Project not found with id: " + projectId.getIdentifier().getValue()));
+        .orElseThrow(() -> IgrpResponseStatusException.notFound("Project not found with id: " + projectId.identifier().value()));
 
     return ResponseEntity.ok(projectMapper.toResponseDTO(project));
 

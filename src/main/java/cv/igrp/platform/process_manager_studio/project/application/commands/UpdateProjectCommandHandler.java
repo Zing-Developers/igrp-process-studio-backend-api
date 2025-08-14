@@ -31,7 +31,7 @@ public class UpdateProjectCommandHandler implements CommandHandler<UpdateProject
      var dto = command.getProjectrequest();
 
      var project = projectRepository.findById(projectId)
-         .orElseThrow(() -> IgrpResponseStatusException.notFound("Project not found with id: " + projectId.getIdentifier().getValue()));
+         .orElseThrow(() -> IgrpResponseStatusException.notFound("Project not found with id: " + projectId.identifier().value()));
 
      project.updateInfo(dto.getCode(), dto.getName(), dto.getDescription(), dto.getAppCode());
 
