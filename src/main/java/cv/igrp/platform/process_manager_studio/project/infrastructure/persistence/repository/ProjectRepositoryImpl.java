@@ -108,8 +108,6 @@ public class ProjectRepositoryImpl implements ProjectRepository {
             cb.equal(cb.lower(root.get("appCode")), filter.getAppCode()));
       }
 
-      cb.and(predicates, cb.notEqual(root.get("state"), ProcessDefinitionState.DELETED));
-
       return cb.and(predicates, cb.isTrue(root.get("active")));
     };
 

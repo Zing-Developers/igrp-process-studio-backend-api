@@ -1,11 +1,11 @@
 package cv.igrp.platform.process_manager_studio.project.infrastructure.mappers;
 
 import cv.igrp.platform.process_manager_studio.project.application.dto.ProcessDefinitionResponseDTO;
-import cv.igrp.platform.process_manager_studio.project.application.dto.ProcessDefinitionResponseLightDTO;
 import cv.igrp.platform.process_manager_studio.project.application.dto.ProjectResponseDTO;
 import cv.igrp.platform.process_manager_studio.project.application.dto.ProjectResponseLigthDTO;
 import cv.igrp.platform.process_manager_studio.project.domain.models.ProcessDefinition;
 import cv.igrp.platform.process_manager_studio.project.domain.models.Project;
+import cv.igrp.platform.process_manager_studio.shared.application.constants.ProcessDefinitionState;
 import cv.igrp.platform.process_manager_studio.shared.domain.valueobject.ProjectId;
 import cv.igrp.platform.process_manager_studio.shared.infrastructure.persistence.entity.ProcessDefinitionEntity;
 import cv.igrp.platform.process_manager_studio.shared.infrastructure.persistence.entity.ProjectEntity;
@@ -52,16 +52,17 @@ public class ProjectMapper {
   }
 
   public Project toDomain(ProjectEntity entity) {
+
     if (entity == null) return null;
 
-    List<ProcessDefinitionEntity> pdEntities = entity.getProcessdefinitions();
-    List<ProcessDefinition> processDefinitions = Collections.emptyList();
+    var pdEntities = entity.getProcessdefinitions();
 
-    if (pdEntities != null && !pdEntities.isEmpty()) {
-      processDefinitions = pdEntities.stream()
-          .map(processDefinitionMapper::toDomain)
-          .collect(Collectors.toList());
-    }
+    List<ProcessDefinition> processDefinitions = pdEntities == null ?
+        List.of() :
+        pdEntities.stream()
+            .filter(pdEntity -> pdEntity.getState() != ProcessDefinitionState.DELETED)
+            .map(processDefinitionMapper::toDomain)
+            .collect(Collectors.toList());
 
     return Project.rebuild(
         ProjectId.of(entity.getId()),
@@ -146,8 +147,6 @@ public class ProjectMapper {
 
     return dto;
   }
-
-
 
 
 }
