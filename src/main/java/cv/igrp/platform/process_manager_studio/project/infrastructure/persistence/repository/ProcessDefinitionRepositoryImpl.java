@@ -34,6 +34,7 @@ public class ProcessDefinitionRepositoryImpl implements ProcessDefinitionReposit
     return processDefinitionEntityRepository.findById(id.identifier().value())
         .map(processDefinitionMapper::toDomain);
   }
+
   @Transactional(readOnly = true)
   @Override
   public Optional<ProcessDefinition> findByKey(String key) {
@@ -150,7 +151,8 @@ public class ProcessDefinitionRepositoryImpl implements ProcessDefinitionReposit
   @Transactional
   @Override
   public ProcessDefinition save(ProcessDefinition processDefinition) {
-    if (processDefinition == null) throw new IllegalArgumentException("processDefinition cannot be null");
+    if (processDefinition == null)
+      throw new IllegalArgumentException("processDefinition cannot be null");
     var entity = processDefinitionMapper.toEntity(processDefinition);
     var savedEntity = processDefinitionEntityRepository.save(entity);
     return processDefinitionMapper.toDomain(savedEntity);
@@ -164,6 +166,9 @@ public class ProcessDefinitionRepositoryImpl implements ProcessDefinitionReposit
     var processDefinition = processDefinitionEntityRepository.findById(uuid)
         .orElseThrow(() ->
             IgrpResponseStatusException.notFound("Process Definition not found with id: " + id));
+
+    if (processDefinition.getState() != ProcessDefinitionState.DRAFT)
+      throw IgrpResponseStatusException.badRequest("Can not delete a process definition that is not a DRAFT");
 
     processDefinition.setState(ProcessDefinitionState.DELETED);
 
