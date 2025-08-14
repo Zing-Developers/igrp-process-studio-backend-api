@@ -5,6 +5,7 @@ import cv.igrp.platform.process_manager_studio.project.domain.models.ProcessDefi
 import cv.igrp.platform.process_manager_studio.project.domain.repository.ProcessDefinitionRepository;
 import cv.igrp.platform.process_manager_studio.project.infrastructure.mappers.ProcessDefinitionMapper;
 import cv.igrp.platform.process_manager_studio.shared.application.constants.ProcessDefinitionState;
+import cv.igrp.platform.process_manager_studio.shared.domain.exceptions.IgrpResponseStatusException;
 import cv.igrp.platform.process_manager_studio.shared.domain.valueobject.ProcessDefinitionId;
 import cv.igrp.platform.process_manager_studio.shared.domain.valueobject.ProjectId;
 import cv.igrp.platform.process_manager_studio.shared.infrastructure.persistence.entity.ProcessDefinitionEntity;
@@ -17,6 +18,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Repository
@@ -157,7 +159,16 @@ public class ProcessDefinitionRepositoryImpl implements ProcessDefinitionReposit
 
   @Override
   public void delete(ProcessDefinitionId id) {
-    // todo: Implement delete later
+
+    var uuid = id.getIdentifier().getValue();
+
+    var processDefinition = processDefinitionEntityRepository.findById(uuid)
+        .orElseThrow(() ->
+            IgrpResponseStatusException.notFound("Process Definition not found with id: " + id));
+
+    processDefinition.setState(ProcessDefinitionState.DELETED);
+
+    processDefinitionEntityRepository.save(processDefinition);
   }
 
   @Override
