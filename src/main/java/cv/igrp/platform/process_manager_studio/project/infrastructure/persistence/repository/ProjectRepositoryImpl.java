@@ -78,12 +78,14 @@ public class ProjectRepositoryImpl implements ProjectRepository {
   @Transactional(readOnly = true)
   @Override
   public List<Project> findAll(ProjectFilter filter) {
+
     var pageable = PageRequest.of(
         filter.getPageNumber() != null ? filter.getPageNumber() : 0,
         filter.getPageSize() != null ? filter.getPageSize() : 20
     );
 
     Specification<ProjectEntity> spec = (root, query, cb) -> {
+
       var predicates = cb.conjunction();
 
       if (filter.getCode() != null && !filter.getCode().isBlank()) {
@@ -106,10 +108,9 @@ public class ProjectRepositoryImpl implements ProjectRepository {
             cb.equal(cb.lower(root.get("appCode")), filter.getAppCode()));
       }
 
-      // only filter active projects
-      predicates = cb.and(predicates, cb.isTrue(root.get("active")));
+      cb.and(predicates, cb.notEqual(root.get("state"), ProcessDefinitionState.DELETED));
 
-      return predicates;
+      return cb.and(predicates, cb.isTrue(root.get("active")));
     };
 
     var page = projectEntityRepository.findAll(spec, pageable);
