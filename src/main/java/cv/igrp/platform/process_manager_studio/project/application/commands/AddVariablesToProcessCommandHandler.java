@@ -49,7 +49,7 @@ public class AddVariablesToProcessCommandHandler implements CommandHandler<AddVa
        List<ProcessVariable> incomingVariables = processVariableRequestDTOList.stream()
            .map(dto ->
                ProcessVariable.create(
-               null,
+               dto.getId() != null ? ProcessVariableId.of(dto.getId()) : null ,
                dto.getName(),
                dto.getType(),
                dto.getDefaultValue(),
