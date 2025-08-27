@@ -5,11 +5,13 @@ import cv.igrp.platform.process_manager_studio.project.application.dto.ProcessDe
 import cv.igrp.platform.process_manager_studio.project.application.dto.ProjectArtifactResponseDTO;
 import cv.igrp.platform.process_manager_studio.project.domain.models.ProcessDefinition;
 import cv.igrp.platform.process_manager_studio.project.domain.models.ProcessArtifact;
+import cv.igrp.platform.process_manager_studio.project.domain.models.ProcessVariable;
 import cv.igrp.platform.process_manager_studio.shared.domain.valueobject.BpmDriagram;
 import cv.igrp.platform.process_manager_studio.shared.domain.valueobject.ProcessDefinitionId;
 import cv.igrp.platform.process_manager_studio.shared.domain.valueobject.ProjectId;
 import cv.igrp.platform.process_manager_studio.shared.infrastructure.persistence.entity.ProcessDefinitionEntity;
 import cv.igrp.platform.process_manager_studio.shared.infrastructure.persistence.entity.ProcessArtifactEntity;
+import cv.igrp.platform.process_manager_studio.shared.infrastructure.persistence.entity.ProcessVariableEntity;
 import cv.igrp.platform.process_manager_studio.shared.infrastructure.persistence.entity.ProjectEntity;
 import org.springframework.stereotype.Component;
 
@@ -22,9 +24,11 @@ import java.util.stream.Collectors;
 public class ProcessDefinitionMapper {
 
   private final ProcessArtifactMapper projectArtifactMapper;
+  private final ProcessVariableMapper processVariableMapper;
 
-  public ProcessDefinitionMapper(ProcessArtifactMapper projectArtifactMapper) {
+  public ProcessDefinitionMapper(ProcessArtifactMapper projectArtifactMapper, ProcessVariableMapper processVariableMapper) {
     this.projectArtifactMapper = projectArtifactMapper;
+    this.processVariableMapper = processVariableMapper;
   }
 
   public ProcessDefinitionEntity toEntity(ProcessDefinition domain) {
@@ -48,6 +52,7 @@ public class ProcessDefinitionMapper {
     pr.setId(domain.getProjectId().identifier().value());
     entity.setProjectId(pr);
 
+     //process artifacts
     if (domain.getArtifacts() != null && !domain.getArtifacts().isEmpty()) {
       List<ProcessArtifactEntity> artifactEntities = domain.getArtifacts().stream()
           .map(pa -> {
@@ -61,6 +66,20 @@ public class ProcessDefinitionMapper {
       entity.setArtifacts(Collections.emptyList());
     }
 
+    //process variables
+    if (domain.getProcessVariables() != null && !domain.getProcessVariables().isEmpty()) {
+      List<ProcessVariableEntity> processVariableEntities = domain.getProcessVariables().stream()
+          .map(pv -> {
+            ProcessVariableEntity pvEntity = processVariableMapper.toEntity(pv);
+            pvEntity.setProcesDefinitionId(entity);
+            return pvEntity;
+          })
+          .collect(Collectors.toList());
+      entity.setProcessVariables(processVariableEntities);
+    } else {
+      entity.setProcessVariables(Collections.emptyList());
+    }
+
     return entity;
   }
 
@@ -68,9 +87,14 @@ public class ProcessDefinitionMapper {
     if (entity == null) return null;
 
     List<ProcessArtifactEntity> artifactEntities = entity.getArtifacts() != null ? entity.getArtifacts() : Collections.emptyList();
+    List<ProcessVariableEntity> processVariableEntities = entity.getProcessVariables() != null ? entity.getProcessVariables() : Collections.emptyList();
 
     List<ProcessArtifact> artifacts = artifactEntities.stream()
         .map(projectArtifactMapper::toDomain)
+        .collect(Collectors.toList());
+
+    List<ProcessVariable> processVariables = processVariableEntities.stream()
+        .map(processVariableMapper::toDomain)
         .collect(Collectors.toList());
 
     return ProcessDefinition.rebuild(
@@ -86,7 +110,8 @@ public class ProcessDefinitionMapper {
         entity.getDeploymentId(),
         entity.getTitle(),
         entity.getDescription(),
-        entity.isLatest()
+        entity.isLatest(),
+        processVariables
     );
   }
 

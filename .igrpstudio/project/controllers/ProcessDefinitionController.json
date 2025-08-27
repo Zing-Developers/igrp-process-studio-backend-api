@@ -313,6 +313,47 @@
           "isRequired": true
         }
       ]
+    },
+    {
+      "actionName": "addVariablesToProcess",
+      "path": "process-definitions/{processId}/variables",
+      "method": "POST",
+      "requestBody": {
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "ProcessVariableRequest",
+              "collectionType": "none",
+              "name": "data",
+              "objectType": "dto",
+              "module": "project"
+            }
+          }
+        }
+      },
+      "responses": {
+        "200": {
+          "name": "OK",
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "ProcessVariableResponse",
+                "objectType": "dto",
+                "name": "data",
+                "collectionType": "none",
+                "module": "project"
+              }
+            }
+          }
+        }
+      },
+      "pathVariables": [
+        {
+          "name": "processId",
+          "type": "string",
+          "isRequired": true
+        }
+      ]
     }
   ],
   "id": "rq125xn7ri-CONTROLLER"

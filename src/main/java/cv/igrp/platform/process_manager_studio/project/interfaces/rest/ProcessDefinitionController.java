@@ -3,28 +3,32 @@
 
 package cv.igrp.platform.process_manager_studio.project.interfaces.rest;
 
-import cv.igrp.framework.core.domain.CommandBus;
-import cv.igrp.framework.core.domain.QueryBus;
 import cv.igrp.framework.stereotype.IgrpController;
-import cv.igrp.platform.process_manager_studio.project.application.commands.*;
-import cv.igrp.platform.process_manager_studio.project.application.dto.BpmDiagramDTO;
-import cv.igrp.platform.process_manager_studio.project.application.dto.ProcessDefinitionRequestDTO;
-import cv.igrp.platform.process_manager_studio.project.application.dto.ProcessDefinitionResponseDTO;
-import cv.igrp.platform.process_manager_studio.project.application.dto.WrapperListaProcessDefinitionDTO;
-import cv.igrp.platform.process_manager_studio.project.application.queries.GetProcessDefinitionByIdQuery;
-import cv.igrp.platform.process_manager_studio.project.application.queries.GetProcessDefinitionQuery;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.http.HttpStatus;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
-import io.swagger.v3.oas.annotations.tags.Tag;
+import io.swagger.v3.oas.annotations.media.ExampleObject;
 import jakarta.validation.Valid;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import cv.igrp.framework.core.domain.CommandBus;
+import cv.igrp.framework.core.domain.QueryBus;
+import cv.igrp.platform.process_manager_studio.project.application.commands.*;
+import cv.igrp.platform.process_manager_studio.project.application.queries.*;
 
+
+import cv.igrp.platform.process_manager_studio.project.application.dto.ProcessDefinitionRequestDTO;
+import cv.igrp.platform.process_manager_studio.project.application.dto.ProcessDefinitionResponseDTO;
+import cv.igrp.platform.process_manager_studio.project.application.dto.BpmDiagramDTO;
+import cv.igrp.platform.process_manager_studio.project.application.dto.WrapperListaProcessDefinitionDTO;
 import java.util.Map;
+import cv.igrp.platform.process_manager_studio.project.application.dto.ProcessVariableRequestDTO;
+import cv.igrp.platform.process_manager_studio.project.application.dto.ProcessVariableResponseDTO;
 
 @IgrpController
 @RestController
@@ -34,11 +38,11 @@ public class ProcessDefinitionController {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(ProcessDefinitionController.class);
 
-
+  
   private final CommandBus commandBus;
   private final QueryBus queryBus;
 
-
+  
   public ProcessDefinitionController(
     CommandBus commandBus, QueryBus queryBus
   ) {
@@ -65,7 +69,7 @@ public class ProcessDefinitionController {
       )
     }
   )
-
+  
   public ResponseEntity<ProcessDefinitionResponseDTO> saveProcessDefinition(@Valid @RequestBody ProcessDefinitionRequestDTO saveProcessDefinitionRequest
     , @PathVariable(value = "projectId") String projectId)
   {
@@ -102,7 +106,7 @@ public class ProcessDefinitionController {
       )
     }
   )
-
+  
   public ResponseEntity<ProcessDefinitionResponseDTO> deployProcessDefinition(@Valid @RequestBody BpmDiagramDTO deployProcessDefinitionRequest
     , @PathVariable(value = "processKey") String processKey)
   {
@@ -139,7 +143,7 @@ public class ProcessDefinitionController {
       )
     }
   )
-
+  
   public ResponseEntity<ProcessDefinitionResponseDTO> diagramEditorProcessDefinition(@Valid @RequestBody BpmDiagramDTO diagramEditorProcessDefinitionRequest
     , @PathVariable(value = "processKey") String processKey)
   {
@@ -176,7 +180,7 @@ public class ProcessDefinitionController {
       )
     }
   )
-
+  
   public ResponseEntity<ProcessDefinitionResponseDTO> getProcessDefinitionById(
     @PathVariable(value = "processId") String processId)
   {
@@ -213,7 +217,7 @@ public class ProcessDefinitionController {
       )
     }
   )
-
+  
   public ResponseEntity<WrapperListaProcessDefinitionDTO> getProcessDefinition(
     @RequestParam(value = "appCode", required = false) String appCode,
     @RequestParam(value = "processKey", required = false) String processKey,
@@ -257,7 +261,7 @@ public class ProcessDefinitionController {
       )
     }
   )
-
+  
   public ResponseEntity<ProcessDefinitionResponseDTO> updateProcessDefinition(@Valid @RequestBody ProcessDefinitionRequestDTO updateProcessDefinitionRequest
     , @PathVariable(value = "processId") String processId)
   {
@@ -294,7 +298,7 @@ public class ProcessDefinitionController {
       )
     }
   )
-
+  
   public ResponseEntity<Map<String, ?>> deleteProcessDefinition(
     @PathVariable(value = "processId") String processId)
   {
@@ -331,7 +335,7 @@ public class ProcessDefinitionController {
       )
     }
   )
-
+  
   public ResponseEntity<Map<String, ?>> restoreProcessDefinition(
     @PathVariable(value = "processId") String processId)
   {
@@ -341,6 +345,43 @@ public class ProcessDefinitionController {
       final var command = new RestoreProcessDefinitionCommand(processId);
 
        ResponseEntity<Map<String, ?>> response = commandBus.send(command);
+
+       LOGGER.debug("Operation finished");
+
+        return ResponseEntity.status(response.getStatusCode())
+              .headers(response.getHeaders())
+              .body(response.getBody());
+  }
+
+  @PostMapping(
+    value = "process-definitions/{processId}/variables"
+  )
+  @Operation(
+    summary = "POST method to handle operations for addVariablesToProcess",
+    description = "POST method to handle operations for addVariablesToProcess",
+    responses = {
+      @ApiResponse(
+          responseCode = "200",
+          description = "",
+          content = @Content(
+              mediaType = "application/json",
+              schema = @Schema(
+                  implementation = ProcessVariableResponseDTO.class,
+                  type = "object")
+          )
+      )
+    }
+  )
+  
+  public ResponseEntity<ProcessVariableResponseDTO> addVariablesToProcess(@Valid @RequestBody ProcessVariableRequestDTO addVariablesToProcessRequest
+    , @PathVariable(value = "processId") String processId)
+  {
+
+      LOGGER.debug("Operation started");
+
+      final var command = new AddVariablesToProcessCommand(addVariablesToProcessRequest, processId);
+
+       ResponseEntity<ProcessVariableResponseDTO> response = commandBus.send(command);
 
        LOGGER.debug("Operation finished");
 

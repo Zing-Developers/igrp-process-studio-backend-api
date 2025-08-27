@@ -2,7 +2,7 @@ package cv.igrp.platform.process_manager_studio.project.domain.models;
 
 import cv.igrp.platform.process_manager_studio.shared.domain.exceptions.IgrpResponseStatusException;
 import cv.igrp.platform.process_manager_studio.shared.domain.valueobject.ArtifactVariableId;
-import cv.igrp.platform.process_manager_studio.shared.domain.valueobject.ProjectArtifactId;
+import cv.igrp.platform.process_manager_studio.shared.domain.valueobject.ProcessArtifactId;
 import lombok.Getter;
 
 import java.util.Objects;
@@ -11,7 +11,7 @@ import java.util.Objects;
 public class ArtifactVariable {
 
   private final ArtifactVariableId id;
-  private final ProjectArtifactId artifactId;
+  private final ProcessArtifactId artifactId;
   private final String artifactVariableKey;
   private String name;
   private String type;
@@ -20,7 +20,7 @@ public class ArtifactVariable {
 
   private ArtifactVariable(
       ArtifactVariableId id,
-      ProjectArtifactId artifactId,
+      ProcessArtifactId artifactId,
       String artifactVariableKey,
       String name,
       String type,
@@ -36,7 +36,7 @@ public class ArtifactVariable {
   }
 
   public static ArtifactVariable create(
-      ProjectArtifactId artifactId,
+      ProcessArtifactId artifactId,
       String artifactVariableKey,
       String name,
       String type,
@@ -55,7 +55,7 @@ public class ArtifactVariable {
 
   public static ArtifactVariable rebuild(
       ArtifactVariableId id,
-      ProjectArtifactId artifactId,
+      ProcessArtifactId artifactId,
       String artifactVariableKey,
       String name,
       String type,

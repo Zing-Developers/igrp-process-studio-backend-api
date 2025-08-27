@@ -31,50 +31,50 @@ public class ProcessDefinitionEntity extends AuditEntity {
     @Column(name = "id", unique = true, nullable = false)
     private UUID id;
 
-
+  
     @NotBlank(message = "processKey is mandatory")
     @Column(name="process_key", nullable = false)
     private String processKey;
 
-
+  
     @Column(name="title")
     private String title;
 
-
+  
     @Column(name="description")
     private String description;
 
-
+  
     @Column(name="bpmn_diagram_url")
     private String bpmnDiagramUrl;
 
-
+  
     @Lob
     @Column(name="bpm_file_content", columnDefinition="TEXT")
     private String bpmFileContent;
 
-
+  
     @Column(name="version")
     private Integer version;
 
-
+  
     @Column(name="is_latest")
     private boolean isLatest;
 
-
+  
     @Enumerated(EnumType.STRING)
     @Column(name="state")
     private ProcessDefinitionState state;
 
-
+  
     @Column(name="deployment_id")
     private String deploymentId;
 
-
+  
     @Column(name="deployment_date")
     private LocalDateTime deploymentDate;
 
-
+  
 
 
   @OneToMany(mappedBy = "procesDefinitionId", fetch = FetchType.LAZY, cascade = { CascadeType.ALL }, orphanRemoval = true)
@@ -82,10 +82,9 @@ public class ProcessDefinitionEntity extends AuditEntity {
 private List<ProcessArtifactEntity> artifacts;
 
 
-  @OneToMany(mappedBy = "procesDefinitionId", fetch = FetchType.LAZY)
-private List<ProcessVariableEntity> processVariables;
-
-  @ManyToOne(fetch = FetchType.LAZY)
+  @OneToMany(mappedBy = "procesDefinitionId", fetch = FetchType.LAZY, cascade = { CascadeType.ALL }, orphanRemoval = true)
+    @OnDelete(action = OnDeleteAction.SET_NULL)
+private List<ProcessVariableEntity> processVariables;   @ManyToOne(fetch = FetchType.LAZY)
    @JoinColumn(name = "project_id")
    private ProjectEntity projectId;
 

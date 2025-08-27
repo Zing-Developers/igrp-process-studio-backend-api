@@ -4,7 +4,7 @@ import cv.igrp.platform.process_manager_studio.shared.application.constants.Proc
 import cv.igrp.platform.process_manager_studio.shared.domain.exceptions.IgrpResponseStatusException;
 import cv.igrp.platform.process_manager_studio.shared.domain.valueobject.BpmDriagram;
 import cv.igrp.platform.process_manager_studio.shared.domain.valueobject.ProcessDefinitionId;
-import cv.igrp.platform.process_manager_studio.shared.domain.valueobject.ProjectArtifactId;
+import cv.igrp.platform.process_manager_studio.shared.domain.valueobject.ProcessArtifactId;
 import cv.igrp.platform.process_manager_studio.shared.domain.valueobject.ProjectId;
 import lombok.Getter;
 
@@ -32,9 +32,11 @@ public class ProcessDefinition {
 
   private final List<ProcessArtifact> artifacts;
 
+  private List<ProcessVariable> processVariables;
+
   private ProcessDefinition(ProcessDefinitionId id, ProjectId projectId, String processKey, String bpmnDiagramUrl, BpmDriagram bpmDriagram, Integer version,
                             List<ProcessArtifact> artifacts, ProcessDefinitionState state, LocalDateTime deploymentDate, String deploymentId,
-                            String title, String description, boolean isLatest) {
+                            String title, String description, boolean isLatest, List<ProcessVariable> ProcessVariables) {
     this.id = Objects.requireNonNull(id, "id cannot be null");
     this.projectId = Objects.requireNonNull(projectId);
     this.processKey = processKey;
@@ -48,6 +50,7 @@ public class ProcessDefinition {
     this.title = title;
     this.description = description;
     this.isLatest = isLatest;
+    this.processVariables = ProcessVariables != null ? new ArrayList<>(ProcessVariables) : new ArrayList<>();
   }
 
 
@@ -70,7 +73,8 @@ public class ProcessDefinition {
         null,
         title,
         description,
-        false
+        false,
+        null
     );
   }
 
@@ -93,14 +97,16 @@ public class ProcessDefinition {
         null,
         title,
         description,
-        false
+        false,
+        null
     );
   }
 
   public static ProcessDefinition rebuild(ProcessDefinitionId id, ProjectId projectId, String processKey, String bpmnDiagramUrl, BpmDriagram bpmDriagram, Integer version,
                                           List<ProcessArtifact> artifacts, ProcessDefinitionState state, LocalDateTime deploymentDate,
-                                          String deploymentId, String title, String description, boolean isLatest) {
-    return new ProcessDefinition(id, projectId, processKey, bpmnDiagramUrl, bpmDriagram, version, artifacts, state, deploymentDate, deploymentId, title, description, isLatest);
+                                          String deploymentId, String title, String description, boolean isLatest, List<ProcessVariable> processVariables) {
+    return new ProcessDefinition(id, projectId, processKey, bpmnDiagramUrl, bpmDriagram, version, artifacts, state,
+        deploymentDate, deploymentId, title, description, isLatest, processVariables);
   }
 
 
@@ -141,7 +147,7 @@ public class ProcessDefinition {
   }
 
 
-  public Optional<ProcessArtifact> getArtifactById(ProjectArtifactId id) {
+  public Optional<ProcessArtifact> getArtifactById(ProcessArtifactId id) {
     if (id == null) return Optional.empty();
     return artifacts.stream()
         .filter(artifact -> artifact.getId().equals(id))

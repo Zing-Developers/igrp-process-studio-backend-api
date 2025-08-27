@@ -4,7 +4,7 @@ import cv.igrp.platform.process_manager_studio.project.application.dto.ArtifactV
 import cv.igrp.platform.process_manager_studio.project.application.dto.ProjectArtifactResponseDTO;
 import cv.igrp.platform.process_manager_studio.project.domain.models.ProcessArtifact;
 import cv.igrp.platform.process_manager_studio.shared.domain.valueobject.ProcessDefinitionId;
-import cv.igrp.platform.process_manager_studio.shared.domain.valueobject.ProjectArtifactId;
+import cv.igrp.platform.process_manager_studio.shared.domain.valueobject.ProcessArtifactId;
 import cv.igrp.platform.process_manager_studio.shared.infrastructure.persistence.entity.ArtifactVariableEntity;
 import cv.igrp.platform.process_manager_studio.shared.infrastructure.persistence.entity.ProcessDefinitionEntity;
 import cv.igrp.platform.process_manager_studio.shared.infrastructure.persistence.entity.ProcessArtifactEntity;
@@ -31,7 +31,7 @@ public class ProcessArtifactMapper {
     List<ArtifactVariableEntity> variableEntities = entity.getVariables() != null ? entity.getVariables() : Collections.emptyList();
 
     return ProcessArtifact.rebuild(
-        ProjectArtifactId.of(entity.getId().toString()),
+        ProcessArtifactId.of(entity.getId().toString()),
         ProcessDefinitionId.of(entity.getProcesDefinitionId().getId().toString()),
         entity.getTaskKey(),
         entity.getName(),

@@ -3,7 +3,7 @@ package cv.igrp.platform.process_manager_studio.project.domain.models;
 import cv.igrp.platform.process_manager_studio.shared.domain.exceptions.IgrpResponseStatusException;
 import cv.igrp.platform.process_manager_studio.shared.domain.valueobject.ArtifactVariableId;
 import cv.igrp.platform.process_manager_studio.shared.domain.valueobject.ProcessDefinitionId;
-import cv.igrp.platform.process_manager_studio.shared.domain.valueobject.ProjectArtifactId;
+import cv.igrp.platform.process_manager_studio.shared.domain.valueobject.ProcessArtifactId;
 import lombok.Getter;
 
 import java.util.ArrayList;
@@ -14,7 +14,7 @@ import java.util.Optional;
 @Getter
 public class ProcessArtifact {
 
-  private final ProjectArtifactId id;
+  private final ProcessArtifactId id;
   private final ProcessDefinitionId processDefinitionId;
 
   private String taskKey;
@@ -22,7 +22,7 @@ public class ProcessArtifact {
 
   private final List<ArtifactVariable> variables;
 
-  private ProcessArtifact(ProjectArtifactId id, ProcessDefinitionId processDefinitionId, String taskKey, String name, List<ArtifactVariable> variables) {
+  private ProcessArtifact(ProcessArtifactId id, ProcessDefinitionId processDefinitionId, String taskKey, String name, List<ArtifactVariable> variables) {
     this.id = Objects.requireNonNull(id, "id cannot be null");
     this.processDefinitionId = Objects.requireNonNull(processDefinitionId, "processDefinitionId cannot be null");
     this.taskKey = taskKey;
@@ -35,7 +35,7 @@ public class ProcessArtifact {
       throw IgrpResponseStatusException.badRequest("TaskKey cannot be null or blank");
     }
     return new ProcessArtifact(
-        ProjectArtifactId.generate(),
+        ProcessArtifactId.generate(),
         processDefinitionId,
         taskKey,
         name,
@@ -43,7 +43,7 @@ public class ProcessArtifact {
     );
   }
 
-  public static ProcessArtifact rebuild(ProjectArtifactId id, ProcessDefinitionId processDefinitionId, String taskKey, String name, List<ArtifactVariable> variables) {
+  public static ProcessArtifact rebuild(ProcessArtifactId id, ProcessDefinitionId processDefinitionId, String taskKey, String name, List<ArtifactVariable> variables) {
     return new ProcessArtifact(id, processDefinitionId, taskKey, name, variables);
   }
 

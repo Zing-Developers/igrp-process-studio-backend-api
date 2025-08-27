@@ -3,7 +3,7 @@ package cv.igrp.platform.process_manager_studio.project.infrastructure.mappers;
 import cv.igrp.platform.process_manager_studio.project.application.dto.ArtifactVariableResponseDTO;
 import cv.igrp.platform.process_manager_studio.project.domain.models.ArtifactVariable;
 import cv.igrp.platform.process_manager_studio.shared.domain.valueobject.ArtifactVariableId;
-import cv.igrp.platform.process_manager_studio.shared.domain.valueobject.ProjectArtifactId;
+import cv.igrp.platform.process_manager_studio.shared.domain.valueobject.ProcessArtifactId;
 import cv.igrp.platform.process_manager_studio.shared.infrastructure.persistence.entity.ArtifactVariableEntity;
 import cv.igrp.platform.process_manager_studio.shared.infrastructure.persistence.entity.ProcessArtifactEntity;
 import org.springframework.stereotype.Component;
@@ -17,7 +17,7 @@ public class ArtifactVariableMapper {
     }
     return ArtifactVariable.rebuild(
         ArtifactVariableId.of(entity.getId().toString()),
-        entity.getProcessArtifactId() != null ? ProjectArtifactId.of(entity.getProcessArtifactId().getId().toString()) : null,
+        entity.getProcessArtifactId() != null ? ProcessArtifactId.of(entity.getProcessArtifactId().getId().toString()) : null,
         entity.getKey(),
         entity.getName(),
         entity.getType(),
