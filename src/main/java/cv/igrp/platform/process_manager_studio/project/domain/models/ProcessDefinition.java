@@ -30,10 +30,10 @@ public class ProcessDefinition {
   private String deploymentId;
   private boolean isLatest;
 
-  private final List<ProjectArtifact> artifacts;
+  private final List<ProcessArtifact> artifacts;
 
   private ProcessDefinition(ProcessDefinitionId id, ProjectId projectId, String processKey, String bpmnDiagramUrl, BpmDriagram bpmDriagram, Integer version,
-                            List<ProjectArtifact> artifacts, ProcessDefinitionState state, LocalDateTime deploymentDate, String deploymentId,
+                            List<ProcessArtifact> artifacts, ProcessDefinitionState state, LocalDateTime deploymentDate, String deploymentId,
                             String title, String description, boolean isLatest) {
     this.id = Objects.requireNonNull(id, "id cannot be null");
     this.projectId = Objects.requireNonNull(projectId);
@@ -98,7 +98,7 @@ public class ProcessDefinition {
   }
 
   public static ProcessDefinition rebuild(ProcessDefinitionId id, ProjectId projectId, String processKey, String bpmnDiagramUrl, BpmDriagram bpmDriagram, Integer version,
-                                          List<ProjectArtifact> artifacts, ProcessDefinitionState state, LocalDateTime deploymentDate,
+                                          List<ProcessArtifact> artifacts, ProcessDefinitionState state, LocalDateTime deploymentDate,
                                           String deploymentId, String title, String description, boolean isLatest) {
     return new ProcessDefinition(id, projectId, processKey, bpmnDiagramUrl, bpmDriagram, version, artifacts, state, deploymentDate, deploymentId, title, description, isLatest);
   }
@@ -112,24 +112,24 @@ public class ProcessDefinition {
   }
 
 
-  public void addArtifact(ProjectArtifact artifact) {
+  public void addArtifact(ProcessArtifact artifact) {
     if (artifact == null) throw new IllegalArgumentException("Artifact cannot be null");
     this.artifacts.add(artifact);
   }
 
-  public void addArtifacts(List<ProjectArtifact> artifacts) {
+  public void addArtifacts(List<ProcessArtifact> artifacts) {
     if (artifacts == null || artifacts.isEmpty()) return;
     this.artifacts.addAll(artifacts);
   }
 
-  public void removeArtifact(ProjectArtifact artifact) {
+  public void removeArtifact(ProcessArtifact artifact) {
     this.artifacts.remove(artifact);
   }
 
-  public void updateArtifacts(List<ProjectArtifact> updatedArtifacts) {
+  public void updateArtifacts(List<ProcessArtifact> updatedArtifacts) {
     if (updatedArtifacts == null) return;
 
-    for (ProjectArtifact updatedArtifact : updatedArtifacts) {
+    for (ProcessArtifact updatedArtifact : updatedArtifacts) {
       this.artifacts.stream()
           .filter(a -> a.getId().equals(updatedArtifact.getId()))
           .findFirst()
@@ -141,21 +141,21 @@ public class ProcessDefinition {
   }
 
 
-  public Optional<ProjectArtifact> getArtifactById(ProjectArtifactId id) {
+  public Optional<ProcessArtifact> getArtifactById(ProjectArtifactId id) {
     if (id == null) return Optional.empty();
     return artifacts.stream()
         .filter(artifact -> artifact.getId().equals(id))
         .findFirst();
   }
 
-  public Optional<ProjectArtifact> getArtifactByTaskKey(String taskKey) {
+  public Optional<ProcessArtifact> getArtifactByTaskKey(String taskKey) {
     if (taskKey == null || taskKey.isBlank()) return Optional.empty();
     return artifacts.stream()
         .filter(artifact -> taskKey.equals(artifact.getTaskKey()))
         .findFirst();
   }
 
-  public void replaceArtifacts(List<ProjectArtifact> newArtifacts) {
+  public void replaceArtifacts(List<ProcessArtifact> newArtifacts) {
     this.artifacts.clear();
     this.artifacts.addAll(newArtifacts);
   }

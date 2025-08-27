@@ -3,19 +3,18 @@
 
 package cv.igrp.platform.process_manager_studio.shared.infrastructure.persistence.entity;
 
-import cv.igrp.framework.stereotype.IgrpEntity;
 import cv.igrp.platform.process_manager_studio.shared.config.AuditEntity;
+import cv.igrp.framework.stereotype.IgrpEntity;
 import jakarta.persistence.*;
-import jakarta.validation.constraints.NotBlank;
 import lombok.*;
 import org.hibernate.envers.Audited;
-
 import java.util.UUID;
+import jakarta.validation.constraints.NotBlank;
+import java.util.List;
 
 @Audited
 @Getter
 @Setter
-@ToString
 @IgrpEntity
 @Entity
 @NoArgsConstructor
@@ -24,33 +23,34 @@ import java.util.UUID;
 public class ArtifactVariableEntity extends AuditEntity {
 
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", unique = true, nullable = false)
     private UUID id;
 
-
+  
     @Column(name="key")
     private String key;
 
-
+  
     @NotBlank(message = "name is mandatory")
     @Column(name="name", nullable = false)
     private String name;
 
-
+  
     @Column(name="type")
     private String type;
 
-
+  
     @Column(name="default_value")
     private String defaultValue;
 
-
+  
     @Column(name="isrequired")
     private boolean isRequired;
 
      @ManyToOne(fetch = FetchType.LAZY)
-   @JoinColumn(name = "project_artifact_id")
-   private ProjectArtifactEntity projectArtifactId;
+   @JoinColumn(name = "process_artifact_id")
+   private ProcessArtifactEntity processArtifactId;
 
 
 }

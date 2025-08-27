@@ -3,24 +3,22 @@
 
 package cv.igrp.platform.process_manager_studio.shared.infrastructure.persistence.entity;
 
-import cv.igrp.framework.stereotype.IgrpEntity;
-import cv.igrp.platform.process_manager_studio.shared.application.constants.ProcessDefinitionState;
 import cv.igrp.platform.process_manager_studio.shared.config.AuditEntity;
+import cv.igrp.framework.stereotype.IgrpEntity;
 import jakarta.persistence.*;
-import jakarta.validation.constraints.NotBlank;
 import lombok.*;
-import org.hibernate.annotations.OnDelete;
-import org.hibernate.annotations.OnDeleteAction;
 import org.hibernate.envers.Audited;
-
+import java.util.UUID;
+import jakarta.validation.constraints.NotBlank;
+import cv.igrp.platform.process_manager_studio.shared.application.constants.ProcessDefinitionState;
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.UUID;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 
 @Audited
 @Getter
 @Setter
-@ToString
 @IgrpEntity
 @Entity
 @NoArgsConstructor
@@ -29,6 +27,7 @@ import java.util.UUID;
 public class ProcessDefinitionEntity extends AuditEntity {
 
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", unique = true, nullable = false)
     private UUID id;
 
@@ -80,7 +79,13 @@ public class ProcessDefinitionEntity extends AuditEntity {
 
   @OneToMany(mappedBy = "procesDefinitionId", fetch = FetchType.LAZY, cascade = { CascadeType.ALL }, orphanRemoval = true)
     @OnDelete(action = OnDeleteAction.SET_NULL)
-private List<ProjectArtifactEntity> artifacts;   @ManyToOne(fetch = FetchType.LAZY)
+private List<ProcessArtifactEntity> artifacts;
+
+
+  @OneToMany(mappedBy = "procesDefinitionId", fetch = FetchType.LAZY)
+private List<ProcessVariableEntity> processVariables;
+
+  @ManyToOne(fetch = FetchType.LAZY)
    @JoinColumn(name = "project_id")
    private ProjectEntity projectId;
 

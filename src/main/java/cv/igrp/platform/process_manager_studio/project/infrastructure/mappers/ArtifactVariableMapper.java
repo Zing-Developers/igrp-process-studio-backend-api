@@ -5,7 +5,7 @@ import cv.igrp.platform.process_manager_studio.project.domain.models.ArtifactVar
 import cv.igrp.platform.process_manager_studio.shared.domain.valueobject.ArtifactVariableId;
 import cv.igrp.platform.process_manager_studio.shared.domain.valueobject.ProjectArtifactId;
 import cv.igrp.platform.process_manager_studio.shared.infrastructure.persistence.entity.ArtifactVariableEntity;
-import cv.igrp.platform.process_manager_studio.shared.infrastructure.persistence.entity.ProjectArtifactEntity;
+import cv.igrp.platform.process_manager_studio.shared.infrastructure.persistence.entity.ProcessArtifactEntity;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -17,7 +17,7 @@ public class ArtifactVariableMapper {
     }
     return ArtifactVariable.rebuild(
         ArtifactVariableId.of(entity.getId().toString()),
-        entity.getProjectArtifactId() != null ? ProjectArtifactId.of(entity.getProjectArtifactId().getId().toString()) : null,
+        entity.getProcessArtifactId() != null ? ProjectArtifactId.of(entity.getProcessArtifactId().getId().toString()) : null,
         entity.getKey(),
         entity.getName(),
         entity.getType(),
@@ -40,9 +40,9 @@ public class ArtifactVariableMapper {
     entity.setKey(domain.getArtifactVariableKey());
 
     if (domain.getArtifactId() != null) {
-      var projectArtifactEntity = new ProjectArtifactEntity();
+      var projectArtifactEntity = new ProcessArtifactEntity();
       projectArtifactEntity.setId(domain.getArtifactId().identifier().value());
-      entity.setProjectArtifactId(projectArtifactEntity);
+      entity.setProcessArtifactId(projectArtifactEntity);
     }
     return entity;
   }

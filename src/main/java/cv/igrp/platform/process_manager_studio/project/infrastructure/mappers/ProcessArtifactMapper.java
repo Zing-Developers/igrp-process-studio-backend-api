@@ -2,12 +2,12 @@ package cv.igrp.platform.process_manager_studio.project.infrastructure.mappers;
 
 import cv.igrp.platform.process_manager_studio.project.application.dto.ArtifactVariableResponseDTO;
 import cv.igrp.platform.process_manager_studio.project.application.dto.ProjectArtifactResponseDTO;
-import cv.igrp.platform.process_manager_studio.project.domain.models.ProjectArtifact;
+import cv.igrp.platform.process_manager_studio.project.domain.models.ProcessArtifact;
 import cv.igrp.platform.process_manager_studio.shared.domain.valueobject.ProcessDefinitionId;
 import cv.igrp.platform.process_manager_studio.shared.domain.valueobject.ProjectArtifactId;
 import cv.igrp.platform.process_manager_studio.shared.infrastructure.persistence.entity.ArtifactVariableEntity;
 import cv.igrp.platform.process_manager_studio.shared.infrastructure.persistence.entity.ProcessDefinitionEntity;
-import cv.igrp.platform.process_manager_studio.shared.infrastructure.persistence.entity.ProjectArtifactEntity;
+import cv.igrp.platform.process_manager_studio.shared.infrastructure.persistence.entity.ProcessArtifactEntity;
 import org.springframework.stereotype.Component;
 
 import java.util.Collections;
@@ -15,22 +15,22 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Component
-public class ProjectArtifactMapper {
+public class ProcessArtifactMapper {
 
   private final ArtifactVariableMapper artifactVariableMapper;
 
-  public ProjectArtifactMapper(ArtifactVariableMapper artifactVariableMapper) {
+  public ProcessArtifactMapper(ArtifactVariableMapper artifactVariableMapper) {
     this.artifactVariableMapper = artifactVariableMapper;
   }
 
-  public ProjectArtifact toDomain(ProjectArtifactEntity entity) {
+  public ProcessArtifact toDomain(ProcessArtifactEntity entity) {
     if (entity == null) {
       return null;
     }
 
     List<ArtifactVariableEntity> variableEntities = entity.getVariables() != null ? entity.getVariables() : Collections.emptyList();
 
-    return ProjectArtifact.rebuild(
+    return ProcessArtifact.rebuild(
         ProjectArtifactId.of(entity.getId().toString()),
         ProcessDefinitionId.of(entity.getProcesDefinitionId().getId().toString()),
         entity.getTaskKey(),
@@ -42,12 +42,12 @@ public class ProjectArtifactMapper {
   }
 
 
-  public ProjectArtifactEntity toEntity(ProjectArtifact domain) {
+  public ProcessArtifactEntity toEntity(ProcessArtifact domain) {
     if (domain == null) {
       return null;
     }
 
-    ProjectArtifactEntity entity = new ProjectArtifactEntity();
+    ProcessArtifactEntity entity = new ProcessArtifactEntity();
     entity.setId(domain.getId().identifier().value());
     entity.setTaskKey(domain.getTaskKey());
     entity.setName(domain.getName());
@@ -59,7 +59,7 @@ public class ProjectArtifactMapper {
     if (domain.getVariables() != null && !domain.getVariables().isEmpty()) {
       List<ArtifactVariableEntity> variableEntities = domain.getVariables().stream()
           .map(artifactVariableMapper::toEntity)
-          .peek(ve -> ve.setProjectArtifactId(entity))
+          .peek(ve -> ve.setProcessArtifactId(entity))
           .collect(Collectors.toList());
       entity.setVariables(variableEntities);
     } else {
@@ -69,7 +69,7 @@ public class ProjectArtifactMapper {
     return entity;
   }
 
-  public ProjectArtifactResponseDTO toResponseDTO(ProjectArtifact projectArtifact) {
+  public ProjectArtifactResponseDTO toResponseDTO(ProcessArtifact projectArtifact) {
     ProjectArtifactResponseDTO paDto = new ProjectArtifactResponseDTO();
     paDto.setProjectArtifactId(projectArtifact.getId().identifier().getValueAsString());
     paDto.setTaskKey(projectArtifact.getTaskKey());

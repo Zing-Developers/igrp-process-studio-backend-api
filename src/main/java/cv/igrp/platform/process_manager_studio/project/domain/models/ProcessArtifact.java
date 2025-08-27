@@ -12,7 +12,7 @@ import java.util.Objects;
 import java.util.Optional;
 
 @Getter
-public class ProjectArtifact {
+public class ProcessArtifact {
 
   private final ProjectArtifactId id;
   private final ProcessDefinitionId processDefinitionId;
@@ -22,7 +22,7 @@ public class ProjectArtifact {
 
   private final List<ArtifactVariable> variables;
 
-  private ProjectArtifact(ProjectArtifactId id, ProcessDefinitionId processDefinitionId, String taskKey, String name, List<ArtifactVariable> variables) {
+  private ProcessArtifact(ProjectArtifactId id, ProcessDefinitionId processDefinitionId, String taskKey, String name, List<ArtifactVariable> variables) {
     this.id = Objects.requireNonNull(id, "id cannot be null");
     this.processDefinitionId = Objects.requireNonNull(processDefinitionId, "processDefinitionId cannot be null");
     this.taskKey = taskKey;
@@ -30,11 +30,11 @@ public class ProjectArtifact {
     this.variables = variables != null ? new ArrayList<>(variables) : new ArrayList<>();
   }
 
-  public static ProjectArtifact create(ProcessDefinitionId processDefinitionId, String taskKey, String name) {
+  public static ProcessArtifact create(ProcessDefinitionId processDefinitionId, String taskKey, String name) {
     if (taskKey == null || taskKey.isBlank()) {
       throw IgrpResponseStatusException.badRequest("TaskKey cannot be null or blank");
     }
-    return new ProjectArtifact(
+    return new ProcessArtifact(
         ProjectArtifactId.generate(),
         processDefinitionId,
         taskKey,
@@ -43,8 +43,8 @@ public class ProjectArtifact {
     );
   }
 
-  public static ProjectArtifact rebuild(ProjectArtifactId id, ProcessDefinitionId processDefinitionId, String taskKey, String name, List<ArtifactVariable> variables) {
-    return new ProjectArtifact(id, processDefinitionId, taskKey, name, variables);
+  public static ProcessArtifact rebuild(ProjectArtifactId id, ProcessDefinitionId processDefinitionId, String taskKey, String name, List<ArtifactVariable> variables) {
+    return new ProcessArtifact(id, processDefinitionId, taskKey, name, variables);
   }
 
   public void updateInfo(String taskKey, String name) {

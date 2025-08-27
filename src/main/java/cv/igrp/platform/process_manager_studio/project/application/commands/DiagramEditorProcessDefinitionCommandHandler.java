@@ -5,7 +5,7 @@ import cv.igrp.framework.stereotype.IgrpCommandHandler;
 import cv.igrp.platform.process_manager_studio.project.application.dto.ProcessDefinitionResponseDTO;
 import cv.igrp.platform.process_manager_studio.project.domain.models.ArtifactVariable;
 import cv.igrp.platform.process_manager_studio.project.domain.models.ProcessDefinition;
-import cv.igrp.platform.process_manager_studio.project.domain.models.ProjectArtifact;
+import cv.igrp.platform.process_manager_studio.project.domain.models.ProcessArtifact;
 import cv.igrp.platform.process_manager_studio.project.domain.repository.ProcessDefinitionRepository;
 import cv.igrp.platform.process_manager_studio.project.infrastructure.mappers.ProcessDefinitionMapper;
 import cv.igrp.platform.process_manager_studio.shared.domain.exceptions.IgrpResponseStatusException;
@@ -64,7 +64,7 @@ public class DiagramEditorProcessDefinitionCommandHandler implements CommandHand
     if (parsedProcess.getUserTasks() != null && !parsedProcess.getUserTasks().isEmpty()) {
       // Processa user tasks e adiciona artifacts e variáveis
       for (var userTask : parsedProcess.getUserTasks()) {
-        var artifact = ProjectArtifact.create(processDefinition.getId(), userTask.getId(), userTask.getName());
+        var artifact = ProcessArtifact.create(processDefinition.getId(), userTask.getId(), userTask.getName());
 
         if (userTask.getVariables() != null && !userTask.getVariables().isEmpty()) {
           LOGGER.debug("Adding variables to artifact: {}", artifact.getId());
