@@ -27,6 +27,7 @@ import cv.igrp.platform.process_manager_studio.project.application.dto.ProcessDe
 import cv.igrp.platform.process_manager_studio.project.application.dto.BpmDiagramDTO;
 import cv.igrp.platform.process_manager_studio.project.application.dto.WrapperListaProcessDefinitionDTO;
 import java.util.Map;
+import java.util.List;
 import cv.igrp.platform.process_manager_studio.project.application.dto.ProcessVariableRequestDTO;
 import cv.igrp.platform.process_manager_studio.project.application.dto.ProcessVariableResponseDTO;
 
@@ -373,7 +374,7 @@ public class ProcessDefinitionController {
     }
   )
   
-  public ResponseEntity<ProcessVariableResponseDTO> addVariablesToProcess(@Valid @RequestBody ProcessVariableRequestDTO addVariablesToProcessRequest
+  public ResponseEntity<List<ProcessVariableResponseDTO>> addVariablesToProcess(@Valid @RequestBody List<ProcessVariableRequestDTO> addVariablesToProcessRequest
     , @PathVariable(value = "processId") String processId)
   {
 
@@ -381,7 +382,7 @@ public class ProcessDefinitionController {
 
       final var command = new AddVariablesToProcessCommand(addVariablesToProcessRequest, processId);
 
-       ResponseEntity<ProcessVariableResponseDTO> response = commandBus.send(command);
+       ResponseEntity<List<ProcessVariableResponseDTO>> response = commandBus.send(command);
 
        LOGGER.debug("Operation finished");
 

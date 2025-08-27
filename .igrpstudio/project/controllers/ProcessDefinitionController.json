@@ -323,7 +323,7 @@
           "application/json": {
             "schema": {
               "type": "ProcessVariableRequest",
-              "collectionType": "none",
+              "collectionType": "list",
               "name": "data",
               "objectType": "dto",
               "module": "project"
@@ -340,7 +340,7 @@
                 "type": "ProcessVariableResponse",
                 "objectType": "dto",
                 "name": "data",
-                "collectionType": "none",
+                "collectionType": "list",
                 "module": "project"
               }
             }
@@ -356,5 +356,5 @@
       ]
     }
   ],
-  "id": "rq125xn7ri-CONTROLLER"
+  "id": "rq125xn7ri-CONTROLLER-addVariablesToProcess"
 }
