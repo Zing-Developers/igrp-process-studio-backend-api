@@ -8,6 +8,7 @@ import cv.igrp.platform.process_manager_studio.project.domain.repository.Process
 import cv.igrp.platform.process_manager_studio.project.infrastructure.mappers.ProcessVariableMapper;
 import cv.igrp.platform.process_manager_studio.shared.domain.exceptions.IgrpResponseStatusException;
 import cv.igrp.platform.process_manager_studio.shared.domain.valueobject.ProcessDefinitionId;
+import cv.igrp.platform.process_manager_studio.shared.domain.valueobject.ProcessVariableId;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import org.slf4j.Logger;
@@ -45,17 +46,23 @@ public class AddVariablesToProcessCommandHandler implements CommandHandler<AddVa
 
      if (processVariableRequestDTOList!= null && !processVariableRequestDTOList.isEmpty()) {
 
-       processVariableRequestDTOList.forEach(processVariableRequestDTO -> {
-         var variable = ProcessVariable.create(
-             processVariableRequestDTO.getName(),
-             processVariableRequestDTO.getType(),
-             processVariableRequestDTO.getDefaultValue(),
-             processVariableRequestDTO.isRequired(),
-             processId
-         );
-         process.addRemoveOrUpdateProcessVariable(variable);
-       });
+       List<ProcessVariable> incomingVariables = processVariableRequestDTOList.stream()
+           .map(dto ->
+               ProcessVariable.create(
+               null,
+               dto.getName(),
+               dto.getType(),
+               dto.getDefaultValue(),
+               dto.isRequired(),
+               processId
+           ))
+           .toList();
+
+       process.syncProcessVariables(incomingVariables);
+
      }
+
+      processDefinitionRepository.save(process);
 
       return ResponseEntity.ok(processVariableMapper.toDTO(process.getProcessVariables()));
    }

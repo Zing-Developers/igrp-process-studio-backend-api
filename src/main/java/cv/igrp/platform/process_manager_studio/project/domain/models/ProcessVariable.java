@@ -29,6 +29,11 @@ public class ProcessVariable {
     return new ProcessVariable(ProcessVariableId.generate(), name, type, defaultValue, required, processDefinitionId);
   }
 
+  public static ProcessVariable create(ProcessVariableId id, String name, String type, String defaultValue, boolean required, ProcessDefinitionId processDefinitionId) {
+    var processVariableID = id != null ? id : ProcessVariableId.generate();
+    return new ProcessVariable(processVariableID, name, type, defaultValue, required, processDefinitionId);
+  }
+
   public static ProcessVariable rebuild(ProcessVariableId id, String name, String type, String defaultValue,
                                         boolean required, ProcessDefinitionId processDefinitionId) {
     return new ProcessVariable(id, name, type, defaultValue, required, processDefinitionId);

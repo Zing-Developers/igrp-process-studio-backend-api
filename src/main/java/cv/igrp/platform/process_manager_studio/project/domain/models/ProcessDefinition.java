@@ -201,7 +201,22 @@ public class ProcessDefinition {
     this.description = description;
   }
 
-  public void addRemoveOrUpdateProcessVariable(ProcessVariable variable) {
+  public void syncProcessVariables(List<ProcessVariable> newVariables) {
+    if (newVariables == null) return;
+
+    // Adicionar ou atualizar variáveis
+    for (ProcessVariable newVar : newVariables) {
+      addOrUpdateProcessVariable(newVar);
+    }
+
+    // Remover variáveis que não estão mais na nova lista
+    this.processVariables.removeIf(existingVar ->
+        newVariables.stream()
+            .noneMatch(newVar -> newVar.getId().equals(existingVar.getId()))
+    );
+  }
+
+  private void addOrUpdateProcessVariable(ProcessVariable variable) {
 
     if (variable == null) return;
     Optional<ProcessVariable> existingVarOpt = findVariableById(variable.getId());
