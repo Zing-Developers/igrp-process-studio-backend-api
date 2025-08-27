@@ -2,10 +2,7 @@ package cv.igrp.platform.process_manager_studio.project.domain.models;
 
 import cv.igrp.platform.process_manager_studio.shared.application.constants.ProcessDefinitionState;
 import cv.igrp.platform.process_manager_studio.shared.domain.exceptions.IgrpResponseStatusException;
-import cv.igrp.platform.process_manager_studio.shared.domain.valueobject.BpmDriagram;
-import cv.igrp.platform.process_manager_studio.shared.domain.valueobject.ProcessDefinitionId;
-import cv.igrp.platform.process_manager_studio.shared.domain.valueobject.ProcessArtifactId;
-import cv.igrp.platform.process_manager_studio.shared.domain.valueobject.ProjectId;
+import cv.igrp.platform.process_manager_studio.shared.domain.valueobject.*;
 import lombok.Getter;
 
 import java.time.LocalDateTime;
@@ -203,4 +200,27 @@ public class ProcessDefinition {
     this.title = title;
     this.description = description;
   }
+
+  public void addRemoveOrUpdateProcessVariable(ProcessVariable variable) {
+
+    if (variable == null) return;
+    Optional<ProcessVariable> existingVarOpt = findVariableById(variable.getId());
+
+    if (existingVarOpt.isPresent()) {
+      ProcessVariable existingVar = existingVarOpt.get();
+      existingVar.updateInfo(variable.getName(), variable.getType(), variable.getDefaultValue(), variable.isRequired());
+    } else {
+      this.processVariables.add(variable);
+    }
+
+  }
+
+  private Optional<ProcessVariable> findVariableById(ProcessVariableId id) {
+    if (id == null) return Optional.empty();
+
+    return this.processVariables.stream()
+        .filter(v -> v.getId().equals(id))
+        .findFirst();
+  }
+
 }

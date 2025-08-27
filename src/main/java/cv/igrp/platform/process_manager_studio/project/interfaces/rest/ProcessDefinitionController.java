@@ -391,4 +391,41 @@ public class ProcessDefinitionController {
               .body(response.getBody());
   }
 
+  @GetMapping(
+    value = "process-definitions/{processId}/variables"
+  )
+  @Operation(
+    summary = "GET method to handle operations for getProcessDefinitionVariables",
+    description = "GET method to handle operations for getProcessDefinitionVariables",
+    responses = {
+      @ApiResponse(
+          responseCode = "200",
+          description = "",
+          content = @Content(
+              mediaType = "application/json",
+              schema = @Schema(
+                  implementation = ProcessVariableResponseDTO.class,
+                  type = "object")
+          )
+      )
+    }
+  )
+  
+  public ResponseEntity<List<ProcessVariableResponseDTO>> getProcessDefinitionVariables(
+    @PathVariable(value = "processId") String processId)
+  {
+
+      LOGGER.debug("Operation started");
+
+      final var query = new GetProcessDefinitionVariablesQuery(processId);
+
+      ResponseEntity<List<ProcessVariableResponseDTO>> response = queryBus.handle(query);
+
+      LOGGER.debug("Operation finished");
+
+      return ResponseEntity.status(response.getStatusCode())
+              .headers(response.getHeaders())
+              .body(response.getBody());
+  }
+
 }

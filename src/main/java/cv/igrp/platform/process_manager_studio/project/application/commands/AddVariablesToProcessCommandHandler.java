@@ -43,6 +43,20 @@ public class AddVariablesToProcessCommandHandler implements CommandHandler<AddVa
 
       );
 
+     if (processVariableRequestDTOList!= null && !processVariableRequestDTOList.isEmpty()) {
+
+       processVariableRequestDTOList.forEach(processVariableRequestDTO -> {
+         var variable = ProcessVariable.create(
+             processVariableRequestDTO.getName(),
+             processVariableRequestDTO.getType(),
+             processVariableRequestDTO.getDefaultValue(),
+             processVariableRequestDTO.isRequired(),
+             processId
+         );
+         process.addRemoveOrUpdateProcessVariable(variable);
+       });
+     }
+
       return ResponseEntity.ok(processVariableMapper.toDTO(process.getProcessVariables()));
    }
 

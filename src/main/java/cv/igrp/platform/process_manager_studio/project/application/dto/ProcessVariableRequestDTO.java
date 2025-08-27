@@ -21,6 +21,9 @@ public class ProcessVariableRequestDTO  {
 
   
   
+  private String id ;
+  
+  
   private String name ;
   
   

@@ -354,6 +354,34 @@
           "isRequired": true
         }
       ]
+    },
+    {
+      "actionName": "getProcessDefinitionVariables",
+      "path": "process-definitions/{processId}/variables",
+      "method": "GET",
+      "responses": {
+        "200": {
+          "name": "OK",
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "ProcessVariableResponse",
+                "objectType": "dto",
+                "name": "data",
+                "collectionType": "list",
+                "module": "project"
+              }
+            }
+          }
+        }
+      },
+      "pathVariables": [
+        {
+          "name": "processId",
+          "type": "string",
+          "isRequired": true
+        }
+      ]
     }
   ],
   "id": "rq125xn7ri-CONTROLLER-addVariablesToProcess"

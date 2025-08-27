@@ -6,6 +6,18 @@
   "enableCustonValidation": false,
   "attributes": [
     {
+      "name": "id",
+      "objectType": "java",
+      "type": "string",
+      "required": false,
+      "before": false,
+      "after": false,
+      "positive": false,
+      "isEmail": false,
+      "isUrl": false,
+      "primaryKey": false
+    },
+    {
       "name": "name",
       "objectType": "java",
       "type": "string",
