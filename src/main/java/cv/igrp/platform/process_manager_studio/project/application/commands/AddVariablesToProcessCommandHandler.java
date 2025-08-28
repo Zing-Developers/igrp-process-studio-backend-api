@@ -21,50 +21,50 @@ import java.util.List;
 @Component
 public class AddVariablesToProcessCommandHandler implements CommandHandler<AddVariablesToProcessCommand, ResponseEntity<List<ProcessVariableResponseDTO>>> {
 
-   private static final Logger LOGGER = LoggerFactory.getLogger(AddVariablesToProcessCommandHandler.class);
+  private static final Logger LOGGER = LoggerFactory.getLogger(AddVariablesToProcessCommandHandler.class);
 
   private final ProcessDefinitionRepository processDefinitionRepository;
   private final ProcessVariableMapper processVariableMapper;
 
 
-   public AddVariablesToProcessCommandHandler(ProcessDefinitionRepository processDefinitionRepository, ProcessVariableMapper processVariableMapper) {
+  public AddVariablesToProcessCommandHandler(ProcessDefinitionRepository processDefinitionRepository, ProcessVariableMapper processVariableMapper) {
 
-     this.processDefinitionRepository = processDefinitionRepository;
-     this.processVariableMapper = processVariableMapper;
-   }
+    this.processDefinitionRepository = processDefinitionRepository;
+    this.processVariableMapper = processVariableMapper;
+  }
 
-   @IgrpCommandHandler
-   public ResponseEntity<List<ProcessVariableResponseDTO>> handle(AddVariablesToProcessCommand command) {
+  @IgrpCommandHandler
+  public ResponseEntity<List<ProcessVariableResponseDTO>> handle(AddVariablesToProcessCommand command) {
 
-      var processVariableRequestDTOList = command.getProcessvariablerequest();
-      var processId = ProcessDefinitionId.of(command.getProcessId());
+    var processVariableRequestDTOList = command.getProcessvariablerequest();
+    var processId = ProcessDefinitionId.of(command.getProcessId());
 
-      var process = processDefinitionRepository.findById(processId).orElseThrow(
-          () -> IgrpResponseStatusException.notFound("Process Definition not found with id: " + processId.identifier().value())
+    var process = processDefinitionRepository.findById(processId).orElseThrow(
+        () -> IgrpResponseStatusException.notFound("Process Definition not found with id: " + processId.identifier().value())
 
-      );
+    );
 
-     if (processVariableRequestDTOList!= null && !processVariableRequestDTOList.isEmpty()) {
+    if (processVariableRequestDTOList != null && !processVariableRequestDTOList.isEmpty()) {
 
-       List<ProcessVariable> incomingVariables = processVariableRequestDTOList.stream()
-           .map(dto ->
-               ProcessVariable.create(
-               dto.getId() != null ? ProcessVariableId.of(dto.getId()) : null ,
-               dto.getName(),
-               dto.getType(),
-               dto.getDefaultValue(),
-               dto.isRequired(),
-               processId
-           ))
-           .toList();
+      List<ProcessVariable> incomingVariables = processVariableRequestDTOList.stream()
+          .map(dto ->
+              ProcessVariable.create(
+                  dto.getId() != null && !dto.getId().isBlank() ? ProcessVariableId.of(dto.getId()) : null,
+                  dto.getName(),
+                  dto.getType(),
+                  dto.getDefaultValue(),
+                  dto.isRequired(),
+                  processId
+              ))
+          .toList();
 
-       process.syncProcessVariables(incomingVariables);
+      process.syncProcessVariables(incomingVariables);
 
-     }
+    }
 
-      processDefinitionRepository.save(process);
+    processDefinitionRepository.save(process);
 
-      return ResponseEntity.ok(processVariableMapper.toDTO(process.getProcessVariables()));
-   }
+    return ResponseEntity.ok(processVariableMapper.toDTO(process.getProcessVariables()));
+  }
 
 }
