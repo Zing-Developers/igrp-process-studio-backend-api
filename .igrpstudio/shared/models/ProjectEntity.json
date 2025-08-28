@@ -14,7 +14,7 @@
       "nullable": true,
       "unique": false,
       "primaryKey": true,
-      "generationType": "IDENTITY",
+      "generationType": "NONE",
       "skipFieldRevision": false,
       "objectType": "java"
     },

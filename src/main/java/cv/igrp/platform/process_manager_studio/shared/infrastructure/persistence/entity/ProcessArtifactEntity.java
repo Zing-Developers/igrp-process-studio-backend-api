@@ -25,25 +25,26 @@ import org.hibernate.annotations.OnDeleteAction;
 public class ProcessArtifactEntity extends AuditEntity {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", unique = true, nullable = false)
     private UUID id;
 
-  
+
     @NotBlank(message = "taskKey is mandatory")
     @Column(name="task_key", nullable = false)
     private String taskKey;
 
-  
+
     @Column(name="name")
     private String name;
 
-  
+
 
 
   @OneToMany(mappedBy = "processArtifactId", fetch = FetchType.LAZY, cascade = { CascadeType.ALL }, orphanRemoval = true)
     @OnDelete(action = OnDeleteAction.SET_NULL)
-private List<ArtifactVariableEntity> variables;   @ManyToOne(fetch = FetchType.LAZY)
+private List<ArtifactVariableEntity> variables;
+
+  @ManyToOne(fetch = FetchType.LAZY)
    @JoinColumn(name = "proces_definition_id")
    private ProcessDefinitionEntity procesDefinitionId;
 

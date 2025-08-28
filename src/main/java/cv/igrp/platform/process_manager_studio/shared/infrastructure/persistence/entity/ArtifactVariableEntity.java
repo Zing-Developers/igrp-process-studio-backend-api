@@ -23,28 +23,27 @@ import java.util.List;
 public class ArtifactVariableEntity extends AuditEntity {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", unique = true, nullable = false)
     private UUID id;
 
-  
+
     @Column(name="key")
     private String key;
 
-  
+
     @NotBlank(message = "name is mandatory")
     @Column(name="name", nullable = false)
     private String name;
 
-  
+
     @Column(name="type")
     private String type;
 
-  
+
     @Column(name="default_value")
     private String defaultValue;
 
-  
+
     @Column(name="isrequired")
     private boolean isRequired;
 
