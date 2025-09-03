@@ -71,28 +71,46 @@ public class DeployProcessDefinitionCommandHandler implements CommandHandler<Dep
       }
 
     // Processa user tasks e adiciona artifacts e variáveis
-    for (var userTask : parsedProcess.getUserTasks()) {
-      var artifact = ProcessArtifact.create(processDefinition.getId(), userTask.getId(), userTask.getName());
-
-      if (userTask.getVariables() != null && !userTask.getVariables().isEmpty()) {
-        LOGGER.debug("Adding variables to artifact: {}", artifact.getId());
-        for (var variable : userTask.getVariables()) {
-          var artifactVariable = ArtifactVariable.create(
-              artifact.getId(),
-              variable.getId(),
-              variable.getLabel(),
-              variable.getType(),
-              variable.getDefaultValue(),
-              variable.isRequired()
+    if (parsedProcess.getUserTasks() != null && !parsedProcess.getUserTasks().isEmpty()) {
+      for (var userTask : parsedProcess.getUserTasks()) {
+        ProcessArtifact artifact;
+        if (userTask.isSubProcessTask()) {
+          artifact = ProcessArtifact.createFromSubProcess(
+              processDefinition.getId(),
+              userTask.getId(),
+              userTask.getName(),
+              userTask.getSubProcessId(),
+              userTask.getSubProcessName()
           );
-          artifact.addVariable(artifactVariable);
+        } else {
+          artifact = ProcessArtifact.create(
+              processDefinition.getId(),
+              userTask.getId(),
+              userTask.getName()
+          );
         }
-      }
 
-      processDefinition.addArtifact(artifact);
+        if (userTask.getVariables() != null && !userTask.getVariables().isEmpty()) {
+          LOGGER.debug("Adding variables to artifact: {}", artifact.getId());
+          for (var variable : userTask.getVariables()) {
+            var artifactVariable = ArtifactVariable.create(
+                artifact.getId(),
+                variable.getId(),
+                variable.getLabel(),
+                variable.getType(),
+                variable.getDefaultValue(),
+                variable.isRequired()
+            );
+            artifact.addVariable(artifactVariable);
+          }
+        }
+
+        processDefinition.addArtifact(artifact);
+      }
     }
 
-      String fileName = processDefinition.getProcessKey().concat(".bpmn20.xml");
+
+    String fileName = processDefinition.getProcessKey().concat(".bpmn20.xml");
       String applicationBase = projectRepository.getApplicationBaseByProjectId(processDefinition.getProjectId());
       String sanitizedContent = bpmnProcessReader.sanitizeBpmnXml(content);
       IgrpProcessDefinitionRepresentation definitionToDeploy = IgrpProcessDefinitionRepresentation.builder()
