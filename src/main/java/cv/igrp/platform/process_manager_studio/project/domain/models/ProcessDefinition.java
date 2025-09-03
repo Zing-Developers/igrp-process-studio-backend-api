@@ -238,4 +238,12 @@ public class ProcessDefinition {
         .findFirst();
   }
 
+  public void delete() {
+
+    if (this.getState() != ProcessDefinitionState.DRAFT)
+      throw IgrpResponseStatusException.badRequest("Can not delete a process definition that is not a DRAFT");
+
+    this.state = ProcessDefinitionState.DELETED;
+
+  }
 }

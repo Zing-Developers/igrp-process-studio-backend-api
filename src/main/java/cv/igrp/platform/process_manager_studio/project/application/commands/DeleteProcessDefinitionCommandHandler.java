@@ -3,6 +3,7 @@ package cv.igrp.platform.process_manager_studio.project.application.commands;
 import cv.igrp.framework.core.domain.CommandHandler;
 import cv.igrp.framework.stereotype.IgrpCommandHandler;
 import cv.igrp.platform.process_manager_studio.project.domain.repository.ProcessDefinitionRepository;
+import cv.igrp.platform.process_manager_studio.shared.domain.exceptions.IgrpResponseStatusException;
 import cv.igrp.platform.process_manager_studio.shared.domain.valueobject.ProcessDefinitionId;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -28,7 +29,13 @@ public class DeleteProcessDefinitionCommandHandler implements CommandHandler<Del
 
     var processDefinitionId = ProcessDefinitionId.of(command.getProcessId());
 
-    processDefinitionRepository.delete(processDefinitionId);
+    var processDefinition = processDefinitionRepository.findById(processDefinitionId)
+        .orElseThrow(() ->
+            IgrpResponseStatusException.notFound("Process Definition not found with id: " + processDefinitionId));
+
+    processDefinition.delete();
+
+    processDefinitionRepository.save(processDefinition);
 
     return ResponseEntity.ok(Map.of("message", "Process Definition deleted successfully."));
   }

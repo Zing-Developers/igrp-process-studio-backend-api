@@ -26,6 +26,8 @@ public interface ProcessDefinitionEntityRepository extends
 
   boolean existsByProcessKey(String processKey);
 
+  boolean existsByProcessKeyAndStateNot(String processKey, ProcessDefinitionState state);
+
   @Modifying
   @Query("""
   UPDATE ProcessDefinitionEntity p

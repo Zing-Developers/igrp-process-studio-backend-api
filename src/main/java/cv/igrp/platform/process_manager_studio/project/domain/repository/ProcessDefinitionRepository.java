@@ -17,6 +17,8 @@ public interface ProcessDefinitionRepository {
 
   boolean existsByKey(String key);
 
+  boolean existsByKeyAndActive(String key);
+
   Optional<ProcessDefinition> findDraftByProcessKey(String processKey);
 
   Optional<ProcessDefinition> findLastestByProcessKey(String processKey);

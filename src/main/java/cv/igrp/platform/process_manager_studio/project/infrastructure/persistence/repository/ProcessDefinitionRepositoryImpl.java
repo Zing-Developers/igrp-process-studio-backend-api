@@ -48,6 +48,11 @@ public class ProcessDefinitionRepositoryImpl implements ProcessDefinitionReposit
     return processDefinitionEntityRepository.existsByProcessKey(key);
   }
 
+  @Override
+  public boolean existsByKeyAndActive(String key) {
+    return processDefinitionEntityRepository.existsByProcessKeyAndStateNot(key, ProcessDefinitionState.DELETED);
+  }
+
   @Transactional(readOnly = true)
   @Override
   public Optional<ProcessDefinition> findDraftByProcessKey(String processKey) {

@@ -38,8 +38,8 @@ public class SaveProcessDefinitionCommandHandler implements CommandHandler<SaveP
 
        var projectId = ProjectId.of(command.getProjectId());
 
-       if(processDefinitionRepository.existsByKey(dto.getProcessKey())){
-         throw IgrpResponseStatusException.conflict("A process with the key '" + dto.getProcessKey() + "' already exists.");
+       if(processDefinitionRepository.existsByKeyAndActive(dto.getProcessKey())){
+         throw IgrpResponseStatusException.conflict("A active process with the key '" + dto.getProcessKey() + "' already exists.");
        }
 
        if (!projectRepository.existsById(projectId)){
