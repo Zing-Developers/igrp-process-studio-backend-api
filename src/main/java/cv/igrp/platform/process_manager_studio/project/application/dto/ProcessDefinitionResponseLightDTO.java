@@ -34,7 +34,7 @@ public class ProcessDefinitionResponseLightDTO {
   private String title ;
 
 
-  private String descripiton ;
+  private String description ;
 
 
   private Integer version ;

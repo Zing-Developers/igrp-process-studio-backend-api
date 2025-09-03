@@ -132,7 +132,7 @@ public class ProcessDefinitionMapper {
       pdDto.setBpmFileContent(processDefinition.getBpmDriagram()!=null ? processDefinition.getBpmDriagram().content(): null);
     }
     pdDto.setTitle(processDefinition.getTitle());
-    pdDto.setDescripiton(processDefinition.getDescription());
+    pdDto.setDescription(processDefinition.getDescription());
     pdDto.setProjectId(processDefinition.getProjectId().identifier().getValueAsString());
 
 
@@ -163,7 +163,7 @@ public class ProcessDefinitionMapper {
     pdDto.setDeploymentId(processDefinition.getDeploymentId()!= null ? processDefinition.getDeploymentId() : null);
     pdDto.setDeploymentDate(processDefinition.getDeploymentDate()!= null ? processDefinition.getDeploymentDate().format(formatter) : null);
     pdDto.setTitle(processDefinition.getTitle());
-    pdDto.setDescripiton(processDefinition.getDescription());
+    pdDto.setDescription(processDefinition.getDescription());
     pdDto.setProjectId(processDefinition.getProjectId().identifier().getValueAsString());
 
     return pdDto;

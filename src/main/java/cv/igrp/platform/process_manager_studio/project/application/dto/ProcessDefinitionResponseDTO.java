@@ -21,43 +21,43 @@ import java.util.List;
 @IgrpDTO
 public class ProcessDefinitionResponseDTO  {
 
-  
-  
+
+
   private String processDefinitionId ;
-  
-  
+
+
   private String projectId ;
-  
-  
+
+
   private String processKey ;
-  
-  
+
+
   private String bpmnDiagramUrl ;
-  
-  
+
+
   private String bpmFileContent ;
-  
-  
+
+
   private String title ;
-  
-  
-  private String descripiton ;
-  
-  
+
+
+  private String description ;
+
+
   private Integer version ;
-  
-  
+
+
   private String status ;
-  
-  
+
+
   private String statusDesc ;
-  
-  
+
+
   private String deploymentId ;
-  
-  
+
+
   private String deploymentDate ;
-  
+
   @Valid
   private List<ProcessArtifactResponseDTO> processArtifacts = new ArrayList<>();
 

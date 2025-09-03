@@ -78,7 +78,7 @@
       "primaryKey": false
     },
     {
-      "name": "descripiton",
+      "name": "description",
       "objectType": "java",
       "type": "string",
       "required": false,
