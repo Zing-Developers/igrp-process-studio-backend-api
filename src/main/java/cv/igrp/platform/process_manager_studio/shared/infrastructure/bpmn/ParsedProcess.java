@@ -23,6 +23,9 @@ public class ParsedProcess {
     this.userTasks = userTasks!=null ? userTasks : new ArrayList<>();
   }
 
+
+
+
   @Override
   public String toString() {
     return "ParsedProcess{" +

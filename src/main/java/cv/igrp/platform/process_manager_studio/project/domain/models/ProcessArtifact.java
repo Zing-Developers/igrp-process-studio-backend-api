@@ -20,13 +20,27 @@ public class ProcessArtifact {
   private String taskKey;
   private String name;
 
+  private boolean isSubProcessTask;
+  private String subProcessId;
+  private String subProcessName;
+
   private final List<ArtifactVariable> variables;
 
-  private ProcessArtifact(ProcessArtifactId id, ProcessDefinitionId processDefinitionId, String taskKey, String name, List<ArtifactVariable> variables) {
+  private ProcessArtifact(ProcessArtifactId id,
+                          ProcessDefinitionId processDefinitionId,
+                          String taskKey,
+                          String name,
+                          boolean isSubProcessTask,
+                          String subProcessId,
+                          String subProcessName,
+                          List<ArtifactVariable> variables) {
     this.id = Objects.requireNonNull(id, "id cannot be null");
     this.processDefinitionId = Objects.requireNonNull(processDefinitionId, "processDefinitionId cannot be null");
     this.taskKey = taskKey;
     this.name = name;
+    this.isSubProcessTask = isSubProcessTask;
+    this.subProcessId = subProcessId;
+    this.subProcessName = subProcessName;
     this.variables = variables != null ? new ArrayList<>(variables) : new ArrayList<>();
   }
 
@@ -39,12 +53,42 @@ public class ProcessArtifact {
         processDefinitionId,
         taskKey,
         name,
+        false, // por default não é subprocesso
+        null,
+        null,
         new ArrayList<>()
     );
   }
 
-  public static ProcessArtifact rebuild(ProcessArtifactId id, ProcessDefinitionId processDefinitionId, String taskKey, String name, List<ArtifactVariable> variables) {
-    return new ProcessArtifact(id, processDefinitionId, taskKey, name, variables);
+  public static ProcessArtifact createFromSubProcess(ProcessDefinitionId processDefinitionId,
+                                                     String taskKey,
+                                                     String name,
+                                                     String subProcessId,
+                                                     String subProcessName) {
+    if (taskKey == null || taskKey.isBlank()) {
+      throw IgrpResponseStatusException.badRequest("TaskKey cannot be null or blank");
+    }
+    return new ProcessArtifact(
+        ProcessArtifactId.generate(),
+        processDefinitionId,
+        taskKey,
+        name,
+        true,
+        subProcessId,
+        subProcessName,
+        new ArrayList<>()
+    );
+  }
+
+  public static ProcessArtifact rebuild(ProcessArtifactId id,
+                                        ProcessDefinitionId processDefinitionId,
+                                        String taskKey,
+                                        String name,
+                                        boolean isSubProcessTask,
+                                        String subProcessId,
+                                        String subProcessName,
+                                        List<ArtifactVariable> variables) {
+    return new ProcessArtifact(id, processDefinitionId, taskKey, name, isSubProcessTask, subProcessId, subProcessName, variables);
   }
 
   public void updateInfo(String taskKey, String name) {
@@ -76,11 +120,14 @@ public class ProcessArtifact {
       this.variables.stream()
           .filter(v -> v.getId().equals(updatedVar.getId()))
           .findFirst()
-          .ifPresent(v -> v.updateInfo(updatedVar.getName(), updatedVar.getType(), updatedVar.getDefaultValue(), updatedVar.isRequired()));
+          .ifPresent(v -> v.updateInfo(
+              updatedVar.getName(),
+              updatedVar.getType(),
+              updatedVar.getDefaultValue(),
+              updatedVar.isRequired()
+          ));
     }
   }
-
-
 
   public Optional<ArtifactVariable> getVariableById(ArtifactVariableId id) {
     if (id == null) return Optional.empty();

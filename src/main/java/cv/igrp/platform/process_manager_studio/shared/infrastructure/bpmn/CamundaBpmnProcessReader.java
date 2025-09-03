@@ -3,15 +3,15 @@ package cv.igrp.platform.process_manager_studio.shared.infrastructure.bpmn;
 import cv.igrp.platform.process_manager_studio.shared.domain.exceptions.IgrpResponseStatusException;
 import org.camunda.bpm.model.bpmn.Bpmn;
 import org.camunda.bpm.model.bpmn.BpmnModelInstance;
-import org.camunda.bpm.model.bpmn.instance.ExtensionElements;
+import org.camunda.bpm.model.bpmn.instance.*;
 import org.camunda.bpm.model.bpmn.instance.Process;
-import org.camunda.bpm.model.bpmn.instance.SubProcess;
-import org.camunda.bpm.model.bpmn.instance.UserTask;
 import org.camunda.bpm.model.bpmn.instance.camunda.CamundaFormData;
 import org.camunda.bpm.model.bpmn.instance.camunda.CamundaFormField;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
+
+
 
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
@@ -42,12 +42,14 @@ public class CamundaBpmnProcessReader implements BpmnProcessReader {
 
       List<ParsedUserTask> parsedUserTasks = new ArrayList<>();
 
+     // readGateways(process);
+
       // UserTasks do processo principal
-      parsedUserTasks.addAll(extractUserTasks(process.getChildElementsByType(UserTask.class)));
+      parsedUserTasks.addAll(extractUserTasks(process.getChildElementsByType(UserTask.class), false, null, null));
 
       // UserTasks dos sub-processos
       for (SubProcess subProcess : process.getChildElementsByType(SubProcess.class)) {
-        parsedUserTasks.addAll(extractUserTasks(subProcess.getChildElementsByType(UserTask.class)));
+        extractSubProcessTasks(subProcess, parsedUserTasks);
       }
 
       ParsedProcess parsedProcess = new ParsedProcess(processKey, processName, parsedUserTasks);
@@ -60,7 +62,25 @@ public class CamundaBpmnProcessReader implements BpmnProcessReader {
     }
   }
 
-  private List<ParsedUserTask> extractUserTasks(Collection<UserTask> userTasks) {
+  private void extractSubProcessTasks(SubProcess subProcess, List<ParsedUserTask> allTasks) {
+    // Extrair UserTasks deste subprocesso
+    allTasks.addAll(
+        extractUserTasks(
+            subProcess.getChildElementsByType(UserTask.class),
+            true,
+            subProcess.getId(),
+            subProcess.getName()
+        )
+    );
+
+    // Se existirem nested subprocessos, continuar recursivamente
+    for (SubProcess nested : subProcess.getChildElementsByType(SubProcess.class)) {
+      extractSubProcessTasks(nested, allTasks);
+    }
+  }
+
+
+  private List<ParsedUserTask> extractUserTasks(Collection<UserTask> userTasks, boolean isSubProcessTask, String subProcessId, String subProcessName) {
     List<ParsedUserTask> parsedUserTasks = new ArrayList<>();
 
     for (UserTask userTask : userTasks) {
@@ -88,11 +108,39 @@ public class CamundaBpmnProcessReader implements BpmnProcessReader {
         }
       }
 
-      parsedUserTasks.add(new ParsedUserTask(taskId, taskName, variables));
+      parsedUserTasks.add(
+          new ParsedUserTask(taskId, taskName, variables, isSubProcessTask, subProcessId, subProcessName)
+      );
     }
 
     return parsedUserTasks;
   }
+
+
+
+
+  private void readGateways(Process process) {
+    // Coletar todos os gateways (exclusive, inclusive, parallel)
+    Collection<Gateway> gateways = process.getChildElementsByType(Gateway.class);
+
+    for (Gateway gw : gateways) {
+      String gwType = gw.getElementType().getTypeName(); // tipo (ExclusiveGateway, ParallelGateway, etc.)
+      LOGGER.info("Gateway encontrado: {} (id={}, name={})", gwType, gw.getId(), gw.getName());
+
+      for (SequenceFlow flow : gw.getOutgoing()) {
+        String cond = (flow.getConditionExpression() != null)
+            ? flow.getConditionExpression().getTextContent()
+            : "(sem condição)";
+        FlowNode target = flow.getTarget();
+        LOGGER.info("  -> Saída para {} (id={}, name={}), condição: {}",
+            target.getElementType().getTypeName(),
+            target.getId(),
+            target.getName(),
+            cond);
+      }
+    }
+  }
+
 
   @Override
   public String sanitizeBpmnXml(String rawXml) {

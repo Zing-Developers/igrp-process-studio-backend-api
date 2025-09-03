@@ -2,7 +2,7 @@ package cv.igrp.platform.process_manager_studio.project.infrastructure.mappers;
 
 import cv.igrp.platform.process_manager_studio.project.application.dto.ProcessDefinitionResponseDTO;
 import cv.igrp.platform.process_manager_studio.project.application.dto.ProcessDefinitionResponseLightDTO;
-import cv.igrp.platform.process_manager_studio.project.application.dto.ProjectArtifactResponseDTO;
+import cv.igrp.platform.process_manager_studio.project.application.dto.ProcessArtifactResponseDTO;
 import cv.igrp.platform.process_manager_studio.project.domain.models.ProcessDefinition;
 import cv.igrp.platform.process_manager_studio.project.domain.models.ProcessArtifact;
 import cv.igrp.platform.process_manager_studio.project.domain.models.ProcessVariable;
@@ -137,12 +137,13 @@ public class ProcessDefinitionMapper {
 
 
     if (processDefinition.getArtifacts() != null && !processDefinition.getArtifacts().isEmpty()) {
-      List<ProjectArtifactResponseDTO> projectArtifactResponseDTOS = processDefinition.getArtifacts().stream()
+      List<ProcessArtifactResponseDTO> projectArtifactResponseDTOS = processDefinition.getArtifacts().stream()
           .map(projectArtifactMapper::toResponseDTO)
           .collect(Collectors.toList());
 
-      pdDto.setProjectArtifacts(projectArtifactResponseDTOS);
+      pdDto.setProcessArtifacts(projectArtifactResponseDTOS);
     }
+
 
 
     return pdDto;

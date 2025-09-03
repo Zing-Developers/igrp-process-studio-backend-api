@@ -150,9 +150,9 @@
       "primaryKey": false
     },
     {
-      "name": "projectArtifacts",
+      "name": "processArtifacts",
       "objectType": "dto",
-      "type": "ProjectArtifactResponse",
+      "type": "ProcessArtifactResponse",
       "required": false,
       "before": false,
       "after": false,

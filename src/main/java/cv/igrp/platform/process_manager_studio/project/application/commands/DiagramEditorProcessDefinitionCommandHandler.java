@@ -42,6 +42,8 @@ public class DiagramEditorProcessDefinitionCommandHandler implements CommandHand
 
     ParsedProcess parsedProcess = bpmnProcessReader.readFromXml(contentDto);
 
+    LOGGER.debug("parsedProcess : {}", parsedProcess);
+
     LOGGER.debug("content : {}", contentDto);
 
      var processKey = command.getProcessKey();
@@ -62,9 +64,23 @@ public class DiagramEditorProcessDefinitionCommandHandler implements CommandHand
     }
 
     if (parsedProcess.getUserTasks() != null && !parsedProcess.getUserTasks().isEmpty()) {
-      // Processa user tasks e adiciona artifacts e variáveis
       for (var userTask : parsedProcess.getUserTasks()) {
-        var artifact = ProcessArtifact.create(processDefinition.getId(), userTask.getId(), userTask.getName());
+        ProcessArtifact artifact;
+        if (userTask.isSubProcessTask()) {
+          artifact = ProcessArtifact.createFromSubProcess(
+              processDefinition.getId(),
+              userTask.getId(),
+              userTask.getName(),
+              userTask.getSubProcessId(),
+              userTask.getSubProcessName()
+          );
+        } else {
+          artifact = ProcessArtifact.create(
+              processDefinition.getId(),
+              userTask.getId(),
+              userTask.getName()
+          );
+        }
 
         if (userTask.getVariables() != null && !userTask.getVariables().isEmpty()) {
           LOGGER.debug("Adding variables to artifact: {}", artifact.getId());
@@ -84,6 +100,8 @@ public class DiagramEditorProcessDefinitionCommandHandler implements CommandHand
         processDefinition.addArtifact(artifact);
       }
     }
+
+
 
     processDefinitionRepository.save(processDefinition);
 

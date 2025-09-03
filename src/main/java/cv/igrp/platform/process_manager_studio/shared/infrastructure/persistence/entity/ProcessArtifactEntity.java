@@ -11,6 +11,7 @@ import org.hibernate.envers.Audited;
 import java.util.UUID;
 import jakarta.validation.constraints.NotBlank;
 import java.util.List;
+import java.util.ArrayList;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 
@@ -28,23 +29,33 @@ public class ProcessArtifactEntity extends AuditEntity {
     @Column(name = "id", unique = true, nullable = false)
     private UUID id;
 
-
+  
     @NotBlank(message = "taskKey is mandatory")
     @Column(name="task_key", nullable = false)
     private String taskKey;
 
-
+  
     @Column(name="name")
     private String name;
 
+  
+    @Column(name="is_subprocess_task")
+    private boolean isSubprocessTask;
 
+  
+    @Column(name="subprocess_id")
+    private String subprocessId;
+
+  
+    @Column(name="subprocess_name")
+    private String subprocessName;
+
+  
 
 
   @OneToMany(mappedBy = "processArtifactId", fetch = FetchType.LAZY, cascade = { CascadeType.ALL }, orphanRemoval = true)
     @OnDelete(action = OnDeleteAction.SET_NULL)
-private List<ArtifactVariableEntity> variables;
-
-  @ManyToOne(fetch = FetchType.LAZY)
+private List<ArtifactVariableEntity> variables = new ArrayList<>();   @ManyToOne(fetch = FetchType.LAZY)
    @JoinColumn(name = "proces_definition_id")
    private ProcessDefinitionEntity procesDefinitionId;
 

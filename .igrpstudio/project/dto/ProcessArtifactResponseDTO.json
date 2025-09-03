@@ -1,7 +1,7 @@
 {
   "type": "dto",
   "module": "project",
-  "name": "ProjectArtifactResponse",
+  "name": "ProcessArtifactResponse",
   "template": "classic",
   "enableCustonValidation": false,
   "attributes": [
@@ -31,6 +31,42 @@
     },
     {
       "name": "name",
+      "objectType": "java",
+      "type": "string",
+      "required": false,
+      "before": false,
+      "after": false,
+      "positive": false,
+      "isEmail": false,
+      "isUrl": false,
+      "primaryKey": false
+    },
+    {
+      "name": "isSubProcessTask",
+      "objectType": "java",
+      "type": "boolean",
+      "required": false,
+      "before": false,
+      "after": false,
+      "positive": false,
+      "isEmail": false,
+      "isUrl": false,
+      "primaryKey": false
+    },
+    {
+      "name": "subProcessId",
+      "objectType": "java",
+      "type": "string",
+      "required": false,
+      "before": false,
+      "after": false,
+      "positive": false,
+      "isEmail": false,
+      "isUrl": false,
+      "primaryKey": false
+    },
+    {
+      "name": "subProcessName",
       "objectType": "java",
       "type": "string",
       "required": false,

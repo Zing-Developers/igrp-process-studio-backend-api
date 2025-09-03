@@ -1,7 +1,7 @@
 package cv.igrp.platform.process_manager_studio.project.infrastructure.mappers;
 
 import cv.igrp.platform.process_manager_studio.project.application.dto.ArtifactVariableResponseDTO;
-import cv.igrp.platform.process_manager_studio.project.application.dto.ProjectArtifactResponseDTO;
+import cv.igrp.platform.process_manager_studio.project.application.dto.ProcessArtifactResponseDTO;
 import cv.igrp.platform.process_manager_studio.project.domain.models.ProcessArtifact;
 import cv.igrp.platform.process_manager_studio.shared.domain.valueobject.ProcessDefinitionId;
 import cv.igrp.platform.process_manager_studio.shared.domain.valueobject.ProcessArtifactId;
@@ -35,6 +35,9 @@ public class ProcessArtifactMapper {
         ProcessDefinitionId.of(entity.getProcesDefinitionId().getId().toString()),
         entity.getTaskKey(),
         entity.getName(),
+        Boolean.TRUE.equals(entity.isSubprocessTask()),
+        entity.getSubprocessId(),
+        entity.getSubprocessName(),
         variableEntities.stream()
             .map(artifactVariableMapper::toDomain)
             .collect(Collectors.toList())
@@ -51,6 +54,9 @@ public class ProcessArtifactMapper {
     entity.setId(domain.getId().identifier().value());
     entity.setTaskKey(domain.getTaskKey());
     entity.setName(domain.getName());
+    entity.setSubprocessTask(domain.isSubProcessTask());
+    entity.setSubprocessId(domain.getSubProcessId());
+    entity.setSubprocessName(domain.getSubProcessName());
 
     ProcessDefinitionEntity processDefinitionEntity = new ProcessDefinitionEntity();
     processDefinitionEntity.setId(domain.getProcessDefinitionId().identifier().value());
@@ -66,17 +72,21 @@ public class ProcessArtifactMapper {
       entity.setVariables(Collections.emptyList());
     }
 
+
     return entity;
   }
 
-  public ProjectArtifactResponseDTO toResponseDTO(ProcessArtifact projectArtifact) {
-    ProjectArtifactResponseDTO paDto = new ProjectArtifactResponseDTO();
-    paDto.setProjectArtifactId(projectArtifact.getId().identifier().getValueAsString());
-    paDto.setTaskKey(projectArtifact.getTaskKey());
-    paDto.setName(projectArtifact.getName());
+  public ProcessArtifactResponseDTO toResponseDTO(ProcessArtifact processArtifact) {
+    ProcessArtifactResponseDTO paDto = new ProcessArtifactResponseDTO();
+    paDto.setProjectArtifactId(processArtifact.getId().identifier().getValueAsString());
+    paDto.setTaskKey(processArtifact.getTaskKey());
+    paDto.setName(processArtifact.getName());
+    paDto.setSubProcessTask(processArtifact.isSubProcessTask());
+    paDto.setSubProcessId(processArtifact.getSubProcessId());
+    paDto.setSubProcessName(processArtifact.getSubProcessName());
 
-    if (projectArtifact.getVariables() != null && !projectArtifact.getVariables().isEmpty()) {
-      List<ArtifactVariableResponseDTO> variableDtos = projectArtifact.getVariables().stream()
+    if (processArtifact.getVariables() != null && !processArtifact.getVariables().isEmpty()) {
+      List<ArtifactVariableResponseDTO> variableDtos = processArtifact.getVariables().stream()
           .map(artifactVariableMapper::toResponseDTO)
           .collect(Collectors.toList());
       paDto.setArtifactVariables(variableDtos);
@@ -87,5 +97,7 @@ public class ProcessArtifactMapper {
 
     return paDto;
   }
+
+
 
 }
