@@ -1,0 +1,73 @@
+{
+  "type": "enum",
+  "module": "shared",
+  "name": "ProcessDefinitionState",
+  "values": [
+    {
+      "name": "DRAFT",
+      "attributes": [
+        "DRAFT",
+        "Rascunho"
+      ]
+    },
+    {
+      "name": "VALIDATED",
+      "attributes": [
+        "VALIDATED",
+        "Validado internamente, mas ainda não publicado"
+      ]
+    },
+    {
+      "name": "PUBLISHED",
+      "attributes": [
+        "PUBLISHED",
+        "Publicado"
+      ]
+    },
+    {
+      "name": "DEPRECATED",
+      "attributes": [
+        "DEPRECATED",
+        "Obsoleto"
+      ]
+    },
+    {
+      "name": "ARCHIVED",
+      "attributes": [
+        "ARCHIVED",
+        "Arquivado"
+      ]
+    },
+    {
+      "name": "DISABLED",
+      "attributes": [
+        "DISABLED",
+        "Temporariamente desativado."
+      ]
+    },
+    {
+      "name": "ERROR",
+      "attributes": [
+        "ERROR",
+        "Erro no parsing"
+      ]
+    },
+    {
+      "name": "DELETED",
+      "attributes": [
+        "DELETED",
+        "Eliminado"
+      ]
+    }
+  ],
+  "attributes": [
+    {
+      "type": "string",
+      "name": "Code"
+    },
+    {
+      "type": "string",
+      "name": "Description"
+    }
+  ]
+}

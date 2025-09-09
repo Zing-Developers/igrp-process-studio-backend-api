@@ -7,9 +7,9 @@ networks:
 
 services:
 
-  postgres-igrpplatformprocessmanagerstudio-api-service:
+  postgres-studio-process:
       image: postgres:17-alpine
-      container_name: postgres-igrpplatformprocessmanagerstudio-api-service
+      container_name: postgres-studio-process
       environment:
         POSTGRES_USER: ${POSTGRES_USER}
         POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
@@ -17,7 +17,7 @@ services:
       ports:
         - ${POSTGRES_EXTERNAL_PORT}:${POSTGRES_INTERNAL_PORT}
       volumes:
-        - postgres-data-17-igrpplatformprocessmanagerstudio-api-service:/var/lib/postgresql/data
+        - postgres-data-17-studio:/var/lib/postgresql/data
       restart: unless-stopped
 
   igrpplatformprocessmanagerstudio-service:
@@ -28,7 +28,7 @@ services:
     env_file:
       - .env
     depends_on:
-      - postgres-igrpplatformprocessmanagerstudio-api-service
+      - postgres-studio-process
     environment:
       - SERVER_PORT=${SERVICE_PORT}
       - SERVICE_NAME=igrpplatformprocessmanagerstudio-service
@@ -46,5 +46,5 @@ services:
           memory: 700m
 
 volumes:
-  postgres-data-17-igrpplatformprocessmanagerstudio-api-service:
+  postgres-data-17-studio:
     driver: local
