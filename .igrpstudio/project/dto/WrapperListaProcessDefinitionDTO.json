@@ -1,0 +1,28 @@
+{
+  "type": "dto",
+  "module": "project",
+  "name": "WrapperListaProcessDefinition",
+  "template": "classic",
+  "enableCustonValidation": false,
+  "extends": {
+    "name": "Page",
+    "module": "project"
+  },
+  "attributes": [
+    {
+      "name": "content",
+      "objectType": "dto",
+      "type": "ProcessDefinitionResponseLight",
+      "required": false,
+      "before": false,
+      "after": false,
+      "positive": false,
+      "isEmail": false,
+      "isUrl": false,
+      "primaryKey": false,
+      "module": "project",
+      "collectionType": "list"
+    }
+  ],
+  "id": "1fmbamf31j"
+}

@@ -1,0 +1,388 @@
+{
+  "type": "controller",
+  "name": "ProcessDefinition",
+  "module": "project",
+  "description": "process definition endpoint",
+  "basePath": "api/v1/projects",
+  "actions": [
+    {
+      "actionName": "saveProcessDefinition",
+      "path": "{projectId}/process-definitions",
+      "method": "POST",
+      "requestBody": {
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "ProcessDefinitionRequest",
+              "collectionType": "none",
+              "name": "data",
+              "objectType": "dto",
+              "module": "project"
+            }
+          }
+        }
+      },
+      "responses": {
+        "201": {
+          "name": "Created",
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "ProcessDefinitionResponse",
+                "objectType": "dto",
+                "name": "data",
+                "collectionType": "none",
+                "module": "project"
+              }
+            }
+          }
+        }
+      },
+      "pathVariables": [
+        {
+          "name": "projectId",
+          "type": "string",
+          "isRequired": true
+        }
+      ]
+    },
+    {
+      "actionName": "deployProcessDefinition",
+      "path": "process-definitions/{processKey}/deploy",
+      "method": "POST",
+      "requestBody": {
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "BpmDiagram",
+              "collectionType": "none",
+              "name": "data",
+              "objectType": "dto",
+              "module": "project"
+            }
+          }
+        }
+      },
+      "responses": {
+        "200": {
+          "name": "OK",
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "ProcessDefinitionResponse",
+                "objectType": "dto",
+                "name": "data",
+                "collectionType": "none",
+                "module": "project"
+              }
+            }
+          }
+        }
+      },
+      "pathVariables": [
+        {
+          "name": "processKey",
+          "type": "string",
+          "isRequired": true
+        }
+      ]
+    },
+    {
+      "actionName": "diagramEditorProcessDefinition",
+      "path": "process-definitions/{processKey}/diagram",
+      "method": "PUT",
+      "requestBody": {
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "BpmDiagram",
+              "collectionType": "none",
+              "name": "data",
+              "objectType": "dto",
+              "module": "project"
+            }
+          }
+        }
+      },
+      "responses": {
+        "200": {
+          "name": "OK",
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "ProcessDefinitionResponse",
+                "objectType": "dto",
+                "name": "data",
+                "collectionType": "none",
+                "module": "project"
+              }
+            }
+          }
+        }
+      },
+      "pathVariables": [
+        {
+          "name": "processKey",
+          "type": "string",
+          "isRequired": true
+        }
+      ]
+    },
+    {
+      "actionName": "getProcessDefinitionById",
+      "path": "process-definitions/{processId}",
+      "method": "GET",
+      "responses": {
+        "200": {
+          "name": "OK",
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "ProcessDefinitionResponse",
+                "objectType": "dto",
+                "name": "data",
+                "collectionType": "none",
+                "module": "project"
+              }
+            }
+          }
+        }
+      },
+      "pathVariables": [
+        {
+          "name": "processId",
+          "type": "string",
+          "isRequired": true
+        }
+      ]
+    },
+    {
+      "actionName": "getProcessDefinition",
+      "path": "process-definitions",
+      "method": "GET",
+      "responses": {
+        "200": {
+          "name": "OK",
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "WrapperListaProcessDefinition",
+                "objectType": "dto",
+                "name": "data",
+                "collectionType": "none",
+                "module": "project"
+              }
+            }
+          }
+        }
+      },
+      "requestParams": [
+        {
+          "type": "string",
+          "name": "appCode",
+          "isRequired": false
+        },
+        {
+          "type": "string",
+          "name": "processKey",
+          "isRequired": false
+        },
+        {
+          "type": "string",
+          "name": "processName",
+          "isRequired": false
+        },
+        {
+          "type": "string",
+          "name": "projectCode",
+          "isRequired": false
+        },
+        {
+          "type": "string",
+          "name": "projectName",
+          "isRequired": false
+        },
+        {
+          "type": "string",
+          "name": "state",
+          "isRequired": false
+        },
+        {
+          "type": "string",
+          "name": "pageNumber",
+          "value": "0",
+          "isRequired": true
+        },
+        {
+          "type": "string",
+          "name": "pageSize",
+          "value": "20",
+          "isRequired": true
+        }
+      ]
+    },
+    {
+      "actionName": "updateProcessDefinition",
+      "path": "process-definitions/{processId}",
+      "method": "PUT",
+      "requestBody": {
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "ProcessDefinitionRequest",
+              "collectionType": "none",
+              "name": "data",
+              "objectType": "dto",
+              "module": "project"
+            }
+          }
+        }
+      },
+      "responses": {
+        "200": {
+          "name": "OK",
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "ProcessDefinitionResponse",
+                "objectType": "dto",
+                "name": "data",
+                "collectionType": "none",
+                "module": "project"
+              }
+            }
+          }
+        }
+      },
+      "pathVariables": [
+        {
+          "name": "processId",
+          "type": "string",
+          "isRequired": true
+        }
+      ]
+    },
+    {
+      "actionName": "deleteProcessDefinition",
+      "path": "process-definitions/{processId}/delete",
+      "method": "PATCH",
+      "responses": {
+        "200": {
+          "name": "OK",
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "string",
+                "name": "data",
+                "collectionType": "map"
+              }
+            }
+          }
+        }
+      },
+      "pathVariables": [
+        {
+          "name": "processId",
+          "type": "string",
+          "isRequired": true
+        }
+      ]
+    },
+    {
+      "actionName": "restoreProcessDefinition",
+      "path": "process-definitions/{processId}/restore",
+      "method": "PATCH",
+      "responses": {
+        "200": {
+          "name": "OK",
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "string",
+                "name": "data",
+                "collectionType": "map"
+              }
+            }
+          }
+        }
+      },
+      "pathVariables": [
+        {
+          "name": "processId",
+          "type": "string",
+          "isRequired": true
+        }
+      ]
+    },
+    {
+      "actionName": "addVariablesToProcess",
+      "path": "process-definitions/{processId}/variables",
+      "method": "POST",
+      "requestBody": {
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "ProcessVariableRequest",
+              "collectionType": "list",
+              "name": "data",
+              "objectType": "dto",
+              "module": "project"
+            }
+          }
+        }
+      },
+      "responses": {
+        "200": {
+          "name": "OK",
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "ProcessVariableResponse",
+                "objectType": "dto",
+                "name": "data",
+                "collectionType": "list",
+                "module": "project"
+              }
+            }
+          }
+        }
+      },
+      "pathVariables": [
+        {
+          "name": "processId",
+          "type": "string",
+          "isRequired": true
+        }
+      ]
+    },
+    {
+      "actionName": "getProcessDefinitionVariables",
+      "path": "process-definitions/{processId}/variables",
+      "method": "GET",
+      "responses": {
+        "200": {
+          "name": "OK",
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "ProcessVariableResponse",
+                "objectType": "dto",
+                "name": "data",
+                "collectionType": "list",
+                "module": "project"
+              }
+            }
+          }
+        }
+      },
+      "pathVariables": [
+        {
+          "name": "processId",
+          "type": "string",
+          "isRequired": true
+        }
+      ]
+    }
+  ],
+  "id": "rq125xn7ri-CONTROLLER-addVariablesToProcess"
+}
