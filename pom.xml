@@ -106,10 +106,19 @@
             <version>6.3.7</version>
         </dependency>
 
+
+        <!-- Core Module -->
+        <dependency>
+            <groupId>cv.igrp.framework.process.management.integration.core</groupId>
+            <artifactId>igrp-framework-process-management-integration-core</artifactId>
+            <version>0.1.0-beta.1</version>
+        </dependency>
+
+        <!-- SDK Client -->
         <dependency>
             <groupId>cv.igrp.framework.process.studio.sdk.client</groupId>
             <artifactId>igrp-framework-process-studio-sdk-client</artifactId>
-            <version>0.0.1-SNAPSHOT</version>
+            <version>0.1.0-beta.1</version>
         </dependency>
 
         <dependency>
