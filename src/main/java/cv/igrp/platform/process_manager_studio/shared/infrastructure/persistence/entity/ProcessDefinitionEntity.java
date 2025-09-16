@@ -13,6 +13,7 @@ import jakarta.validation.constraints.NotBlank;
 import cv.igrp.platform.process_manager_studio.shared.application.constants.ProcessDefinitionState;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.ArrayList;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 
@@ -78,12 +79,14 @@ public class ProcessDefinitionEntity extends AuditEntity {
 
   @OneToMany(mappedBy = "procesDefinitionId", fetch = FetchType.LAZY, cascade = { CascadeType.ALL }, orphanRemoval = true)
     @OnDelete(action = OnDeleteAction.SET_NULL)
-private List<ProcessArtifactEntity> artifacts;
+private List<ProcessArtifactEntity> artifacts = new ArrayList<>();
 
 
   @OneToMany(mappedBy = "procesDefinitionId", fetch = FetchType.LAZY, cascade = { CascadeType.ALL }, orphanRemoval = true)
     @OnDelete(action = OnDeleteAction.SET_NULL)
-private List<ProcessVariableEntity> processVariables;   @ManyToOne(fetch = FetchType.LAZY)
+private List<ProcessVariableEntity> processVariables = new ArrayList<>();
+
+  @ManyToOne(fetch = FetchType.LAZY)
    @JoinColumn(name = "project_id")
    private ProjectEntity projectId;
 
