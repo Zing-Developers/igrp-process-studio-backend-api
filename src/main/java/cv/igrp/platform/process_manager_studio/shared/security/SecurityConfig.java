@@ -31,7 +31,7 @@ public class SecurityConfig {
     @Value("${spring.profiles.active}")
     private String activeProfile;
 
-    @Value("${auth.jwt.issuer}")
+    @Value("${spring.security.oauth2.resourceserver.jwt.issuer-uri}")
     private String jwtIssuer;
 
     /**
@@ -65,12 +65,12 @@ public class SecurityConfig {
           return configuration;
         }));
 
-        if ("development".equals(activeProfile) || "staging".equals(activeProfile)) {
+        /*if ("development".equals(activeProfile) || "staging".equals(activeProfile)) {
             // Disable security in development mode
             http.csrf(AbstractHttpConfigurer::disable); // Disable CSRF protection
             http.authorizeHttpRequests(auth -> auth.anyRequest().permitAll());
             return http.build();
-        }
+        }*/
 
         // Configure OAuth2 Resource Server to use JWT tokens for authentication
         http.oauth2ResourceServer((oauth2ResourceServer) -> oauth2ResourceServer
