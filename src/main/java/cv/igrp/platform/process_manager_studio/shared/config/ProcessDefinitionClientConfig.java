@@ -44,21 +44,15 @@ public class ProcessDefinitionClientConfig {
   @Primary
   public IProcessDefinitionAdapter processDefinitionAdapter(ObjectMapper objectMapper) {
     if (processEngineBaseUrl!=null && !processEngineBaseUrl.isEmpty()) {
-      log.info("==========================================================");
-      log.info("=== SDK Client enabled ===");
-      log.info("=== URL processEngineBaseUrl: {} ===", processEngineBaseUrl);
-      log.info("==========================================================");
 
+      log.info("===URL processEngineBaseUrl: {} ===", processEngineBaseUrl);
       return ProcessDefinitionClient.builder()
           .baseUrl(processEngineBaseUrl)
           .objectMapper(objectMapper)
           .httpClient(HttpClient.newHttpClient())
           .build();
     } else {
-      log.info("==========================================================");
       log.info("=== MOCK SDK enabled ===");
-      log.info("==========================================================");
-
       return new MockProcessDefinitionClient(processDefinitionRepository);
     }
   }

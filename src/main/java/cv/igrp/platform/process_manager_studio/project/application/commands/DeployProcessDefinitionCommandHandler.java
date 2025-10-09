@@ -5,6 +5,7 @@ import cv.igrp.framework.process.management.integration.core.adapter.IProcessDef
 import cv.igrp.framework.process.management.integration.core.model.BpmnSourceType;
 import cv.igrp.framework.process.management.integration.core.model.IgrpProcessDefinitionRepresentation;
 import cv.igrp.framework.process.management.integration.core.model.ProcessDefinitionRepresentation;
+import cv.igrp.framework.process.studio.sdk.client.ProcessDefinitionClient;
 import cv.igrp.framework.stereotype.IgrpCommandHandler;
 import cv.igrp.platform.process_manager_studio.project.application.dto.ProcessDefinitionResponseDTO;
 import cv.igrp.platform.process_manager_studio.project.domain.models.ArtifactVariable;
@@ -20,6 +21,8 @@ import cv.igrp.platform.process_manager_studio.shared.infrastructure.bpmn.Parsed
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -32,21 +35,30 @@ public class DeployProcessDefinitionCommandHandler implements CommandHandler<Dep
   private final ProcessDefinitionMapper processDefinitionMapper;
 
   private final IProcessDefinitionAdapter processDefinitionAdapter;
+  private final ProcessDefinitionClient client;
   private final BpmnProcessReader bpmnProcessReader;
 
 
-  public DeployProcessDefinitionCommandHandler(ProjectRepository projectRepository, ProcessDefinitionRepository processDefinitionRepository, ProcessDefinitionMapper processDefinitionMapper, IProcessDefinitionAdapter processDefinitionAdapter, BpmnProcessReader bpmnProcessReader) {
+  public DeployProcessDefinitionCommandHandler(ProjectRepository projectRepository, ProcessDefinitionRepository processDefinitionRepository, ProcessDefinitionMapper processDefinitionMapper, IProcessDefinitionAdapter processDefinitionAdapter, ProcessDefinitionClient client, BpmnProcessReader bpmnProcessReader) {
     this.projectRepository = projectRepository;
 
     this.processDefinitionRepository = processDefinitionRepository;
     this.processDefinitionMapper = processDefinitionMapper;
     this.processDefinitionAdapter = processDefinitionAdapter;
+    this.client = client;
     this.bpmnProcessReader = bpmnProcessReader;
   }
 
 
   @IgrpCommandHandler
   public ResponseEntity<ProcessDefinitionResponseDTO> handle(DeployProcessDefinitionCommand command) {
+
+    String token = null;
+    var authentication = SecurityContextHolder.getContext().getAuthentication();
+    if (authentication != null && authentication.getPrincipal() instanceof Jwt jwt) {
+      token = jwt.getTokenValue();
+      LOGGER.info("JWT: {}", token);
+    }
 
     var processKey = command.getProcessKey();
 
@@ -124,8 +136,12 @@ public class DeployProcessDefinitionCommandHandler implements CommandHandler<Dep
           .applicationBase(applicationBase)
           .build();
 
+
       LOGGER.info("Attempting to deploy process with key: {}", definitionToDeploy.getKey());
+
+      client.setAuthToken(token);
       ProcessDefinitionRepresentation deployResult = processDefinitionAdapter.deploy(definitionToDeploy);
+
       LOGGER.info("Process deployed successfully. Deployment ID: {}", deployResult.getDeploymentId());
 
       if (deployResult.isDeployed()) {
