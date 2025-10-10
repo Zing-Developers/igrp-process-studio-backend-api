@@ -5,6 +5,7 @@ on:
     branches:
       - cloud-dev
     paths-ignore:
+      - '.github/workflows/**'
       - 'k8s/**'
       - '.gitattributes'
 
@@ -19,7 +20,7 @@ env:
   K8S_NAMESPACE: igrp-process-studio-backend
   K8S_DEPLOYMENT_NAME: igrp-process-studio-backend
   DOCKER_REGISTRY_ENV: dev
-  DOCKER_HUB_IMAGE_TAG: igrp-application-center-with-basepath-test
+  DOCKER_HUB_IMAGE_TAG: igrp-process-studio-backend-api-test
 
 jobs:
   pre-deploy:
