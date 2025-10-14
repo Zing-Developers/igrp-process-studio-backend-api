@@ -7,7 +7,7 @@ RUN mvn -B -q dependency:go-offline
 COPY src ./src
 RUN mvn -B -DskipTests clean package && ls -lh target
 
-FROM FROM eclipse-temurin:23-jre
+FROM eclipse-temurin:23-jre
 WORKDIR /app
 COPY --from=build /app/target/*.jar /app/app.jar
 COPY /etc/certs/irn /etc/certs/irn
