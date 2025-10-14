@@ -10,7 +10,9 @@ RUN mvn -B -DskipTests clean package && ls -lh target
 FROM eclipse-temurin:23-jre
 WORKDIR /app
 COPY --from=build /app/target/*.jar /app/app.jar
-COPY /etc/certs/irn /etc/certs/irn
+
+RUN mkdir -p /app/certs
+COPY certs/irn/* /app/certs
 
 EXPOSE 8080
 ENTRYPOINT ["java","-jar","/app/app.jar"]
