@@ -7,7 +7,7 @@ variables:
   DOCKER_TLS_CERTDIR: ""
   DOCKER_HOST: tcp://docker:2375
   REGISTRY_URL: "registry.nosi.cv"
-  IMAGE_NAME: "igrp-platform-process-management-studio"
+  IMAGE_NAME: "igrp-process-studio-backend-api"
   CI_PROJECT: "igrp"
   VERSION_TAG: "$CI_COMMIT_SHORT_SHA"
   IMAGE_NAME_FULL: "$REGISTRY_URL/$CI_PROJECT/$IMAGE_NAME"
