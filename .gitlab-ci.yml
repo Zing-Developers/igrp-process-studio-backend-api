@@ -7,7 +7,7 @@ variables:
   DOCKER_TLS_CERTDIR: ""
   DOCKER_HOST: tcp://docker:2375
   REGISTRY_URL: "registry.nosi.cv"
-  IMAGE_NAME: "igrp-platform-process-management-studio"
+  IMAGE_NAME: "igrp-process-studio-backend-api"
   CI_PROJECT: "igrp"
   VERSION_TAG: "$CI_COMMIT_SHORT_SHA"
   IMAGE_NAME_FULL: "$REGISTRY_URL/$CI_PROJECT/$IMAGE_NAME"
@@ -19,7 +19,7 @@ stages:
 
 .build-template:
   only:
-    - deploy/base-jvm
+    - master
   before_script:
     - apk add --no-cache curl bash
     - docker login -u "$BASE_REGISTRY_USERNAME" -p "$BASE_REGISTRY_PASSWORD" "$REGISTRY_URL"
@@ -35,7 +35,7 @@ build-jvm-arm64:
   tags:
     - arm64
   only:
-    - deploy/base-jvm
+    - master
 
 build-jvm-amd64:
   extends: .build-template
@@ -44,8 +44,10 @@ build-jvm-amd64:
     - docker buildx create --use --name amd64builder
     - docker buildx inspect --bootstrap
     - docker build -f Dockerfile --platform linux/amd64 -t "$IMAGE_NAME_FULL-jvm:amd64" --no-cache --pull --build-arg APP_BUILD_FINGERPRINT=$CI_COMMIT_SHA --push --output=type=image,name="$IMAGE_NAME_FULL-jvm:amd64",push=true .
+  tags:
+    - nosi-runner
   only:
-    - deploy/base-jvm
+    - master
 
 create-jvm-manifest:
   stage: manifest
@@ -57,4 +59,4 @@ create-jvm-manifest:
     - build-jvm-amd64
     - build-jvm-arm64
   only:
-    - deploy/base-jvm
+    - master
