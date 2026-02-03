@@ -39,6 +39,10 @@ public class ProcessArtifactEntity extends AuditEntity {
     private String name;
 
   
+    @Column(name="form_key")
+    private String formKey;
+
+  
     @Column(name="is_subprocess_task")
     private boolean isSubprocessTask;
 

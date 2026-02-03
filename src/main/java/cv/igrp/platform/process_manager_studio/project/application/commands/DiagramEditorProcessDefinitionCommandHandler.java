@@ -71,6 +71,7 @@ public class DiagramEditorProcessDefinitionCommandHandler implements CommandHand
               processDefinition.getId(),
               userTask.getId(),
               userTask.getName(),
+              userTask.getFormKey(),
               userTask.getSubProcessId(),
               userTask.getSubProcessName()
           );
@@ -78,7 +79,8 @@ public class DiagramEditorProcessDefinitionCommandHandler implements CommandHand
           artifact = ProcessArtifact.create(
               processDefinition.getId(),
               userTask.getId(),
-              userTask.getName()
+              userTask.getName(),
+              userTask.getFormKey()
           );
         }
 
