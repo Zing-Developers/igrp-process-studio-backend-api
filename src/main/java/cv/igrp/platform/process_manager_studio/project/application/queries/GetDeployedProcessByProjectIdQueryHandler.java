@@ -3,6 +3,7 @@ package cv.igrp.platform.process_manager_studio.project.application.queries;
 import cv.igrp.framework.core.domain.QueryHandler;
 import cv.igrp.framework.stereotype.IgrpQueryHandler;
 import cv.igrp.platform.process_manager_studio.project.application.dto.ProjectResponseDTO;
+import cv.igrp.platform.process_manager_studio.project.domain.filter.ProjectFilter;
 import cv.igrp.platform.process_manager_studio.project.domain.repository.ProjectRepository;
 import cv.igrp.platform.process_manager_studio.project.infrastructure.mappers.ProjectMapper;
 import cv.igrp.platform.process_manager_studio.shared.domain.exceptions.IgrpResponseStatusException;
@@ -30,13 +31,14 @@ public class GetDeployedProcessByProjectIdQueryHandler implements QueryHandler<G
   public ResponseEntity<ProjectResponseDTO> handle(GetDeployedProcessByProjectIdQuery query) {
      var projectId = ProjectId.of(query.getProjectId());
 
-     var processName = query.getProcessName();
-     var processKey = query.getProcessKey();
-     var pageSize = Integer.parseInt(query.getPageSize());
-     var pageNumber = Integer.parseInt(query.getPageNumber());
+     var filter = ProjectFilter.builder()
+         .processName(query.getProcessName())
+         .processKey(query.getProcessKey())
+         .pageSize(Integer.parseInt(query.getPageSize()))
+         .pageNumber(Integer.parseInt(query.getPageNumber()))
+         .build();
 
-
-     var project = projectRepository.findByIdWithLatestDeployedProcess(projectId)
+     var project = projectRepository.findByIdWithLatestDeployedProcess(projectId, filter)
          .orElseThrow(() -> IgrpResponseStatusException.notFound("Project not found with id: " + projectId.identifier().value()));
 
      return ResponseEntity.ok(projectMapper.toResponseDTO(project));
