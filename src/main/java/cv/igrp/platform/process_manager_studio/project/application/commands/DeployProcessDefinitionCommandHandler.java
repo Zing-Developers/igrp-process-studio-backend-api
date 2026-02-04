@@ -91,6 +91,7 @@ public class DeployProcessDefinitionCommandHandler implements CommandHandler<Dep
               processDefinition.getId(),
               userTask.getId(),
               userTask.getName(),
+              userTask.getFormKey(),
               userTask.getSubProcessId(),
               userTask.getSubProcessName()
           );
@@ -98,7 +99,8 @@ public class DeployProcessDefinitionCommandHandler implements CommandHandler<Dep
           artifact = ProcessArtifact.create(
               processDefinition.getId(),
               userTask.getId(),
-              userTask.getName()
+              userTask.getName(),
+              userTask.getFormKey()
           );
         }
 

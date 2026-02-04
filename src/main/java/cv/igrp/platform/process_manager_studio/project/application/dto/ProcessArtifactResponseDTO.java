@@ -30,6 +30,9 @@ public class ProcessArtifactResponseDTO  {
   
   
   private String name ;
+
+  
+  private String formKey ;
   
   
   private boolean isSubProcessTask ;
