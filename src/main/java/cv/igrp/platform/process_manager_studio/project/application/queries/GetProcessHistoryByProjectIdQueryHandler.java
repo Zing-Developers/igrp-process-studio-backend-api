@@ -32,14 +32,12 @@ public class GetProcessHistoryByProjectIdQueryHandler implements QueryHandler<Ge
   public ResponseEntity<ProjectResponseDTO> handle(GetProcessHistoryByProjectIdQuery query) {
      var projectId = ProjectId.of(query.getProjectId());
 
-     var filter = ProjectFilter.builder()
-         .processName(query.getProcessName())
-         .processKey(query.getProcessKey())
-         .pageSize(Integer.parseInt(query.getPageSize()))
-         .pageNumber(Integer.parseInt(query.getPageNumber()))
-         .build();
+     var processName = query.getProcessName();
+     var processKey = query.getProcessKey();
+     var pageSize = Integer.parseInt(query.getPageSize());
+     var pageNumber = Integer.parseInt(query.getPageNumber());
 
-     var project = projectRepository.findById(projectId, filter)
+     var project = projectRepository.findById(projectId)
          .orElseThrow(() -> IgrpResponseStatusException.notFound("Project not found with id: " + projectId.identifier().value()));
 
      return ResponseEntity.ok(projectMapper.toResponseDTO(project));
