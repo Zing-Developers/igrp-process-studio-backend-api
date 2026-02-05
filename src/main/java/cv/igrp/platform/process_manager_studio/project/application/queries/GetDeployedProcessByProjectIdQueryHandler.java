@@ -4,14 +4,19 @@ import cv.igrp.framework.core.domain.QueryHandler;
 import cv.igrp.framework.stereotype.IgrpQueryHandler;
 import cv.igrp.platform.process_manager_studio.project.application.dto.ProjectResponseDTO;
 import cv.igrp.platform.process_manager_studio.project.domain.filter.ProjectFilter;
+import cv.igrp.platform.process_manager_studio.project.domain.models.ProcessDefinition;
+import cv.igrp.platform.process_manager_studio.project.domain.models.Project;
 import cv.igrp.platform.process_manager_studio.project.domain.repository.ProjectRepository;
 import cv.igrp.platform.process_manager_studio.project.infrastructure.mappers.ProjectMapper;
+import cv.igrp.platform.process_manager_studio.shared.application.constants.ProcessDefinitionState;
 import cv.igrp.platform.process_manager_studio.shared.domain.exceptions.IgrpResponseStatusException;
 import cv.igrp.platform.process_manager_studio.shared.domain.valueobject.ProjectId;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
+
+import java.util.List;
 
 @Component
 public class GetDeployedProcessByProjectIdQueryHandler implements QueryHandler<GetDeployedProcessByProjectIdQuery, ResponseEntity<ProjectResponseDTO>>{
@@ -40,7 +45,25 @@ public class GetDeployedProcessByProjectIdQueryHandler implements QueryHandler<G
      var project = projectRepository.findByIdWithLatestDeployedProcess(projectId)
          .orElseThrow(() -> IgrpResponseStatusException.notFound("Project not found with id: " + projectId.identifier().value()));
 
-     return ResponseEntity.ok(projectMapper.toResponseDTO(project));
+     // filtra os processos no objeto Project
+     List<ProcessDefinition> filteredProcesses = project.getProcessDefinitions().stream()
+         .filter(pd -> pd.isLatest() && pd.getState() == ProcessDefinitionState.PUBLISHED)
+         .filter(pd -> processKey == null || pd.getProcessKey().equals(processKey))
+         .filter(pd -> processName == null || pd.getTitle().toLowerCase().contains(processName.toLowerCase()))
+         .toList();
+
+     // cria uma cópia do projeto com a lista filtrada
+     var filteredProject = Project.rebuild(
+         project.getId(),
+         project.getCode(),
+         project.getName(),
+         project.getDescription(),
+         project.isActive(),
+         project.getAppCode(),
+         filteredProcesses
+     );
+
+     return ResponseEntity.ok(projectMapper.toResponseDTO(filteredProject));
   }
 
 }
