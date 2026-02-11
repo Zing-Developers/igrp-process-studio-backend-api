@@ -137,7 +137,7 @@ public class ProcessDefinition {
           .filter(a -> a.getId().equals(updatedArtifact.getId()))
           .findFirst()
           .ifPresent(existingArtifact ->
-                  existingArtifact.updateInfo(updatedArtifact.getTaskKey(), updatedArtifact.getName())
+                  existingArtifact.updateInfo(updatedArtifact.getTaskKey(), updatedArtifact.getName(), updatedArtifact.getFormKey())
               // Se precisar atualizar variáveis, pode chamar um método do ProjectArtifact aqui também
           );
     }
