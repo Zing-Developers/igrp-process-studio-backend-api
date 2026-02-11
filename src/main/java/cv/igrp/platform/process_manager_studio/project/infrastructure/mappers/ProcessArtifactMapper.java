@@ -35,6 +35,7 @@ public class ProcessArtifactMapper {
         ProcessDefinitionId.of(entity.getProcesDefinitionId().getId().toString()),
         entity.getTaskKey(),
         entity.getName(),
+        entity.getFormKey(),
         Boolean.TRUE.equals(entity.isSubprocessTask()),
         entity.getSubprocessId(),
         entity.getSubprocessName(),
@@ -54,6 +55,7 @@ public class ProcessArtifactMapper {
     entity.setId(domain.getId().identifier().value());
     entity.setTaskKey(domain.getTaskKey());
     entity.setName(domain.getName());
+    entity.setFormKey(domain.getFormKey());
     entity.setSubprocessTask(domain.isSubProcessTask());
     entity.setSubprocessId(domain.getSubProcessId());
     entity.setSubprocessName(domain.getSubProcessName());
@@ -81,6 +83,7 @@ public class ProcessArtifactMapper {
     paDto.setProjectArtifactId(processArtifact.getId().identifier().getValueAsString());
     paDto.setTaskKey(processArtifact.getTaskKey());
     paDto.setName(processArtifact.getName());
+    paDto.setFormKey(processArtifact.getFormKey());
     paDto.setSubProcessTask(processArtifact.isSubProcessTask());
     paDto.setSubProcessId(processArtifact.getSubProcessId());
     paDto.setSubProcessName(processArtifact.getSubProcessName());
