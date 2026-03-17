@@ -61,6 +61,11 @@ public class DeployProcessDefinitionCommandHandler
   @IgrpCommandHandler
   public ResponseEntity<ProcessDefinitionResponseDTO> handle(DeployProcessDefinitionCommand command) {
 
+
+    var headers = getRequestHeaders();
+
+    LOGGER.debug("headers: {}", headers);
+
     var processKey = command.getProcessKey();
 
     var content = command.getBpmdiagram().getContent();
@@ -139,8 +144,7 @@ public class DeployProcessDefinitionCommandHandler
 
     LOGGER.info("Attempting to deploy process with key: {}", definitionToDeploy.getKey());
 
-    var headers = getRequestHeaders();
-    ProcessDefinitionRepresentation deployResult = processDefinitionAdapter.deploy(definitionToDeploy);
+    ProcessDefinitionRepresentation deployResult = processDefinitionAdapter.deploy(definitionToDeploy, headers);
 
     LOGGER.info("Process deployed successfully. Deployment ID: {}", deployResult.getDeploymentId());
 
