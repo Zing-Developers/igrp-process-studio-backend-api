@@ -143,9 +143,19 @@ public class DeployProcessDefinitionCommandHandler
         .build();
 
     LOGGER.info("Attempting to deploy process with key: {}", definitionToDeploy.getKey());
+    LOGGER.info("Adapter class: {}", processDefinitionAdapter.getClass().getName());
 
-    ProcessDefinitionRepresentation deployResult = processDefinitionAdapter.deploy(definitionToDeploy, headers);
-
+    ProcessDefinitionRepresentation deployResult = null;
+    try {
+       deployResult = processDefinitionAdapter.deploy(definitionToDeploy, headers);
+    } catch (Exception e) {
+      Throwable cause = e;
+      while (cause.getCause() != null) {
+        cause = cause.getCause();
+        LOGGER.error("Caused by: {} - {}", cause.getClass().getName(), cause.getMessage());
+      }
+      throw e;
+    }
     LOGGER.info("Process deployed successfully. Deployment ID: {}", deployResult.getDeploymentId());
 
     if (deployResult.isDeployed()) {
