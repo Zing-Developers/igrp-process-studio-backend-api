@@ -18,15 +18,22 @@ import cv.igrp.platform.process_manager_studio.shared.domain.exceptions.IgrpResp
 import cv.igrp.platform.process_manager_studio.shared.domain.valueobject.BpmDriagram;
 import cv.igrp.platform.process_manager_studio.shared.infrastructure.bpmn.BpmnProcessReader;
 import cv.igrp.platform.process_manager_studio.shared.infrastructure.bpmn.ParsedProcess;
+import jakarta.servlet.http.HttpServletRequest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.stereotype.Component;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
+
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Component
-public class DeployProcessDefinitionCommandHandler implements CommandHandler<DeployProcessDefinitionCommand, ResponseEntity<ProcessDefinitionResponseDTO>> {
+public class DeployProcessDefinitionCommandHandler
+    implements CommandHandler<DeployProcessDefinitionCommand, ResponseEntity<ProcessDefinitionResponseDTO>> {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(DeployProcessDefinitionCommandHandler.class);
 
@@ -38,8 +45,10 @@ public class DeployProcessDefinitionCommandHandler implements CommandHandler<Dep
   private final ProcessDefinitionClient client;
   private final BpmnProcessReader bpmnProcessReader;
 
-
-  public DeployProcessDefinitionCommandHandler(ProjectRepository projectRepository, ProcessDefinitionRepository processDefinitionRepository, ProcessDefinitionMapper processDefinitionMapper, IProcessDefinitionAdapter processDefinitionAdapter, ProcessDefinitionClient client, BpmnProcessReader bpmnProcessReader) {
+  public DeployProcessDefinitionCommandHandler(ProjectRepository projectRepository,
+                                               ProcessDefinitionRepository processDefinitionRepository, ProcessDefinitionMapper processDefinitionMapper,
+                                               IProcessDefinitionAdapter processDefinitionAdapter, ProcessDefinitionClient client,
+                                               BpmnProcessReader bpmnProcessReader) {
     this.projectRepository = projectRepository;
 
     this.processDefinitionRepository = processDefinitionRepository;
@@ -49,16 +58,13 @@ public class DeployProcessDefinitionCommandHandler implements CommandHandler<Dep
     this.bpmnProcessReader = bpmnProcessReader;
   }
 
-
   @IgrpCommandHandler
   public ResponseEntity<ProcessDefinitionResponseDTO> handle(DeployProcessDefinitionCommand command) {
 
-    String token = null;
-    var authentication = SecurityContextHolder.getContext().getAuthentication();
-    if (authentication != null && authentication.getPrincipal() instanceof Jwt jwt) {
-      token = jwt.getTokenValue();
-      LOGGER.info("JWT: {}", token);
-    }
+
+    var headers = getRequestHeaders();
+
+    LOGGER.debug("headers: {}", headers);
 
     var processKey = command.getProcessKey();
 
@@ -67,20 +73,22 @@ public class DeployProcessDefinitionCommandHandler implements CommandHandler<Dep
 
     var processDefinition = processDefinitionRepository.findDraftByProcessKey(processKey)
         .or(() -> processDefinitionRepository.findLastestByProcessKey(processKey))
-        .orElseThrow(() ->  IgrpResponseStatusException.badRequest("No process found in draft or published state for the given process key: " + processKey));
+        .orElseThrow(() -> IgrpResponseStatusException
+            .badRequest("No process found in draft or published state for the given process key: " + processKey));
 
-      // Verifica estado DRAF
+    // Verifica estado DRAF
 
-      if (processDefinition.isDraft()) {
-        LOGGER.debug("processDefinition is draft: {}", processDefinition);
-        processDefinition.cleanArtifacts(); // Limpa artifacts antigos
-        processDefinition.updateBpmnContent(BpmDriagram.of(content)); // Atualiza o conteúdo do BPMN
-      } else {
-        processDefinition = ProcessDefinition.create(processDefinition.getProjectId(), processDefinition.getProcessKey(), BpmDriagram.of(content),
-            processDefinition.getTitle(), processDefinition.getDescription());
+    if (processDefinition.isDraft()) {
+      LOGGER.debug("processDefinition is draft: {}", processDefinition);
+      processDefinition.cleanArtifacts(); // Limpa artifacts antigos
+      processDefinition.updateBpmnContent(BpmDriagram.of(content)); // Atualiza o conteúdo do BPMN
+    } else {
+      processDefinition = ProcessDefinition.create(processDefinition.getProjectId(), processDefinition.getProcessKey(),
+          BpmDriagram.of(content),
+          processDefinition.getTitle(), processDefinition.getDescription());
 
-        LOGGER.debug("processDefinition new: {}", processDefinition);
-      }
+      LOGGER.debug("processDefinition new: {}", processDefinition);
+    }
 
     // Processa user tasks e adiciona artifacts e variáveis
     if (parsedProcess.getUserTasks() != null && !parsedProcess.getUserTasks().isEmpty()) {
@@ -93,15 +101,13 @@ public class DeployProcessDefinitionCommandHandler implements CommandHandler<Dep
               userTask.getName(),
               userTask.getFormKey(),
               userTask.getSubProcessId(),
-              userTask.getSubProcessName()
-          );
+              userTask.getSubProcessName());
         } else {
           artifact = ProcessArtifact.create(
               processDefinition.getId(),
               userTask.getId(),
               userTask.getName(),
-              userTask.getFormKey()
-          );
+              userTask.getFormKey());
         }
 
         if (userTask.getVariables() != null && !userTask.getVariables().isEmpty()) {
@@ -113,8 +119,7 @@ public class DeployProcessDefinitionCommandHandler implements CommandHandler<Dep
                 variable.getLabel(),
                 variable.getType(),
                 variable.getDefaultValue(),
-                variable.isRequired()
-            );
+                variable.isRequired());
             artifact.addVariable(artifactVariable);
           }
         }
@@ -123,49 +128,85 @@ public class DeployProcessDefinitionCommandHandler implements CommandHandler<Dep
       }
     }
 
-
     String fileName = processDefinition.getProcessKey().concat(".bpmn20.xml");
-      String applicationBase = projectRepository.getApplicationBaseByProjectId(processDefinition.getProjectId());
-      String sanitizedContent = bpmnProcessReader.sanitizeBpmnXml(content);
-      IgrpProcessDefinitionRepresentation definitionToDeploy = IgrpProcessDefinitionRepresentation.builder()
+    String applicationBase = projectRepository.getApplicationBaseByProjectId(processDefinition.getProjectId());
+    String sanitizedContent = bpmnProcessReader.sanitizeBpmnXml(content);
+    IgrpProcessDefinitionRepresentation definitionToDeploy = IgrpProcessDefinitionRepresentation.builder()
 
-          .key(processDefinition.getProcessKey())
-          .name(processDefinition.getTitle())
-          .description(processDefinition.getDescription())
-          .resourceName(fileName)
-          .bpmnXml(sanitizedContent)
-          .bpmnSourceType(BpmnSourceType.INLINE_XML)
-          .applicationBase(applicationBase)
-          .build();
+        .key(processDefinition.getProcessKey())
+        .name(processDefinition.getTitle())
+        .description(processDefinition.getDescription())
+        .resourceName(fileName)
+        .bpmnXml(sanitizedContent)
+        .bpmnSourceType(BpmnSourceType.INLINE_XML)
+        .applicationBase(applicationBase)
+        .build();
 
+    LOGGER.info("Attempting to deploy process with key: {}", definitionToDeploy.getKey());
+    LOGGER.info("Adapter class: {}", processDefinitionAdapter.getClass().getName());
 
-      LOGGER.info("Attempting to deploy process with key: {}", definitionToDeploy.getKey());
-
-      client.setAuthToken(token);
-      ProcessDefinitionRepresentation deployResult = processDefinitionAdapter.deploy(definitionToDeploy);
-
-      LOGGER.info("Process deployed successfully. Deployment ID: {}", deployResult.getDeploymentId());
-
-      if (deployResult.isDeployed()) {
-        processDefinition.deploy(
-            deployResult.getDeploymentId(),
-            deployResult.getDeployedAt(),
-            deployResult.getVersion()
-        );
-      }else{
-        throw IgrpResponseStatusException.badRequest("Process not deployed successfully.");
+    ProcessDefinitionRepresentation deployResult = null;
+    try {
+       deployResult = processDefinitionAdapter.deploy(definitionToDeploy, headers);
+    } catch (Exception e) {
+      Throwable cause = e;
+      while (cause.getCause() != null) {
+        cause = cause.getCause();
+        LOGGER.error("Caused by: {} - {}", cause.getClass().getName(), cause.getMessage());
       }
+      throw e;
+    }
+    LOGGER.info("Process deployed successfully. Deployment ID: {}", deployResult.getDeploymentId());
 
-      processDefinitionRepository.unsetLatestForOtherVersions(
-          processDefinition.getProcessKey(),
-          processDefinition.getId()
-      );
+    if (deployResult.isDeployed()) {
+      processDefinition.deploy(
+          deployResult.getDeploymentId(),
+          deployResult.getDeployedAt(),
+          deployResult.getVersion());
+    } else {
+      throw IgrpResponseStatusException.badRequest("Process not deployed successfully.");
+    }
 
-      processDefinitionRepository.save(processDefinition);
+    processDefinitionRepository.unsetLatestForOtherVersions(
+        processDefinition.getProcessKey(),
+        processDefinition.getId());
 
-      var response = processDefinitionMapper.toResponseDTO(processDefinition, true);
-      return ResponseEntity.ok(response);
+    processDefinitionRepository.save(processDefinition);
+
+    var response = processDefinitionMapper.toResponseDTO(processDefinition, true);
+    return ResponseEntity.ok(response);
 
   }
+
+  private static final Set<String> RESTRICTED_HEADERS = Set.of(
+      "content-length",
+      "content-type",
+      "host",
+      "transfer-encoding",
+      "connection",
+      "expect",
+      "upgrade"
+  );
+
+  private Map<String, String> getRequestHeaders() {
+    var attributes = RequestContextHolder.getRequestAttributes();
+    if (!(attributes instanceof ServletRequestAttributes servletAttributes)) {
+      return Map.of();
+    }
+
+    HttpServletRequest request = servletAttributes.getRequest();
+    var headerNames = request.getHeaderNames();
+    if (headerNames == null) {
+      return Map.of();
+    }
+
+    return Collections.list(headerNames).stream()
+        .filter(name -> !RESTRICTED_HEADERS.contains(name.toLowerCase(Locale.ROOT)))
+        .collect(Collectors.toMap(
+            name -> name.toLowerCase(Locale.ROOT),
+            request::getHeader
+        ));
+  }
+
 
 }
