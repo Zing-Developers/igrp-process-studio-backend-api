@@ -46,9 +46,9 @@ public class DeployProcessDefinitionCommandHandler
   private final BpmnProcessReader bpmnProcessReader;
 
   public DeployProcessDefinitionCommandHandler(ProjectRepository projectRepository,
-      ProcessDefinitionRepository processDefinitionRepository, ProcessDefinitionMapper processDefinitionMapper,
-      IProcessDefinitionAdapter processDefinitionAdapter, ProcessDefinitionClient client,
-      BpmnProcessReader bpmnProcessReader) {
+                                               ProcessDefinitionRepository processDefinitionRepository, ProcessDefinitionMapper processDefinitionMapper,
+                                               IProcessDefinitionAdapter processDefinitionAdapter, ProcessDefinitionClient client,
+                                               BpmnProcessReader bpmnProcessReader) {
     this.projectRepository = projectRepository;
 
     this.processDefinitionRepository = processDefinitionRepository;
