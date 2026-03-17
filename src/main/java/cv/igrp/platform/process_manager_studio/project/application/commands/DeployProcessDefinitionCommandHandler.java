@@ -168,6 +168,16 @@ public class DeployProcessDefinitionCommandHandler
 
   }
 
+  private static final Set<String> RESTRICTED_HEADERS = Set.of(
+      "content-length",
+      "content-type",
+      "host",
+      "transfer-encoding",
+      "connection",
+      "expect",
+      "upgrade"
+  );
+
   private Map<String, String> getRequestHeaders() {
     var attributes = RequestContextHolder.getRequestAttributes();
     if (!(attributes instanceof ServletRequestAttributes servletAttributes)) {
@@ -175,11 +185,13 @@ public class DeployProcessDefinitionCommandHandler
     }
 
     HttpServletRequest request = servletAttributes.getRequest();
-    Enumeration<String> headerNames = request.getHeaderNames();
+    var headerNames = request.getHeaderNames();
     if (headerNames == null) {
       return Map.of();
     }
+
     return Collections.list(headerNames).stream()
+        .filter(name -> !RESTRICTED_HEADERS.contains(name.toLowerCase(Locale.ROOT)))
         .collect(Collectors.toMap(
             name -> name.toLowerCase(Locale.ROOT),
             request::getHeader
