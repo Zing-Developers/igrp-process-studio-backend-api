@@ -27,6 +27,11 @@ public class MockProcessDefinitionClient implements IProcessDefinitionAdapter {
   }
 
   @Override
+  public ProcessDefinitionRepresentation deploy(ProcessDefinitionRepresentation processDefinitionRepresentation, Map<String, String> headers) throws ProcessDefinitionException {
+    return null;
+  }
+
+  @Override
   public ProcessDefinitionRepresentation deploy(ProcessDefinitionRepresentation processToDeploy) throws ProcessDefinitionException {
     if (processToDeploy == null || processToDeploy.getKey() == null) {
       throw new ProcessDefinitionClientException("Process representation and key cannot be null.");
@@ -64,6 +69,11 @@ public class MockProcessDefinitionClient implements IProcessDefinitionAdapter {
     deployedProcesses.put(deploymentId, deployedResult);
 
     return deployedResult;
+  }
+
+  @Override
+  public void undeploy(String deploymentId, Map<String, String> headers) throws ProcessDefinitionException {
+
   }
 
   /**

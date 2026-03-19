@@ -1,6 +1,7 @@
 package cv.igrp.platform.process_manager_studio.project.infrastructure.persistence.repository;
 
 import cv.igrp.platform.process_manager_studio.project.domain.filter.ProjectFilter;
+import cv.igrp.platform.process_manager_studio.project.domain.models.ProcessDefinition;
 import cv.igrp.platform.process_manager_studio.project.domain.models.Project;
 import cv.igrp.platform.process_manager_studio.project.domain.repository.ProjectRepository;
 import cv.igrp.platform.process_manager_studio.project.infrastructure.mappers.ProjectMapper;
@@ -27,29 +28,51 @@ public class ProjectRepositoryImpl implements ProjectRepository {
   @Transactional(readOnly = true)
   @Override
   public Optional<Project> findById(ProjectId id) {
-    if (id == null) return Optional.empty();
+    if (id == null)
+      return Optional.empty();
     return projectEntityRepository.findById(id.identifier().value())
         .map(projectMapper::toDomain);
   }
 
+  @Transactional(readOnly = true)
   @Override
   public Optional<Project> findById(ProjectId id, ProjectFilter filter) {
-    return Optional.empty();
+    if (id == null)
+      return Optional.empty();
+    return projectEntityRepository
+        .findByIdExcludingByStateAndNotLatest(id.identifier().value(), ProcessDefinitionState.PUBLISHED)
+        .map(projectMapper::toDomain)
+        .map(project -> applyProcessDefinitionFilter(project, filter));
   }
 
   @Transactional(readOnly = true)
   @Override
   public Optional<Project> findByIdWithLatestDeployedProcess(ProjectId id) {
-    if (id == null) return Optional.empty();
-    return projectEntityRepository.findByIdWithLatestPublishedProcessDefinitions(id.identifier().value(), ProcessDefinitionState.PUBLISHED)
+    if (id == null)
+      return Optional.empty();
+    return projectEntityRepository
+        .findByIdWithLatestPublishedProcessDefinitions(id.identifier().value(), ProcessDefinitionState.PUBLISHED)
         .map(projectMapper::toDomain);
   }
 
   @Transactional(readOnly = true)
   @Override
+  public Optional<Project> findByIdWithLatestDeployedProcess(ProjectId id, ProjectFilter filter) {
+    if (id == null)
+      return Optional.empty();
+    return projectEntityRepository
+        .findByIdWithLatestPublishedProcessDefinitions(id.identifier().value(), ProcessDefinitionState.PUBLISHED)
+        .map(projectMapper::toDomain)
+        .map(project -> applyProcessDefinitionFilter(project, filter));
+  }
+
+  @Transactional(readOnly = true)
+  @Override
   public Optional<Project> findByIdWithAllProcessAndLatestDeployedProcess(ProjectId id) {
-    if (id == null) return Optional.empty();
-    return projectEntityRepository.findByIdExcludingByStateAndNotLatest(id.identifier().value(), ProcessDefinitionState.PUBLISHED)
+    if (id == null)
+      return Optional.empty();
+    return projectEntityRepository
+        .findByIdExcludingByStateAndNotLatest(id.identifier().value(), ProcessDefinitionState.PUBLISHED)
         .map(projectMapper::toDomain);
   }
 
@@ -61,7 +84,8 @@ public class ProjectRepositoryImpl implements ProjectRepository {
   @Transactional(readOnly = true)
   @Override
   public Optional<Project> findByCode(String code) {
-    if (code == null || code.isBlank()) return Optional.empty();
+    if (code == null || code.isBlank())
+      return Optional.empty();
     return projectEntityRepository.findByCode(code)
         .map(projectMapper::toDomain);
   }
@@ -72,8 +96,7 @@ public class ProjectRepositoryImpl implements ProjectRepository {
 
     var pageable = PageRequest.of(
         filter.getPageNumber() != null ? filter.getPageNumber() : 0,
-        filter.getPageSize() != null ? filter.getPageSize() : 20
-    );
+        filter.getPageSize() != null ? filter.getPageSize() : 20);
 
     Specification<ProjectEntity> spec = (root, query, cb) -> {
 
@@ -109,12 +132,11 @@ public class ProjectRepositoryImpl implements ProjectRepository {
         .toList();
   }
 
-
-
-  @Transactional()
+  @Transactional
   @Override
   public Project save(Project project) {
-    if (project == null) throw new IllegalArgumentException("project cannot be null");
+    if (project == null)
+      throw new IllegalArgumentException("project cannot be null");
     var entity = projectMapper.toEntity(project);
     var savedEntity = projectEntityRepository.save(entity);
     return projectMapper.toDomain(savedEntity);
@@ -122,11 +144,48 @@ public class ProjectRepositoryImpl implements ProjectRepository {
 
   @Override
   public void delete(ProjectId id) {
-   // todo implement later
+    // todo implement later
   }
 
   @Override
   public String getApplicationBaseByProjectId(ProjectId projectId) {
     return projectEntityRepository.findAppCodeById(projectId.identifier().value());
+  }
+
+  private Project applyProcessDefinitionFilter(Project project, ProjectFilter filter) {
+    if (project == null || filter == null)
+      return project;
+
+    var processKeyFilter = filter.getProcessKey();
+    var processNameFilter = filter.getProcessName();
+
+    var stream = project.getProcessDefinitions().stream();
+
+    if (processKeyFilter != null && !processKeyFilter.isBlank()) {
+      var processKey = processKeyFilter.trim().toLowerCase();
+      stream = stream.filter(pd -> pd.getProcessKey() != null && pd.getProcessKey().toLowerCase().equals(processKey));
+    }
+
+    if (processNameFilter != null && !processNameFilter.isBlank()) {
+      var processName = processNameFilter.trim().toLowerCase();
+      stream = stream.filter(pd -> pd.getTitle() != null && pd.getTitle().toLowerCase().contains(processName));
+    }
+
+    List<ProcessDefinition> filtered = stream.toList();
+
+    var pageNumber = filter.getPageNumber() != null ? filter.getPageNumber() : 0;
+    var pageSize = filter.getPageSize() != null ? filter.getPageSize() : 20;
+
+    var fromIndex = Math.max(0, pageNumber * pageSize);
+    if (fromIndex >= filtered.size()) {
+      return Project.rebuild(project.getId(), project.getCode(), project.getName(), project.getDescription(),
+          project.isActive(), project.getAppCode(), List.of());
+    }
+
+    var toIndex = Math.min(fromIndex + pageSize, filtered.size());
+    var paged = filtered.subList(fromIndex, toIndex);
+
+    return Project.rebuild(project.getId(), project.getCode(), project.getName(), project.getDescription(),
+        project.isActive(), project.getAppCode(), paged);
   }
 }

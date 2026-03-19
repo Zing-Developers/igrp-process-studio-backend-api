@@ -86,6 +86,7 @@ public class CamundaBpmnProcessReader implements BpmnProcessReader {
     for (UserTask userTask : userTasks) {
       String taskId = userTask.getId();
       String taskName = userTask.getName();
+      String formKey = userTask.getCamundaFormKey();
       List<ParsedVariable> variables = new ArrayList<>();
 
       ExtensionElements extensionElements = userTask.getExtensionElements();
@@ -109,7 +110,7 @@ public class CamundaBpmnProcessReader implements BpmnProcessReader {
       }
 
       parsedUserTasks.add(
-          new ParsedUserTask(taskId, taskName, variables, isSubProcessTask, subProcessId, subProcessName)
+          new ParsedUserTask(taskId, taskName, formKey, variables, isSubProcessTask, subProcessId, subProcessName)
       );
     }
 
