@@ -5,7 +5,7 @@
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
-        <version>3.5.3</version>
+        <version>3.5.14</version>
         <relativePath/>
     </parent>
     <groupId>cv.igrp.platform</groupId>
@@ -34,7 +34,15 @@
     </repositories>
     <properties>
         <igrp.version>0.1.0-beta.1</igrp.version>
-        <java.version>23</java.version>
+        <igrp.process-runtime.version>0.1.0-beta.24.4</igrp.process-runtime.version>
+        <!-- Must match the process-runtime framework: its jars are Java 25 bytecode,
+             and a lower JRE dies at startup with UnsupportedClassVersionError. -->
+        <java.version>25</java.version>
+        <!-- CVE remediation overrides (Accenture IGRP_Zing-Accenture_v1.0) over Boot 3.5.14 managed versions -->
+        <jackson-bom.version>2.21.6</jackson-bom.version>
+        <logback.version>1.5.38</logback.version>
+        <postgresql.version>42.7.13</postgresql.version>
+        <commons-lang3.version>3.18.0</commons-lang3.version>
         <spring-cloud.version>2025.0.0</spring-cloud.version>
         <springdoc.version>2.8.9</springdoc.version>
     </properties>
@@ -108,7 +116,6 @@
         <dependency>
             <groupId>org.springframework.security</groupId>
             <artifactId>spring-security-oauth2-client</artifactId>
-            <version>6.3.7</version>
         </dependency>
 
 
@@ -166,6 +173,30 @@
             <artifactId>caffeine</artifactId>
         </dependency>
 
+        <!-- Route authorization: interface + no-op default adapter -->
+        <dependency>
+            <groupId>cv.igrp.framework</groupId>
+            <artifactId>process-runtime-auth-core</artifactId>
+        </dependency>
+
+        <!-- IRN authorization adapter: resolves the session cookie against /Auth/me -->
+        <dependency>
+            <groupId>cv.igrp.framework</groupId>
+            <artifactId>process-runtime-auth-irn</artifactId>
+        </dependency>
+
+        <!-- RS256-signed RestClient the IRN adapter calls the IRN API with -->
+        <dependency>
+            <groupId>cv.igrp.framework</groupId>
+            <artifactId>process-runtime-irn-integration</artifactId>
+        </dependency>
+
+        <!-- Cache abstraction backing the /Auth/me lookup (Caffeine is already declared above) -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-cache</artifactId>
+        </dependency>
+
 
         <dependency>
             <groupId>org.springframework.cloud</groupId>
@@ -207,6 +238,31 @@
     </dependencies>
     <dependencyManagement>
         <dependencies>
+            <!-- CVE remediation: guava is transitive via eureka-client (netflix-infix); a direct
+                 dependencyManagement entry out-ranks every BOM import. 33.x closes CVE-2018-10237,
+                 CVE-2023-2976 and CVE-2020-8908. Validate the eureka runtime path in staging. -->
+            <dependency>
+                <groupId>com.google.guava</groupId>
+                <artifactId>guava</artifactId>
+                <version>33.7.1-jre</version>
+            </dependency>
+            <!-- CVE remediation: jackson must be IMPORTED above process-runtime-bom — that BOM's
+                 parent chain expands jackson-bom to concrete versions which out-rank the
+                 jackson-bom.version property of our own parent. First import wins. -->
+            <dependency>
+                <groupId>com.fasterxml.jackson</groupId>
+                <artifactId>jackson-bom</artifactId>
+                <version>${jackson-bom.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+            <dependency>
+                <groupId>cv.igrp.framework</groupId>
+                <artifactId>process-runtime-bom</artifactId>
+                <version>${igrp.process-runtime.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
             <dependency>
                 <groupId>org.springframework.cloud</groupId>
                 <artifactId>spring-cloud-dependencies</artifactId>
