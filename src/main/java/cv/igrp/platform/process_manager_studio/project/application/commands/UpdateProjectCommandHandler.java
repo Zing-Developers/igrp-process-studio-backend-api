@@ -36,6 +36,9 @@ public class UpdateProjectCommandHandler implements CommandHandler<UpdateProject
      project.updateInfo(dto.getCode(), dto.getName(), dto.getDescription(), dto.getAppCode());
 
      var projectSaved = projectRepository.save(project);
+
+     LOGGER.info("Project [{}] updated", projectId.identifier().value());
+
      return ResponseEntity.ok(projectMapper.toResponseDTO(projectSaved));
    }
 

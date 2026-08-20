@@ -37,6 +37,8 @@ public class DeleteProcessDefinitionCommandHandler implements CommandHandler<Del
 
     processDefinitionRepository.save(processDefinition);
 
+    LOGGER.info("Process definition [{}] soft-deleted", processDefinitionId.identifier().value());
+
     return ResponseEntity.ok(Map.of("message", "Process Definition deleted successfully."));
   }
 

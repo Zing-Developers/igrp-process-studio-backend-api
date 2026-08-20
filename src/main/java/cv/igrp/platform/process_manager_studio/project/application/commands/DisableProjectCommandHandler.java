@@ -37,6 +37,8 @@ public class DisableProjectCommandHandler implements CommandHandler<DisableProje
      project.disable();
      projectRepository.save(project);
 
+     LOGGER.info("Project [{}] disabled", projectId.identifier().value());
+
       return ResponseEntity.ok(Map.of("message", "Project disabled successfully."));
    }
 

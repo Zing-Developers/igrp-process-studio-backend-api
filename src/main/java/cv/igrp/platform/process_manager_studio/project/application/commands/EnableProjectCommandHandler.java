@@ -33,6 +33,8 @@ public class EnableProjectCommandHandler implements CommandHandler<EnableProject
      project.enable();
      projectRepository.save(project);
 
+     LOGGER.info("Project [{}] enabled", projectId.identifier().value());
+
      return ResponseEntity.ok(Map.of("message", "Project enabled successfully."));
    }
 

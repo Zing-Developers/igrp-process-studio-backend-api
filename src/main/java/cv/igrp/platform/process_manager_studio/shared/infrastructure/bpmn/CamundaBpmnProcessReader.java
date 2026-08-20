@@ -53,7 +53,7 @@ public class CamundaBpmnProcessReader implements BpmnProcessReader {
       }
 
       ParsedProcess parsedProcess = new ParsedProcess(processKey, processName, parsedUserTasks);
-      LOGGER.info("Parsed process object: {}", parsedProcess);
+      LOGGER.debug("Parsed BPMN process definition");
       return parsedProcess;
 
     } catch (Exception e) {
@@ -126,14 +126,14 @@ public class CamundaBpmnProcessReader implements BpmnProcessReader {
 
     for (Gateway gw : gateways) {
       String gwType = gw.getElementType().getTypeName(); // tipo (ExclusiveGateway, ParallelGateway, etc.)
-      LOGGER.info("Gateway encontrado: {} (id={}, name={})", gwType, gw.getId(), gw.getName());
+      LOGGER.debug("Gateway encontrado: {} (id={}, name={})", gwType, gw.getId(), gw.getName());
 
       for (SequenceFlow flow : gw.getOutgoing()) {
         String cond = (flow.getConditionExpression() != null)
             ? flow.getConditionExpression().getTextContent()
             : "(sem condição)";
         FlowNode target = flow.getTarget();
-        LOGGER.info("  -> Saída para {} (id={}, name={}), condição: {}",
+        LOGGER.debug("  -> Saída para {} (id={}, name={}), condição: {}",
             target.getElementType().getTypeName(),
             target.getId(),
             target.getName(),
