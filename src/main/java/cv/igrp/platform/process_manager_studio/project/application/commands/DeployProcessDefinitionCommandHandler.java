@@ -142,8 +142,8 @@ public class DeployProcessDefinitionCommandHandler
         .applicationBase(applicationBase)
         .build();
 
-    LOGGER.info("Attempting to deploy process with key: {}", definitionToDeploy.getKey());
-    LOGGER.info("Adapter class: {}", processDefinitionAdapter.getClass().getName());
+    LOGGER.debug("Attempting to deploy process with key: {}", definitionToDeploy.getKey());
+    LOGGER.debug("Adapter class: {}", processDefinitionAdapter.getClass().getName());
 
     ProcessDefinitionRepresentation deployResult = null;
     try {
@@ -156,7 +156,7 @@ public class DeployProcessDefinitionCommandHandler
       }
       throw e;
     }
-    LOGGER.info("Process deployed successfully. Deployment ID: {}", deployResult.getDeploymentId());
+    LOGGER.info("Process definition [{}] deployed. Deployment ID: {}", definitionToDeploy.getKey(), deployResult.getDeploymentId());
 
     if (deployResult.isDeployed()) {
       processDefinition.deploy(

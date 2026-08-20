@@ -43,6 +43,8 @@ public class UpdateProcessDefinitionCommandHandler implements CommandHandler<Upd
 
      var saved = processDefinitionRepository.save(processDefinition);
 
+     LOGGER.info("Process definition [{}] updated", processDefinitionId.identifier().value());
+
      var response = processDefinitionMapper.toResponseDTO(saved, true);
 
      return ResponseEntity.ok(response);

@@ -33,6 +33,8 @@ public class CreateProjectCommandHandler implements CommandHandler<CreateProject
 
      var savedProject = projectRepository.save(project);
 
+     LOGGER.info("Project [{}] created with code [{}]", savedProject.getId().identifier().value(), dto.getCode());
+
       return ResponseEntity.ok(projectMapper.toResponseDTO(savedProject));
    }
 
