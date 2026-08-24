@@ -73,10 +73,11 @@ aplicação.
 | # | Decisão |
 |---|---|
 | D-1 | Usar **só** o array `permissions` do `/Auth/me`. `accessibleModuleCodes` fica de fora. |
-| D-2 | **Não** reutilizar permissões IRN existentes (`TASK_MANAGEMENT:ver`, `PROCESS_MAP:ver`, …). Catálogo novo, derivado dos métodos HTTP, registado no System Administration. |
+| D-2 | Catálogo novo, derivado dos métodos HTTP, registado no System Administration. O catálogo mantém-se, mas desde a 24.5 cada rota **também** aceita os códigos reais dos frontends IRN via `accept-also` (secção 4.3), porque na prática só os códigos dos módulos frontend estão atribuídos a perfis. |
 | D-3 | O mapeamento rota→permissão **não vive no `SecurityConfig`** — é delegado ao adapter IRN por uma interface no `process-runtime-auth-core`. |
 | D-4 | A mesma solução aplica-se à `igrp-process-management-backend-api`. |
 | D-5 | Não declarar o catálogo no iGRP Studio por agora. |
+| D-6 | Híbrido multi-frontend: cada rota aceita qualquer de — a permissão derivada ou os códigos reais dos frontends (`accept-also`), a partir da 24.5. |
 
 ---
 
@@ -202,7 +203,47 @@ PATCH  …/projects/process-definitions/{processId}/restore    :editar       res
 GET    /parameterization/process-definition-state            :visualizar   getProcessDefinitionState
 ```
 
-### 4.3 Riscos assinalados
+### 4.3 Frontends e códigos IRN aceites (`accept-also`)
+
+Desde `process-runtime-auth-irn` `0.1.0-beta.24.5`.
+
+**Problema.** Vários frontends IRN partilham os mesmos endpoints deste backend, mas cada um é um *módulo
+IRN distinto, com o seu próprio código e os seus próprios verbos de ação*. O backend não consegue saber
+qual frontend fez a chamada — mesmo token, mesmo endpoint. Na prática, no System Administration só os
+códigos dos módulos frontend estão atribuídos a perfis; o catálogo derivado `STUDIO_*:acao` não foi
+adotado. Gate feito só pelo catálogo derivado daria **403 a toda a gente**.
+
+**Solução (híbrido `accept-also`).** Cada nível de rota passa a aceitar **qualquer de**: a permissão
+derivada (`CODE:acao`) **ou** as permissões reais dos frontends IRN, declaradas em configuração como
+`accept-also.<acao>` — uma lista, any-of, indexada pela ação derivada, para que os overrides de leitura
+herdem a lista de `visualizar`. O SPI já suportava múltiplas authorities (`RouteAuthorizationRule.anyAuthority`
+é um `Set`, o `SecurityConfig` chama `hasAnyAuthority`), por isso o `SecurityConfig` **não muda**. Ausente
+ou vazio → comportamento idêntico ao anterior (retrocompatível).
+
+Exemplo, num módulo Studio (linha comentada no `application.properties`):
+
+```properties
+# accept-also da leitura de process-definitions — descomentar e preencher com o código real do frontend
+# irn.authorization.routes.modules[0].accept-also.visualizar=${IRN_STUDIO_PD_ACCEPT_READ:}
+```
+
+Os placeholders estão **preparados em todos os módulos Studio**, cada um com o seu knob de env-var e um
+TODO; só falta descomentar o nível certo e preencher o código. Candidatos para o Studio:
+`PROCESS_CONFIGURATION`, `CONFIGURADOR_PROCESSOS` (por confirmar). O único código confirmado em qualquer
+sítio é `TASK_MANAGEMENT:ver`, e esse é da API de management (tasks), não do Studio — por isso **nenhuma
+lista `accept-also` do Studio está ativa ainda**; o mecanismo está ligado e à espera.
+
+**Deploy Studio→Runtime — dois gates, um só token.** O `POST /api/v1/projects/process-definitions/{key}/deploy`
+exige `STUDIO_PROCESS_DEFINITIONS:publicar` (override, não o derivado `:criar`). O handler de deploy do
+Studio reencaminha os headers do pedido — incluindo o `Authorization: Bearer` do utilizador (só se retiram
+headers de transporte como `content-length`/`host`) — para o motor de processos em `IGRP_PROCESS_ENGINE_BASE_URL`,
+que reaplica o **seu próprio** gate `PROCESS_DEFINITIONS:publicar`. Mesma identidade real de ponta a ponta,
+sem service account. Verificado no stack e2e: um perfil com `STUDIO_PROCESS_DEFINITIONS:publicar` passa o
+gate (depois 400 em body vazio, ou seja, não é falha de autorização); um perfil com `:visualizar`+`:criar`
+mas **sem** `:publicar` leva **403** no Studio, antes de o runtime sequer ser chamado — prova de que `:criar`
+não faz deploy.
+
+### 4.4 Riscos assinalados
 
 | # | Risco | Correção, se decidirem |
 |---|---|---|
@@ -304,6 +345,12 @@ alteração de código.
 
 As duas variantes de padrão são necessárias porque o `ProjectController` tem mappings sem `value`
 (`POST` e `GET` na raiz `api/v1/projects`).
+
+**Híbrido multi-frontend (24.5, secção 4.3).** O `ModuleRoutes` ganhou o componente
+`acceptAlso` (`Map<String, List<String>>`), indexado pela ação derivada. O helper
+`authoritiesFor(module, action)` une `code:action` com `acceptAlso.get(action)` e devolve o conjunto
+completo de authorities aceites por essa ação — os overrides herdam a lista pela sua ação (um override de
+leitura herda a de `visualizar`). Mapa ausente ou vazio → só a authority derivada, idêntico ao anterior.
 
 Registar o record com `@EnableConfigurationProperties` no `IRNAuthorizationAutoConfiguration`, seguindo
 o mecanismo que já regista o `IrnApiProperties`.
@@ -474,9 +521,23 @@ irn.authorization.routes.modules[2].code=STUDIO_PROJECTS
 irn.authorization.routes.modules[2].pattern=/api/v1/projects
 irn.authorization.routes.modules[3].code=STUDIO_PARAMETERIZATION
 irn.authorization.routes.modules[3].pattern=/parameterization
+
+# accept-also — códigos reais dos frontends IRN por nível (secção 4.3). Comentados: placeholders prontos,
+# cada módulo com o seu knob de env-var. Descomentar o nível certo e preencher quando o código vier do
+# System Administration — sem rebuild.
+# irn.authorization.routes.modules[0].accept-also.publicar=${IRN_STUDIO_PD_ACCEPT_PUBLISH:}
+# irn.authorization.routes.modules[0].accept-also.visualizar=${IRN_STUDIO_PD_ACCEPT_READ:}
+# irn.authorization.routes.modules[1].accept-also.visualizar=${IRN_STUDIO_PD_ACCEPT_READ:}
+# irn.authorization.routes.modules[2].accept-also.visualizar=${IRN_STUDIO_PROJ_ACCEPT_READ:}
+# irn.authorization.routes.modules[2].accept-also.criar=${IRN_STUDIO_PROJ_ACCEPT_WRITE:}
+# irn.authorization.routes.modules[3].accept-also.visualizar=${IRN_STUDIO_PARAM_ACCEPT_READ:}
 ```
 
 Em ambiente IRN: `IGRP_AUTHORIZATION_SERVICE_ADAPTER=irn` e `IGRP_RESTCLIENT_PROVIDER=irn`.
+
+Para ativar um `accept-also`: descomentar a linha do nível pretendido e pôr o código real do frontend no
+env-var correspondente (lista separada por vírgulas se for mais do que um). Enquanto ficarem comentados, o
+gate corre só pelo catálogo derivado — hoje nenhuma lista está ativa (secção 4.3).
 
 **A ordem `[0] → [1] → [2]` é obrigatória** (secção 4.1): `/api/v1/projects` é prefixo dos dois primeiros
 e engoliria as rotas de process-definitions se viesse antes.
