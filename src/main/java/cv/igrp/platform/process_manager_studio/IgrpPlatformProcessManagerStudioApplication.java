@@ -3,6 +3,7 @@ package cv.igrp.platform.process_manager_studio;
 import cv.igrp.platform.process_manager_studio.shared.config.ApplicationAuditorAware;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.context.annotation.Bean;
 import org.springframework.data.auditing.DateTimeProvider;
 import org.springframework.data.domain.AuditorAware;
@@ -12,6 +13,7 @@ import java.time.LocalDateTime;
 import java.util.Optional;
 
 @SpringBootApplication
+@EnableCaching
 @EnableJpaAuditing(auditorAwareRef = "auditAware", dateTimeProviderRef = "auditDateTimeProvider")
 public class IgrpPlatformProcessManagerStudioApplication {
   @Bean
