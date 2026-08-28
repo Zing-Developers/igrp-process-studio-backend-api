@@ -11,6 +11,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
+import cv.igrp.platform.process_manager_studio.shared.security.AuditUserEnricher;
 
 @Component
 public class GetProjectByIdQueryHandler implements QueryHandler<GetProjectByIdQuery, ResponseEntity<ProjectResponseDTO>>{
@@ -21,7 +22,10 @@ public class GetProjectByIdQueryHandler implements QueryHandler<GetProjectByIdQu
   private final ProjectRepository projectRepository;
 
 
-  public GetProjectByIdQueryHandler(ProjectMapper projectMapper, ProjectRepository projectRepository) {
+  private final AuditUserEnricher auditUserEnricher;
+
+  public GetProjectByIdQueryHandler(ProjectMapper projectMapper, ProjectRepository projectRepository, AuditUserEnricher auditUserEnricher) {
+    this.auditUserEnricher = auditUserEnricher;
 
     this.projectMapper = projectMapper;
     this.projectRepository = projectRepository;
@@ -34,7 +38,9 @@ public class GetProjectByIdQueryHandler implements QueryHandler<GetProjectByIdQu
     var project = projectRepository.findByIdWithAllProcessAndLatestDeployedProcess(projectId)
         .orElseThrow(() -> IgrpResponseStatusException.notFound("Project not found with id: " + projectId.identifier().value()));
 
-    return ResponseEntity.ok(projectMapper.toResponseDTO(project));
+    var dto = projectMapper.toResponseDTO(project);
+    auditUserEnricher.enrichProjects(java.util.List.of(dto));
+    return ResponseEntity.ok(dto);
 
   }
 

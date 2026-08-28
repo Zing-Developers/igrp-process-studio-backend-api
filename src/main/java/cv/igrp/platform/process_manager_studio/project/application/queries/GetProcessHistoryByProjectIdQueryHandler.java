@@ -16,6 +16,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
+import cv.igrp.platform.process_manager_studio.shared.security.AuditUserEnricher;
 
 @Component
 public class GetProcessHistoryByProjectIdQueryHandler implements QueryHandler<GetProcessHistoryByProjectIdQuery, ResponseEntity<ProjectResponseDTO>>{
@@ -26,7 +27,10 @@ public class GetProcessHistoryByProjectIdQueryHandler implements QueryHandler<Ge
   private final ProjectMapper projectMapper;
   private final ProjectRepository projectRepository;
 
-  public GetProcessHistoryByProjectIdQueryHandler(ProjectMapper projectMapper, ProjectRepository projectRepository) {
+  private final AuditUserEnricher auditUserEnricher;
+
+  public GetProcessHistoryByProjectIdQueryHandler(ProjectMapper projectMapper, ProjectRepository projectRepository, AuditUserEnricher auditUserEnricher) {
+    this.auditUserEnricher = auditUserEnricher;
 
     this.projectMapper = projectMapper;
     this.projectRepository = projectRepository;
@@ -63,7 +67,9 @@ public class GetProcessHistoryByProjectIdQueryHandler implements QueryHandler<Ge
          filteredProcesses
      );
 
-     return ResponseEntity.ok(projectMapper.toResponseDTO(filteredProject));
+     var dto = projectMapper.toResponseDTO(filteredProject);
+     auditUserEnricher.enrichProjects(java.util.List.of(dto));
+     return ResponseEntity.ok(dto);
   }
 
 }
