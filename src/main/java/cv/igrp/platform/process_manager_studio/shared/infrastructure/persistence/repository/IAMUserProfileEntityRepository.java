@@ -19,4 +19,9 @@ public interface IAMUserProfileEntityRepository extends JpaRepository<IAMUserPro
   @Query("SELECT e FROM IAMUserProfileEntity e WHERE e.sub IN :identifiers OR e.email IN :identifiers")
   List<IAMUserProfileEntity> findBySubInOrEmailIn(@Param("identifiers") Set<String> identifiers);
 
+  /** Same, also matching username — the Spring auditing columns store the principal-claim value,
+   *  which falls back to preferred_username. */
+  @Query("SELECT e FROM IAMUserProfileEntity e WHERE e.sub IN :ids OR e.email IN :ids OR e.username IN :ids")
+  List<IAMUserProfileEntity> findBySubInOrEmailInOrUsernameIn(@Param("ids") Set<String> ids);
+
 }

@@ -18,6 +18,9 @@ import java.util.List;
 
 
 @IgrpDTO
+// Audit user follows the platform pattern: raw principal string + enriched IAM profile (nullable).
+// NOTE for iGRP Studio model owners: mirror these four fields in the generator model so a
+// regeneration does not drop them.
 public class ProjectResponseDTO  {
 
 
@@ -38,6 +41,14 @@ public class ProjectResponseDTO  {
 
 
   private String appCode ;
+
+  private String createdBy ;
+
+  private String lastModifiedBy ;
+
+  private cv.igrp.platform.process_manager_studio.shared.security.m2m.UserProfileDTO userProfileCreatedBy ;
+
+  private cv.igrp.platform.process_manager_studio.shared.security.m2m.UserProfileDTO userProfileLastModifiedBy ;
 
   @Valid
   private List<ProcessDefinitionResponseDTO> processDefinitions = new ArrayList<>();
