@@ -4,6 +4,8 @@ import cv.igrp.platform.process_manager_studio.shared.infrastructure.persistence
 import cv.igrp.platform.process_manager_studio.shared.infrastructure.persistence.repository.IAMUserProfileEntityRepository;
 import cv.igrp.platform.process_manager_studio.shared.infrastructure.persistence.entity.M2mApiKeyEntity;
 import cv.igrp.platform.process_manager_studio.shared.infrastructure.persistence.repository.M2mApiKeyEntityRepository;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -26,6 +28,10 @@ import java.util.stream.Collectors;
  */
 @Service
 public class M2mKeyService {
+
+  // Credential lifecycle events are first-order security audit records: one structured line per
+  // mutation (key-values become OTLP log attributes). Never the plaintext key, never the email.
+  private static final Logger LOGGER = LoggerFactory.getLogger(M2mKeyService.class);
 
   /** MODULE:action — role/group strings can never be granted through the permissions column (M-11). */
   private static final Pattern PERMISSION_FORMAT = Pattern.compile("^[A-Z0-9_.]+:[a-z_]+$");
@@ -68,6 +74,12 @@ public class M2mKeyService {
     }
     for (String permission : permissions) {
       if (permission == null || !PERMISSION_FORMAT.matcher(permission.trim()).matches()) {
+        LOGGER.atWarn()
+            .addKeyValue("event", "m2m_key_permission_rejected")
+            .addKeyValue("m2m.client_name", clientName)
+            .addKeyValue("m2m.permission", String.valueOf(permission))
+            .addKeyValue("enduser.id", createdBy)
+            .log("M2M key creation rejected for client [{}]: invalid permission [{}]", clientName, permission);
         throw new IllegalArgumentException(
             "invalid permission '" + permission + "': expected MODULE:action (roles are not allowed)");
       }
@@ -86,6 +98,14 @@ public class M2mKeyService {
     entity.setCreatedBy(createdBy);
     entity.setCreatedAt(Instant.now());
     repository.save(entity);
+
+    LOGGER.atInfo()
+        .addKeyValue("event", "m2m_key_created")
+        .addKeyValue("m2m.key_id", entity.getId().toString())
+        .addKeyValue("m2m.client_name", clientName)
+        .addKeyValue("m2m.key_prefix", entity.getKeyPrefix())
+        .addKeyValue("enduser.id", createdBy)
+        .log("M2M key created for client [{}] (prefix {})", clientName, entity.getKeyPrefix());
 
     return new CreatedKey(entity.getId(), clientName, plaintext, createdBy, profileOf(createdBy));
   }
@@ -133,6 +153,14 @@ public class M2mKeyService {
     entity.setRevokedAt(Instant.now());
     entity.setRevokedBy(revokedBy);
     repository.save(entity);
+
+    LOGGER.atInfo()
+        .addKeyValue("event", "m2m_key_revoked")
+        .addKeyValue("m2m.key_id", entity.getId().toString())
+        .addKeyValue("m2m.client_name", entity.getClientName())
+        .addKeyValue("m2m.key_prefix", entity.getKeyPrefix())
+        .addKeyValue("enduser.id", revokedBy)
+        .log("M2M key revoked for client [{}] (prefix {}) — effective immediately", entity.getClientName(), entity.getKeyPrefix());
   }
 
   /**
@@ -153,6 +181,15 @@ public class M2mKeyService {
 
     old.setExpiresAt(Instant.now().plus(rotateGrace));
     repository.save(old);
+
+    LOGGER.atInfo()
+        .addKeyValue("event", "m2m_key_rotated")
+        .addKeyValue("m2m.key_id", replacement.id().toString())
+        .addKeyValue("m2m.replaced_key_id", old.getId().toString())
+        .addKeyValue("m2m.client_name", old.getClientName())
+        .addKeyValue("m2m.old_key_expires_at", old.getExpiresAt().toString())
+        .addKeyValue("enduser.id", createdBy)
+        .log("M2M key rotated for client [{}]: old key (prefix {}) expires at {}", old.getClientName(), old.getKeyPrefix(), old.getExpiresAt());
 
     return replacement;
   }
