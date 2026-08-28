@@ -64,7 +64,7 @@ public class ProjectMapper {
             .map(processDefinitionMapper::toDomain)
             .toList();
 
-    return Project.rebuild(
+    var project = Project.rebuild(
         ProjectId.of(entity.getId()),
         entity.getCode(),
         entity.getName(),
@@ -73,6 +73,8 @@ public class ProjectMapper {
         entity.getAppCode(),
         processDefinitions
     );
+    project.setAudit(entity.getCreatedBy(), entity.getLastModifiedBy());
+    return project;
   }
 
   public ProjectResponseDTO toResponseDTO(Project project) {
@@ -85,6 +87,8 @@ public class ProjectMapper {
     dto.setDescription(project.getDescription());
     dto.setActive(project.isActive());
     dto.setAppCode(project.getAppCode());
+    dto.setCreatedBy(project.getCreatedBy());
+    dto.setLastModifiedBy(project.getLastModifiedBy());
 
     if (project.getProcessDefinitions() != null) {
 
@@ -109,6 +113,8 @@ public class ProjectMapper {
     dto.setDescription(project.getDescription());
     dto.setActive(project.isActive());
     dto.setAppCode(project.getAppCode());
+    dto.setCreatedBy(project.getCreatedBy());
+    dto.setLastModifiedBy(project.getLastModifiedBy());
 
     if (project.getProcessDefinitions() != null) {
 
@@ -134,6 +140,8 @@ public class ProjectMapper {
     dto.setDescription(project.getDescription());
     dto.setActive(project.isActive());
     dto.setAppCode(project.getAppCode());
+    dto.setCreatedBy(project.getCreatedBy());
+    dto.setLastModifiedBy(project.getLastModifiedBy());
 
     if (project.getProcessDefinitions() != null) {
 

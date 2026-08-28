@@ -14,6 +14,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
+import cv.igrp.platform.process_manager_studio.shared.security.AuditUserEnricher;
 
 @Component
 public class GetProcessDefinitionQueryHandler implements QueryHandler<GetProcessDefinitionQuery, ResponseEntity<WrapperListaProcessDefinitionDTO>>{
@@ -23,7 +24,10 @@ public class GetProcessDefinitionQueryHandler implements QueryHandler<GetProcess
   private final ProcessDefinitionRepository processDefinitionRepository;
   private final ProcessDefinitionMapper processDefinitionMapper;
 
-  public GetProcessDefinitionQueryHandler(ProcessDefinitionRepository processDefinitionRepository, ProcessDefinitionMapper processDefinitionMapper) {
+  private final AuditUserEnricher auditUserEnricher;
+
+  public GetProcessDefinitionQueryHandler(ProcessDefinitionRepository processDefinitionRepository, ProcessDefinitionMapper processDefinitionMapper, AuditUserEnricher auditUserEnricher) {
+    this.auditUserEnricher = auditUserEnricher;
 
     this.processDefinitionRepository = processDefinitionRepository;
     this.processDefinitionMapper = processDefinitionMapper;
@@ -57,6 +61,7 @@ public class GetProcessDefinitionQueryHandler implements QueryHandler<GetProcess
      wrapperListaProcessDefinitionDTO.setPageSize(pageSize);
      wrapperListaProcessDefinitionDTO.setTotalElements((long) projects.size());
 
+     auditUserEnricher.enrichLightProcessDefinitions(wrapperListaProcessDefinitionDTO.getContent());
      return ResponseEntity.ok(wrapperListaProcessDefinitionDTO);
 
   }
