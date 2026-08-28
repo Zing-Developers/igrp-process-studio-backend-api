@@ -27,10 +27,10 @@ public class M2mKeyService {
   private final M2mKeyCodec codec;
   private final Duration rotateGrace;
 
-  public record CreatedKey(UUID id, String clientName, String plaintextKey) { }
+  public record CreatedKey(UUID id, String clientName, String plaintextKey, String createdBy) { }
   public record KeySummary(UUID id, String clientName, String keyPrefix, String permissions,
                            String email, boolean active, Instant expiresAt, Instant createdAt,
-                           Instant lastUsedAt, Instant revokedAt) { }
+                           String createdBy, Instant lastUsedAt, Instant revokedAt, String revokedBy) { }
 
   public M2mKeyService(M2mApiKeyEntityRepository repository,
                        M2mKeyCodec codec,
@@ -71,24 +71,25 @@ public class M2mKeyService {
     entity.setCreatedAt(Instant.now());
     repository.save(entity);
 
-    return new CreatedKey(entity.getId(), clientName, plaintext);
+    return new CreatedKey(entity.getId(), clientName, plaintext, createdBy);
   }
 
   @Transactional(readOnly = true)
   public List<KeySummary> list() {
     return repository.findAll().stream()
         .map(e -> new KeySummary(e.getId(), e.getClientName(), e.getKeyPrefix(), e.getPermissions(),
-            e.getEmail(), e.isActive(), e.getExpiresAt(), e.getCreatedAt(), e.getLastUsedAt(),
-            e.getRevokedAt()))
+            e.getEmail(), e.isActive(), e.getExpiresAt(), e.getCreatedAt(), e.getCreatedBy(),
+            e.getLastUsedAt(), e.getRevokedAt(), e.getRevokedBy()))
         .toList();
   }
 
   @Transactional
-  public void revoke(UUID id) {
+  public void revoke(UUID id, String revokedBy) {
     final var entity = repository.findById(id)
         .orElseThrow(() -> new IllegalArgumentException("m2m key not found: " + id));
     entity.setActive(false);
     entity.setRevokedAt(Instant.now());
+    entity.setRevokedBy(revokedBy);
     repository.save(entity);
   }
 
