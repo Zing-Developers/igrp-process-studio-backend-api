@@ -139,4 +139,14 @@ public class Project {
         .collect(Collectors.toList());
   }
 
+
+  // Audit metadata carried from the entity (Spring auditing columns); set after rebuild so the
+  // factory signatures stay untouched. Exposed on response DTOs as raw string + enriched profile.
+  private String createdBy;
+  private String lastModifiedBy;
+
+  public void setAudit(String createdBy, String lastModifiedBy) {
+    this.createdBy = createdBy;
+    this.lastModifiedBy = lastModifiedBy;
+  }
 }
