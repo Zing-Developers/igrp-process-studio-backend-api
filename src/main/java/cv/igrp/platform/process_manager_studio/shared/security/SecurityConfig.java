@@ -10,6 +10,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
@@ -35,6 +36,7 @@ import org.springframework.security.oauth2.server.resource.authentication.JwtAut
 import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationProvider;
 import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationToken;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.access.intercept.AuthorizationFilter;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 import org.springframework.web.cors.CorsConfiguration;
@@ -93,7 +95,8 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http,
                                                    JwtDecoder jwtDecoder,
-                                                   M2mKeyResolver m2mKeyResolver) throws Exception {
+                                                   M2mKeyResolver m2mKeyResolver,
+                                                   IAMUserProfileSyncFilter iamUserProfileSyncFilter) throws Exception {
 
         /*
           Creates and configures a CORS filter.
@@ -186,6 +189,9 @@ public class SecurityConfig {
         // rejected with 403 before the permission rules are even consulted.
         http.csrf(AbstractHttpConfigurer::disable);
 
+        // Sync IAM profiles from JWT claims (audit-user enrichment); machines (non-JWT) are skipped
+        http.addFilterBefore(iamUserProfileSyncFilter, AuthorizationFilter.class);
+
         return http.build();
     }
 
@@ -217,6 +223,14 @@ public class SecurityConfig {
      *
      * @return the {@link JwtAuthenticationConverter} used to convert JWT tokens to Spring Security authentication
      */
+    /** Stops Boot auto-registering the @Component filter container-wide; it runs inside the chain only. */
+    @Bean
+    public FilterRegistrationBean<IAMUserProfileSyncFilter> iamUserProfileSyncFilterRegistration(IAMUserProfileSyncFilter filter) {
+        var registration = new FilterRegistrationBean<>(filter);
+        registration.setEnabled(false);
+        return registration;
+    }
+
     @Bean
     public JwtAuthenticationConverter jwtAuthenticationConverter() {
 

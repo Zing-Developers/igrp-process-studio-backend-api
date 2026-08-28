@@ -51,4 +51,12 @@ public class ProcessDefinitionResponseLightDTO {
 
   private String deploymentDate ;
 
+  private String createdBy ;
+
+  private String lastModifiedBy ;
+
+  private cv.igrp.platform.process_manager_studio.shared.security.m2m.UserProfileDTO userProfileCreatedBy ;
+
+  private cv.igrp.platform.process_manager_studio.shared.security.m2m.UserProfileDTO userProfileLastModifiedBy ;
+
 }

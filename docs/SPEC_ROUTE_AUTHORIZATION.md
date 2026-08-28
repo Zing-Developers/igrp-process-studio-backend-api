@@ -243,7 +243,16 @@ gate (depois 400 em body vazio, ou seja, não é falha de autorização); um per
 mas **sem** `:publicar` leva **403** no Studio, antes de o runtime sequer ser chamado — prova de que `:criar`
 não faz deploy.
 
-### 4.4 Riscos assinalados
+### 4.4 Chamadores de máquina (M2M, release 24.6)
+
+Este spec cobre o caminho de **utilizador** (JWT Keycloak + sessão IRN). Sistemas externos sem sessão
+autenticam por **API key M2M** — `Authorization: Bearer igrpm2m_…` — com keys **próprias do Studio**
+(tabela e gestão independentes das da management API), cujas permissões `MODULO:acao` passam nas
+mesmas regras de rota desta spec. As rotas `/m2m-keys/**` têm gate dedicado no `SecurityConfig`
+(JWT super-admin only), fora do catálogo. Spec completo no repo da management API:
+`docs/SPEC_M2M_AUTHORIZATION.md`.
+
+### 4.5 Riscos assinalados
 
 | # | Risco | Correção, se decidirem |
 |---|---|---|

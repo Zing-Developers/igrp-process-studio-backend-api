@@ -13,6 +13,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
+import cv.igrp.platform.process_manager_studio.shared.security.AuditUserEnricher;
 
 @Component
 public class GetProjectsQueryHandler implements QueryHandler<GetProjectsQuery, ResponseEntity<WrapperListaProjectDTO>>{
@@ -22,7 +23,10 @@ public class GetProjectsQueryHandler implements QueryHandler<GetProjectsQuery, R
   private final ProjectMapper projectMapper;
   private final ProjectRepository projectRepository;
 
-  public GetProjectsQueryHandler(ProjectMapper projectMapper, ProjectRepository projectRepository) {
+  private final AuditUserEnricher auditUserEnricher;
+
+  public GetProjectsQueryHandler(ProjectMapper projectMapper, ProjectRepository projectRepository, AuditUserEnricher auditUserEnricher) {
+    this.auditUserEnricher = auditUserEnricher;
 
     this.projectMapper = projectMapper;
     this.projectRepository = projectRepository;
@@ -48,6 +52,7 @@ public class GetProjectsQueryHandler implements QueryHandler<GetProjectsQuery, R
      wrapperListaProjectDTO.setPageSize(filter.getPageSize());
      wrapperListaProjectDTO.setTotalElements((long) projects.size());
 
+    auditUserEnricher.enrichProjects(wrapperListaProjectDTO.getContent());
     return ResponseEntity.ok(wrapperListaProjectDTO);
   }
 

@@ -11,6 +11,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
+import cv.igrp.platform.process_manager_studio.shared.security.AuditUserEnricher;
 
 @Component
 public class GetProcessDefinitionByIdQueryHandler implements QueryHandler<GetProcessDefinitionByIdQuery, ResponseEntity<ProcessDefinitionResponseDTO>>{
@@ -21,7 +22,10 @@ public class GetProcessDefinitionByIdQueryHandler implements QueryHandler<GetPro
   private final ProcessDefinitionRepository processDefinitionRepository;
   private final ProcessDefinitionMapper processDefinitionMapper;
 
-  public GetProcessDefinitionByIdQueryHandler(ProcessDefinitionRepository processDefinitionRepository, ProcessDefinitionMapper processDefinitionMapper) {
+  private final AuditUserEnricher auditUserEnricher;
+
+  public GetProcessDefinitionByIdQueryHandler(ProcessDefinitionRepository processDefinitionRepository, ProcessDefinitionMapper processDefinitionMapper, AuditUserEnricher auditUserEnricher) {
+    this.auditUserEnricher = auditUserEnricher;
 
     this.processDefinitionRepository = processDefinitionRepository;
     this.processDefinitionMapper = processDefinitionMapper;
@@ -37,6 +41,7 @@ public class GetProcessDefinitionByIdQueryHandler implements QueryHandler<GetPro
              IgrpResponseStatusException.notFound("Process Definition not found with id: " + processDefinitionId.identifier().value()));
 
      var response = processDefinitionMapper.toResponseDTO(processDefinition, true);
+     auditUserEnricher.enrichProcessDefinitions(java.util.List.of(response));
      return ResponseEntity.ok(response);
   }
 

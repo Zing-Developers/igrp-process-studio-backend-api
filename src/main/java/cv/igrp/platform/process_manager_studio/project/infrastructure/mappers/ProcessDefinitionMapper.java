@@ -97,7 +97,7 @@ public class ProcessDefinitionMapper {
         .map(processVariableMapper::toDomain)
         .collect(Collectors.toList());
 
-    return ProcessDefinition.rebuild(
+    var model = ProcessDefinition.rebuild(
          ProcessDefinitionId.of(entity.getId().toString()),
         ProjectId.of(entity.getProjectId().getId().toString()),
         entity.getProcessKey(),
@@ -113,6 +113,8 @@ public class ProcessDefinitionMapper {
         entity.isLatest(),
         processVariables
     );
+    model.setAudit(entity.getCreatedBy(), entity.getLastModifiedBy());
+    return model;
   }
 
   public ProcessDefinitionResponseDTO toResponseDTO(ProcessDefinition processDefinition, boolean showBpmContent) {
@@ -125,6 +127,8 @@ public class ProcessDefinitionMapper {
     pdDto.setBpmnDiagramUrl(processDefinition.getBpmnDiagramUrl());
     pdDto.setVersion(processDefinition.getVersion());
     pdDto.setStatus(processDefinition.getState()!= null ? processDefinition.getState().getCode() : null);
+    pdDto.setCreatedBy(processDefinition.getCreatedBy());
+    pdDto.setLastModifiedBy(processDefinition.getLastModifiedBy());
     pdDto.setStatusDesc(processDefinition.getState()!= null ? processDefinition.getState().getDescription() : null);
     pdDto.setDeploymentId(processDefinition.getDeploymentId()!= null ? processDefinition.getDeploymentId() : null);
     pdDto.setDeploymentDate(processDefinition.getDeploymentDate()!= null ? processDefinition.getDeploymentDate().format(formatter) : null);
@@ -164,6 +168,8 @@ public class ProcessDefinitionMapper {
     pdDto.setDeploymentDate(processDefinition.getDeploymentDate()!= null ? processDefinition.getDeploymentDate().format(formatter) : null);
     pdDto.setTitle(processDefinition.getTitle());
     pdDto.setDescription(processDefinition.getDescription());
+    pdDto.setCreatedBy(processDefinition.getCreatedBy());
+    pdDto.setLastModifiedBy(processDefinition.getLastModifiedBy());
     pdDto.setProjectId(processDefinition.getProjectId().identifier().getValueAsString());
 
     return pdDto;
