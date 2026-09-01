@@ -34,7 +34,7 @@
     </repositories>
     <properties>
         <igrp.version>0.1.0-beta.1</igrp.version>
-        <igrp.process-runtime.version>0.1.0-beta.24.6</igrp.process-runtime.version>
+        <igrp.process-runtime.version>0.1.0-beta.24.7</igrp.process-runtime.version>
         <!-- Must match the process-runtime framework: its jars are Java 25 bytecode,
              and a lower JRE dies at startup with UnsupportedClassVersionError. -->
         <java.version>25</java.version>
