@@ -1,12 +1,24 @@
 {
   "type": "dto",
   "module": "project",
-  "name": "ArtifactVariableResponse",
+  "name": "UserProfile",
   "template": "classic",
   "enableCustonValidation": false,
   "attributes": [
     {
-      "name": "artifactVariableId",
+      "name": "id",
+      "objectType": "java",
+      "type": "uuid",
+      "required": false,
+      "before": false,
+      "after": false,
+      "positive": false,
+      "isEmail": false,
+      "isUrl": false,
+      "primaryKey": false
+    },
+    {
+      "name": "username",
       "objectType": "java",
       "type": "string",
       "required": false,
@@ -18,7 +30,7 @@
       "primaryKey": false
     },
     {
-      "name": "key",
+      "name": "email",
       "objectType": "java",
       "type": "string",
       "required": false,
@@ -30,7 +42,7 @@
       "primaryKey": false
     },
     {
-      "name": "name",
+      "name": "firstName",
       "objectType": "java",
       "type": "string",
       "required": false,
@@ -42,7 +54,7 @@
       "primaryKey": false
     },
     {
-      "name": "type",
+      "name": "lastName",
       "objectType": "java",
       "type": "string",
       "required": false,
@@ -54,7 +66,7 @@
       "primaryKey": false
     },
     {
-      "name": "defaultValue",
+      "name": "fullName",
       "objectType": "java",
       "type": "string",
       "required": false,
@@ -66,19 +78,7 @@
       "primaryKey": false
     },
     {
-      "name": "isRequired",
-      "objectType": "java",
-      "type": "boolean",
-      "required": false,
-      "before": false,
-      "after": false,
-      "positive": false,
-      "isEmail": false,
-      "isUrl": false,
-      "primaryKey": false
-    },
-    {
-      "name": "createdBy",
+      "name": "sub",
       "objectType": "java",
       "type": "string",
       "required": false,
@@ -88,69 +88,7 @@
       "isEmail": false,
       "isUrl": false,
       "primaryKey": false
-    },
-    {
-      "name": "lastModifiedBy",
-      "objectType": "java",
-      "type": "string",
-      "required": false,
-      "before": false,
-      "after": false,
-      "positive": false,
-      "isEmail": false,
-      "isUrl": false,
-      "primaryKey": false
-    },
-    {
-      "name": "createdAt",
-      "objectType": "java",
-      "type": "datetime",
-      "required": false,
-      "before": false,
-      "after": false,
-      "positive": false,
-      "isEmail": false,
-      "isUrl": false,
-      "primaryKey": false
-    },
-    {
-      "name": "updatedAt",
-      "objectType": "java",
-      "type": "datetime",
-      "required": false,
-      "before": false,
-      "after": false,
-      "positive": false,
-      "isEmail": false,
-      "isUrl": false,
-      "primaryKey": false
-    },
-    {
-      "name": "userProfileCreatedBy",
-      "objectType": "dto",
-      "type": "UserProfile",
-      "required": false,
-      "before": false,
-      "after": false,
-      "positive": false,
-      "isEmail": false,
-      "isUrl": false,
-      "primaryKey": false,
-      "module": "project"
-    },
-    {
-      "name": "userProfileLastModifiedBy",
-      "objectType": "dto",
-      "type": "UserProfile",
-      "required": false,
-      "before": false,
-      "after": false,
-      "positive": false,
-      "isEmail": false,
-      "isUrl": false,
-      "primaryKey": false,
-      "module": "project"
     }
   ],
-  "id": "yjxd6yx0n3"
+  "id": "p66vktn41o"
 }

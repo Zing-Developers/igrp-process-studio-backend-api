@@ -6,7 +6,7 @@ import cv.igrp.platform.process_manager_studio.project.application.dto.ProjectRe
 import cv.igrp.platform.process_manager_studio.project.application.dto.ProjectResponseLigthDTO;
 import cv.igrp.platform.process_manager_studio.shared.infrastructure.persistence.entity.IAMUserProfileEntity;
 import cv.igrp.platform.process_manager_studio.shared.infrastructure.persistence.repository.IAMUserProfileEntityRepository;
-import cv.igrp.platform.process_manager_studio.shared.security.m2m.UserProfileDTO;
+import cv.igrp.platform.process_manager_studio.project.application.dto.UserProfileDTO;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
