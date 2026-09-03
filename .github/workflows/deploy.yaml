@@ -74,7 +74,7 @@ env:
   # Chave debaixo de `components:` no values.yaml, cujo `.tag` deve ser
   # atualizado (components.<HELM_CHART_COMPONENT>.tag) — não precisa de
   # bater certo com o nome de uma pasta, é só a chave dentro do YAML.
-  HELM_CHART_COMPONENT: "igrp-process-studio-backend"                # ex.: cms, frontend, process-runtime-backend
+  HELM_CHART_COMPONENT: "process-studio-backend"                # ex.: cms, frontend, process-runtime-backend
   # ===============================================
 
 jobs:
