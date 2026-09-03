@@ -1,0 +1,87 @@
+{
+  "type": "model",
+  "module": "shared",
+  "name": "IAMUserProfileEntity",
+  "tableName": "t_iam_user_profile",
+  "audit": false,
+  "crud": false,
+  "revision": false,
+  "attributes": [
+    {
+      "name": "id",
+      "type": "uuid",
+      "length": 255,
+      "nullable": false,
+      "unique": false,
+      "primaryKey": true,
+      "skipFieldRevision": false,
+      "objectType": "java",
+      "generationType": "NONE"
+    },
+    {
+      "name": "username",
+      "type": "string",
+      "length": 255,
+      "nullable": false,
+      "unique": true,
+      "primaryKey": false,
+      "skipFieldRevision": false
+    },
+    {
+      "name": "email",
+      "type": "string",
+      "length": 255,
+      "nullable": true,
+      "unique": true,
+      "primaryKey": false,
+      "skipFieldRevision": false
+    },
+    {
+      "name": "first_name",
+      "type": "string",
+      "length": 255,
+      "nullable": true,
+      "unique": false,
+      "primaryKey": false,
+      "skipFieldRevision": false
+    },
+    {
+      "name": "last_name",
+      "type": "string",
+      "length": 255,
+      "nullable": true,
+      "unique": false,
+      "primaryKey": false,
+      "skipFieldRevision": false
+    },
+    {
+      "name": "full_name",
+      "type": "string",
+      "length": 255,
+      "nullable": true,
+      "unique": false,
+      "primaryKey": false,
+      "skipFieldRevision": false
+    },
+    {
+      "name": "sub",
+      "type": "string",
+      "length": 255,
+      "nullable": false,
+      "unique": true,
+      "primaryKey": false,
+      "skipFieldRevision": false
+    }
+  ],
+  "indexes": [
+    {
+      "name": "idx_iam_user_profile_sub",
+      "columns": [
+        "sub"
+      ],
+      "unique": false
+    }
+  ],
+  "uniqueConstraints": [],
+  "id": "r9677h6msx"
+}

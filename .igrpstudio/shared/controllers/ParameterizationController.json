@@ -1,0 +1,31 @@
+{
+  "type": "controller",
+  "name": "Parameterization",
+  "module": "shared",
+  "description": "Enumerations exposed to the UI",
+  "basePath": "parameterization",
+  "id": "wmezawmbn2-CONTROLLER",
+  "actions": [
+    {
+      "actionName": "getProcessDefinitionState",
+      "path": "process-definition-state",
+      "method": "GET",
+      "responses": {
+        "200": {
+          "name": "OK",
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "objectType": "java",
+                "name": "data",
+                "collectionType": "list"
+              }
+            }
+          },
+          "description": "List<EnumItem<String>> of ProcessDefinitionState (framework generic type, not a project DTO)"
+        }
+      }
+    }
+  ]
+}
