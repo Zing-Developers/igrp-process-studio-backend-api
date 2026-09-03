@@ -45,4 +45,10 @@ public class ProcessVariable {
     this.defaultValue = defaultValue;
     this.required = required;
   }
+
+  private AuditTrail audit;
+
+  public void setAudit(AuditTrail audit) {
+    this.audit = audit;
+  }
 }

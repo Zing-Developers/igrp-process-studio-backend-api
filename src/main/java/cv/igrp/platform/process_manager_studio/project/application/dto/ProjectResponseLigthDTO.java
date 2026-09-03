@@ -18,7 +18,7 @@ import java.util.List;
 
 
 @IgrpDTO
-public class ProjectResponseLigthDTO  {
+public class ProjectResponseLigthDTO implements cv.igrp.platform.process_manager_studio.shared.security.AuditedResponse {
 
 
 
@@ -42,6 +42,10 @@ public class ProjectResponseLigthDTO  {
   private String createdBy ;
 
   private String lastModifiedBy ;
+
+  private java.time.LocalDateTime createdAt ;
+
+  private java.time.LocalDateTime updatedAt ;
 
   private cv.igrp.platform.process_manager_studio.shared.security.m2m.UserProfileDTO userProfileCreatedBy ;
 
