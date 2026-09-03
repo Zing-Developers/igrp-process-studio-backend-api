@@ -2,7 +2,6 @@ package cv.igrp.platform.process_manager_studio.shared.config;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.AuditorAware;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -15,9 +14,6 @@ public class ApplicationAuditorAware implements AuditorAware<String> {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(ApplicationAuditorAware.class);
 
-  @Value("${spring.profiles.active}")
-  private String activeProfile;
-
   @Override
   public Optional<String> getCurrentAuditor() {
     return Optional.of(getCurrentUserName());
@@ -29,14 +25,10 @@ public class ApplicationAuditorAware implements AuditorAware<String> {
    * by JwtAuthenticationConverter. If that claim is missing from the JWT, falls back to:
    * preferred_username → sub.
    *
-   * @return the current user name, {@code "system"} for unauthenticated calls such as
-   * server-generated records, or an empty string in development and staging
+   * @return the current user name, or {@code "system"} for unauthenticated calls such as
+   * server-generated records
    */
   public String getCurrentUserName() {
-
-    if ("development".equals(activeProfile) || "staging".equals(activeProfile)) {
-      return "";
-    }
 
     Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
