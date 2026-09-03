@@ -30,7 +30,7 @@ public class ProcessArtifactMapper {
 
     List<ArtifactVariableEntity> variableEntities = entity.getVariables() != null ? entity.getVariables() : Collections.emptyList();
 
-    return ProcessArtifact.rebuild(
+    var model = ProcessArtifact.rebuild(
         ProcessArtifactId.of(entity.getId().toString()),
         ProcessDefinitionId.of(entity.getProcesDefinitionId().getId().toString()),
         entity.getTaskKey(),
@@ -43,6 +43,8 @@ public class ProcessArtifactMapper {
             .map(artifactVariableMapper::toDomain)
             .collect(Collectors.toList())
     );
+    model.setAudit(AuditMapping.trail(entity));
+    return model;
   }
 
 
@@ -87,6 +89,7 @@ public class ProcessArtifactMapper {
     paDto.setSubProcessTask(processArtifact.isSubProcessTask());
     paDto.setSubProcessId(processArtifact.getSubProcessId());
     paDto.setSubProcessName(processArtifact.getSubProcessName());
+    AuditMapping.apply(paDto, processArtifact.getAudit());
 
     if (processArtifact.getVariables() != null && !processArtifact.getVariables().isEmpty()) {
       List<ArtifactVariableResponseDTO> variableDtos = processArtifact.getVariables().stream()

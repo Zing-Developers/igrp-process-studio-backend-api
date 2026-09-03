@@ -28,7 +28,7 @@ public class ProcessVariableMapper {
       return null;
     }
 
-    return ProcessVariable.rebuild(
+    var model = ProcessVariable.rebuild(
         ProcessVariableId.of(entity.getId()),
         entity.getName(),
         entity.getType(),
@@ -36,6 +36,8 @@ public class ProcessVariableMapper {
         entity.isRequired(),
         ProcessDefinitionId.of(entity.getProcesDefinitionId().getId())
     );
+    model.setAudit(AuditMapping.trail(entity));
+    return model;
   }
 
 
@@ -66,6 +68,7 @@ public class ProcessVariableMapper {
     dto.setDefaultValue(domain.getDefaultValue());
     dto.setRequired(domain.isRequired());
     dto.setProcessDefinitionId(domain.getProcessDefinitionId().identifier().getValueAsString());
+    AuditMapping.apply(dto, domain.getAudit());
 
     return dto;
   }
