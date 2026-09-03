@@ -1,8 +1,6 @@
 package cv.igrp.platform.process_manager_studio.shared.config;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.dataformat.xml.XmlMapper;
-import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import cv.igrp.framework.process.management.integration.core.adapter.IProcessDefinitionAdapter;
 import cv.igrp.framework.process.studio.sdk.client.ProcessDefinitionClient;
 import cv.igrp.platform.process_manager_studio.project.domain.repository.ProcessDefinitionRepository;
@@ -56,27 +54,9 @@ public class ProcessDefinitionClientConfig {
       return new MockProcessDefinitionClient(processDefinitionRepository);
     }
   }
-  /**
-   * It’s good practice to ensure that Spring's ObjectMapper is configured
-   * to handle Java 8 date and time types (like LocalDateTime),
-   * which are used by the SDK.
-   * this bean ensures that compatibility.
-   */
-  @Bean
-  @Primary
-  public ObjectMapper objectMapper() {
-    ObjectMapper mapper = new ObjectMapper();
-    mapper.registerModule(new JavaTimeModule());
-    return mapper;
-  }
-
-  /**
-   * Bean for XML processing using Jackson's XmlMapper.
-   * Useful for handling XML payloads in requests or responses.
-   */
-  @Bean
-  public XmlMapper xmlMapper() {
-    return new XmlMapper();
-  }
+  // No custom ObjectMapper here: a hand-rolled @Primary mapper replaces Spring Boot's
+  // auto-configured one for EVERY HTTP response and, without Boot's defaults, java.time
+  // serializes as arrays ([2026,9,3,…]) instead of ISO strings. Boot's mapper already
+  // registers JavaTimeModule and is what gets injected into processDefinitionAdapter.
 
 }
