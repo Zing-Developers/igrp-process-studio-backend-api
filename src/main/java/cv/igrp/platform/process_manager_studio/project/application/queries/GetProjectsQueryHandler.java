@@ -52,7 +52,7 @@ public class GetProjectsQueryHandler implements QueryHandler<GetProjectsQuery, R
      wrapperListaProjectDTO.setPageSize(filter.getPageSize());
      wrapperListaProjectDTO.setTotalElements((long) projects.size());
 
-    auditUserEnricher.enrichProjects(wrapperListaProjectDTO.getContent());
+    auditUserEnricher.enrich(wrapperListaProjectDTO.getContent());
     return ResponseEntity.ok(wrapperListaProjectDTO);
   }
 

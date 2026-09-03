@@ -39,7 +39,7 @@ public class GetProjectByIdQueryHandler implements QueryHandler<GetProjectByIdQu
         .orElseThrow(() -> IgrpResponseStatusException.notFound("Project not found with id: " + projectId.identifier().value()));
 
     var dto = projectMapper.toResponseDTO(project);
-    auditUserEnricher.enrichProjects(java.util.List.of(dto));
+    auditUserEnricher.enrich(java.util.List.of(dto));
     return ResponseEntity.ok(dto);
 
   }
