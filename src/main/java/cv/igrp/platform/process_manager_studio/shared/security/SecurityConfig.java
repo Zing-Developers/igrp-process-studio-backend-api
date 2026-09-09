@@ -259,7 +259,8 @@ public class SecurityConfig {
                         .getPermissions(token, request)
                         .forEach(p -> authorities.add(new SimpleGrantedAuthority(p)));
 
-                if (authorizationService.isSuperAdmin(token, request)) {
+                // the decoded token goes in, so the adapter reads claims without re-parsing or trusting a raw string
+                if (authorizationService.isSuperAdmin(jwt, request)) {
                     authorities.add(new SimpleGrantedAuthority(ROLE_PREFIX + SUPER_ADMIN_ROLE));
                 }
 
