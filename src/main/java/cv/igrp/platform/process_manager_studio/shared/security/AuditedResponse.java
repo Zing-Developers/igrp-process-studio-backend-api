@@ -1,6 +1,6 @@
 package cv.igrp.platform.process_manager_studio.shared.security;
 
-import cv.igrp.platform.process_manager_studio.shared.security.m2m.UserProfileDTO;
+import cv.igrp.platform.process_manager_studio.project.application.dto.UserProfileDTO;
 
 import java.time.LocalDateTime;
 

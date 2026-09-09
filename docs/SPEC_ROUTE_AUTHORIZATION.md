@@ -411,7 +411,7 @@ converter.setJwtGrantedAuthoritiesConverter(jwt -> {
             .forEach(g -> authorities.add(new SimpleGrantedAuthority(ROLE_PREFIX + g)));
         authorizationService.getPermissions(token, request)
             .forEach(p -> authorities.add(new SimpleGrantedAuthority(p)));
-        if (authorizationService.isSuperAdmin(token, request)) {
+        if (authorizationService.isSuperAdmin(jwt, request)) {   // token decodificado; sem cookie decide o claim email (24.8)
             authorities.add(new SimpleGrantedAuthority(ROLE_PREFIX + SUPER_ADMIN_ROLE));
         }
     } catch (Exception e) {

@@ -4,6 +4,8 @@ import cv.igrp.platform.process_manager_studio.shared.infrastructure.persistence
 import cv.igrp.platform.process_manager_studio.shared.infrastructure.persistence.repository.IAMUserProfileEntityRepository;
 import cv.igrp.platform.process_manager_studio.shared.infrastructure.persistence.entity.M2mApiKeyEntity;
 import cv.igrp.platform.process_manager_studio.shared.infrastructure.persistence.repository.M2mApiKeyEntityRepository;
+import cv.igrp.platform.process_manager_studio.shared.application.dto.M2mKeySummaryDTO;
+import cv.igrp.platform.process_manager_studio.project.application.dto.UserProfileDTO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -48,14 +50,6 @@ public class M2mKeyService {
   // no IAM profile row matches).
   public record CreatedKey(UUID id, String clientName, String plaintextKey, String createdBy,
                            UserProfileDTO userProfileCreatedBy) { }
-  // Dates go out as zone-less LocalDateTime — the same shape every other endpoint serializes
-  // (AuditEntity/domain DTOs) — so the frontend parses one format everywhere.
-  public record KeySummary(UUID id, String clientName, String keyPrefix, String permissions,
-                           String email, boolean active, LocalDateTime expiresAt, LocalDateTime createdAt,
-                           String createdBy, UserProfileDTO userProfileCreatedBy,
-                           LocalDateTime lastUsedAt, LocalDateTime revokedAt,
-                           String revokedBy, UserProfileDTO userProfileRevokedBy,
-                           LocalDateTime updatedAt, String updatedBy, UserProfileDTO userProfileUpdatedBy) { }
 
   public M2mKeyService(M2mApiKeyEntityRepository repository,
                        M2mKeyCodec codec,
@@ -118,7 +112,7 @@ public class M2mKeyService {
   }
 
   @Transactional(readOnly = true)
-  public List<KeySummary> list() {
+  public List<M2mKeySummaryDTO> list() {
     final var entities = repository.findAll();
     final var principals = entities.stream()
         .flatMap(e -> Stream.of(e.getCreatedBy(), e.getRevokedBy(), e.getUpdatedBy()))
@@ -126,7 +120,7 @@ public class M2mKeyService {
         .collect(Collectors.toSet());
     final var profiles = profilesOf(principals);
     return entities.stream()
-        .map(e -> new KeySummary(e.getId(), e.getClientName(), e.getKeyPrefix(), e.getPermissions(),
+        .map(e -> new M2mKeySummaryDTO(e.getId(), e.getClientName(), e.getKeyPrefix(), e.getPermissions(),
             e.getEmail(), e.isActive(), local(e.getExpiresAt()), local(e.getCreatedAt()), e.getCreatedBy(),
             profiles.get(e.getCreatedBy()), local(e.getLastUsedAt()), local(e.getRevokedAt()),
             e.getRevokedBy(), profiles.get(e.getRevokedBy()),

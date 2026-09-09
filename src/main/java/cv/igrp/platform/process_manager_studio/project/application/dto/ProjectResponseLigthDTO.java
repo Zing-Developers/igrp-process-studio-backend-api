@@ -47,9 +47,9 @@ public class ProjectResponseLigthDTO implements cv.igrp.platform.process_manager
 
   private java.time.LocalDateTime updatedAt ;
 
-  private cv.igrp.platform.process_manager_studio.shared.security.m2m.UserProfileDTO userProfileCreatedBy ;
+  private cv.igrp.platform.process_manager_studio.project.application.dto.UserProfileDTO userProfileCreatedBy ;
 
-  private cv.igrp.platform.process_manager_studio.shared.security.m2m.UserProfileDTO userProfileLastModifiedBy ;
+  private cv.igrp.platform.process_manager_studio.project.application.dto.UserProfileDTO userProfileLastModifiedBy ;
 
   @Valid
   private List<ProcessDefinitionResponseLightDTO> processDefinitions = new ArrayList<>();
