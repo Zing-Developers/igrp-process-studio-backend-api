@@ -15,7 +15,7 @@ public class ArtifactVariableMapper {
     if (entity == null) {
       return null;
     }
-    return ArtifactVariable.rebuild(
+    var model = ArtifactVariable.rebuild(
         ArtifactVariableId.of(entity.getId().toString()),
         entity.getProcessArtifactId() != null ? ProcessArtifactId.of(entity.getProcessArtifactId().getId().toString()) : null,
         entity.getKey(),
@@ -24,6 +24,8 @@ public class ArtifactVariableMapper {
         entity.getDefaultValue(),
         entity.isRequired()
     );
+    model.setAudit(AuditMapping.trail(entity));
+    return model;
   }
 
   public ArtifactVariableEntity toEntity(ArtifactVariable domain) {
@@ -60,6 +62,7 @@ public class ArtifactVariableMapper {
     responseDTO.setType(artifactVariable.getType());
     responseDTO.setDefaultValue(artifactVariable.getDefaultValue());
     responseDTO.setRequired(artifactVariable.isRequired());
+    AuditMapping.apply(responseDTO, artifactVariable.getAudit());
 
     return responseDTO;
   }

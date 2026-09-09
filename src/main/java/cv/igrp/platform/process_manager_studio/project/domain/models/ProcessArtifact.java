@@ -155,4 +155,10 @@ public class ProcessArtifact {
         .findFirst();
   }
 
+  private AuditTrail audit;
+
+  public void setAudit(AuditTrail audit) {
+    this.audit = audit;
+  }
+
 }

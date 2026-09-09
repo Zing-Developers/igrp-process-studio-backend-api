@@ -87,4 +87,10 @@ public class ArtifactVariable {
   public void updateDefaultValue(String defaultValue) {
     this.defaultValue = defaultValue;
   }
+
+  private AuditTrail audit;
+
+  public void setAudit(AuditTrail audit) {
+    this.audit = audit;
+  }
 }

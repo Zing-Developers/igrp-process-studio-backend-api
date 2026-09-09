@@ -68,7 +68,7 @@ public class GetProcessHistoryByProjectIdQueryHandler implements QueryHandler<Ge
      );
 
      var dto = projectMapper.toResponseDTO(filteredProject);
-     auditUserEnricher.enrichProjects(java.util.List.of(dto));
+     auditUserEnricher.enrich(java.util.List.of(dto));
      return ResponseEntity.ok(dto);
   }
 

@@ -247,13 +247,16 @@ public class ProcessDefinition {
 
   }
 
-  // Audit metadata carried from the entity (Spring auditing columns); set after rebuild so the
-  // factory signatures stay untouched. Exposed on response DTOs as raw string + enriched profile.
-  private String createdBy;
-  private String lastModifiedBy;
+  private AuditTrail audit;
 
-  public void setAudit(String createdBy, String lastModifiedBy) {
-    this.createdBy = createdBy;
-    this.lastModifiedBy = lastModifiedBy;
+  public void setAudit(AuditTrail audit) {
+    this.audit = audit;
+  }
+
+  // The owning project's labels, resolved from the entity graph on rebuild (null on fresh models)
+  private ProjectRef project;
+
+  public void setProject(ProjectRef project) {
+    this.project = project;
   }
 }

@@ -3,6 +3,8 @@ package cv.igrp.platform.process_manager_studio.project.infrastructure.mappers;
 import cv.igrp.platform.process_manager_studio.project.application.dto.ProcessDefinitionResponseDTO;
 import cv.igrp.platform.process_manager_studio.project.application.dto.ProcessDefinitionResponseLightDTO;
 import cv.igrp.platform.process_manager_studio.project.application.dto.ProcessArtifactResponseDTO;
+import cv.igrp.platform.process_manager_studio.project.application.dto.ProjectSummaryDTO;
+import cv.igrp.platform.process_manager_studio.project.domain.models.ProjectRef;
 import cv.igrp.platform.process_manager_studio.project.domain.models.ProcessDefinition;
 import cv.igrp.platform.process_manager_studio.project.domain.models.ProcessArtifact;
 import cv.igrp.platform.process_manager_studio.project.domain.models.ProcessVariable;
@@ -113,7 +115,13 @@ public class ProcessDefinitionMapper {
         entity.isLatest(),
         processVariables
     );
-    model.setAudit(entity.getCreatedBy(), entity.getLastModifiedBy());
+    model.setAudit(AuditMapping.trail(entity));
+    // LAZY relation: the repository adapters map inside their read-only transaction, so this is safe
+    final var project = entity.getProjectId();
+    if (project != null) {
+      model.setProject(new ProjectRef(project.getId().toString(), project.getCode(), project.getName(),
+          project.getAppCode(), project.isActive()));
+    }
     return model;
   }
 
@@ -127,8 +135,8 @@ public class ProcessDefinitionMapper {
     pdDto.setBpmnDiagramUrl(processDefinition.getBpmnDiagramUrl());
     pdDto.setVersion(processDefinition.getVersion());
     pdDto.setStatus(processDefinition.getState()!= null ? processDefinition.getState().getCode() : null);
-    pdDto.setCreatedBy(processDefinition.getCreatedBy());
-    pdDto.setLastModifiedBy(processDefinition.getLastModifiedBy());
+    AuditMapping.apply(pdDto, processDefinition.getAudit());
+    pdDto.setProject(summary(processDefinition.getProject()));
     pdDto.setStatusDesc(processDefinition.getState()!= null ? processDefinition.getState().getDescription() : null);
     pdDto.setDeploymentId(processDefinition.getDeploymentId()!= null ? processDefinition.getDeploymentId() : null);
     pdDto.setDeploymentDate(processDefinition.getDeploymentDate()!= null ? processDefinition.getDeploymentDate().format(formatter) : null);
@@ -168,11 +176,16 @@ public class ProcessDefinitionMapper {
     pdDto.setDeploymentDate(processDefinition.getDeploymentDate()!= null ? processDefinition.getDeploymentDate().format(formatter) : null);
     pdDto.setTitle(processDefinition.getTitle());
     pdDto.setDescription(processDefinition.getDescription());
-    pdDto.setCreatedBy(processDefinition.getCreatedBy());
-    pdDto.setLastModifiedBy(processDefinition.getLastModifiedBy());
+    AuditMapping.apply(pdDto, processDefinition.getAudit());
+    pdDto.setProject(summary(processDefinition.getProject()));
     pdDto.setProjectId(processDefinition.getProjectId().identifier().getValueAsString());
 
     return pdDto;
+  }
+
+  private static ProjectSummaryDTO summary(ProjectRef project) {
+    return project == null ? null
+        : new ProjectSummaryDTO(project.id(), project.code(), project.name(), project.appCode(), project.active());
   }
 
 }

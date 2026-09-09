@@ -1,12 +1,24 @@
 {
   "type": "dto",
-  "module": "project",
-  "name": "ProcessDefinitionResponseLight",
+  "module": "shared",
+  "name": "M2mKeySummary",
   "template": "classic",
   "enableCustonValidation": false,
   "attributes": [
     {
-      "name": "processDefinitionId",
+      "name": "id",
+      "objectType": "java",
+      "type": "uuid",
+      "required": false,
+      "before": false,
+      "after": false,
+      "positive": false,
+      "isEmail": false,
+      "isUrl": false,
+      "primaryKey": false
+    },
+    {
+      "name": "clientName",
       "objectType": "java",
       "type": "string",
       "required": false,
@@ -18,7 +30,7 @@
       "primaryKey": false
     },
     {
-      "name": "projectId",
+      "name": "keyPrefix",
       "objectType": "java",
       "type": "string",
       "required": false,
@@ -30,7 +42,7 @@
       "primaryKey": false
     },
     {
-      "name": "processKey",
+      "name": "permissions",
       "objectType": "java",
       "type": "string",
       "required": false,
@@ -42,7 +54,7 @@
       "primaryKey": false
     },
     {
-      "name": "bpmnDiagramUrl",
+      "name": "email",
       "objectType": "java",
       "type": "string",
       "required": false,
@@ -54,9 +66,9 @@
       "primaryKey": false
     },
     {
-      "name": "title",
+      "name": "active",
       "objectType": "java",
-      "type": "string",
+      "type": "boolean",
       "required": false,
       "before": false,
       "after": false,
@@ -66,106 +78,9 @@
       "primaryKey": false
     },
     {
-      "name": "description",
+      "name": "expiresAt",
       "objectType": "java",
-      "type": "string",
-      "required": false,
-      "before": false,
-      "after": false,
-      "positive": false,
-      "isEmail": false,
-      "isUrl": false,
-      "primaryKey": false
-    },
-    {
-      "name": "version",
-      "objectType": "java",
-      "type": "integer",
-      "required": false,
-      "before": false,
-      "after": false,
-      "positive": false,
-      "isEmail": false,
-      "isUrl": false,
-      "primaryKey": false
-    },
-    {
-      "name": "status",
-      "objectType": "java",
-      "type": "string",
-      "required": false,
-      "before": false,
-      "after": false,
-      "positive": false,
-      "isEmail": false,
-      "isUrl": false,
-      "primaryKey": false
-    },
-    {
-      "name": "statusDesc",
-      "objectType": "java",
-      "type": "string",
-      "required": false,
-      "before": false,
-      "after": false,
-      "positive": false,
-      "isEmail": false,
-      "isUrl": false,
-      "primaryKey": false
-    },
-    {
-      "name": "deploymentId",
-      "objectType": "java",
-      "type": "string",
-      "required": false,
-      "before": false,
-      "after": false,
-      "positive": false,
-      "isEmail": false,
-      "isUrl": false,
-      "primaryKey": false
-    },
-    {
-      "name": "deploymentDate",
-      "objectType": "java",
-      "type": "string",
-      "required": false,
-      "before": false,
-      "after": false,
-      "positive": false,
-      "isEmail": false,
-      "isUrl": false,
-      "primaryKey": false
-    },
-    {
-      "name": "project",
-      "objectType": "dto",
-      "type": "ProjectSummary",
-      "required": false,
-      "before": false,
-      "after": false,
-      "positive": false,
-      "isEmail": false,
-      "isUrl": false,
-      "primaryKey": false,
-      "module": "project"
-    },
-    {
-      "name": "createdBy",
-      "objectType": "java",
-      "type": "string",
-      "required": false,
-      "before": false,
-      "after": false,
-      "positive": false,
-      "isEmail": false,
-      "isUrl": false,
-      "primaryKey": false
-    },
-    {
-      "name": "lastModifiedBy",
-      "objectType": "java",
-      "type": "string",
+      "type": "datetime",
       "required": false,
       "before": false,
       "after": false,
@@ -187,9 +102,9 @@
       "primaryKey": false
     },
     {
-      "name": "updatedAt",
+      "name": "createdBy",
       "objectType": "java",
-      "type": "datetime",
+      "type": "string",
       "required": false,
       "before": false,
       "after": false,
@@ -212,7 +127,80 @@
       "module": "project"
     },
     {
-      "name": "userProfileLastModifiedBy",
+      "name": "lastUsedAt",
+      "objectType": "java",
+      "type": "datetime",
+      "required": false,
+      "before": false,
+      "after": false,
+      "positive": false,
+      "isEmail": false,
+      "isUrl": false,
+      "primaryKey": false
+    },
+    {
+      "name": "revokedAt",
+      "objectType": "java",
+      "type": "datetime",
+      "required": false,
+      "before": false,
+      "after": false,
+      "positive": false,
+      "isEmail": false,
+      "isUrl": false,
+      "primaryKey": false
+    },
+    {
+      "name": "revokedBy",
+      "objectType": "java",
+      "type": "string",
+      "required": false,
+      "before": false,
+      "after": false,
+      "positive": false,
+      "isEmail": false,
+      "isUrl": false,
+      "primaryKey": false
+    },
+    {
+      "name": "userProfileRevokedBy",
+      "objectType": "dto",
+      "type": "UserProfile",
+      "required": false,
+      "before": false,
+      "after": false,
+      "positive": false,
+      "isEmail": false,
+      "isUrl": false,
+      "primaryKey": false,
+      "module": "project"
+    },
+    {
+      "name": "updatedAt",
+      "objectType": "java",
+      "type": "datetime",
+      "required": false,
+      "before": false,
+      "after": false,
+      "positive": false,
+      "isEmail": false,
+      "isUrl": false,
+      "primaryKey": false
+    },
+    {
+      "name": "updatedBy",
+      "objectType": "java",
+      "type": "string",
+      "required": false,
+      "before": false,
+      "after": false,
+      "positive": false,
+      "isEmail": false,
+      "isUrl": false,
+      "primaryKey": false
+    },
+    {
+      "name": "userProfileUpdatedBy",
       "objectType": "dto",
       "type": "UserProfile",
       "required": false,
@@ -225,5 +213,5 @@
       "module": "project"
     }
   ],
-  "id": "wsck03nbt4_copy"
+  "id": "lfybgq1ckm"
 }

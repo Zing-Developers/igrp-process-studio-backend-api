@@ -22,12 +22,15 @@ public class GetProcessDefinitionVariablesQueryHandler implements QueryHandler<G
 
   private final ProcessDefinitionRepository processDefinitionRepository;
   private final ProcessVariableMapper processVariableMapper;
+  private final cv.igrp.platform.process_manager_studio.shared.security.AuditUserEnricher auditUserEnricher;
 
 
-  public GetProcessDefinitionVariablesQueryHandler(ProcessDefinitionRepository processDefinitionRepository, ProcessVariableMapper processVariableMapper) {
+  public GetProcessDefinitionVariablesQueryHandler(ProcessDefinitionRepository processDefinitionRepository, ProcessVariableMapper processVariableMapper,
+                                                   cv.igrp.platform.process_manager_studio.shared.security.AuditUserEnricher auditUserEnricher) {
 
     this.processDefinitionRepository = processDefinitionRepository;
     this.processVariableMapper = processVariableMapper;
+    this.auditUserEnricher = auditUserEnricher;
   }
 
    @IgrpQueryHandler
@@ -41,7 +44,9 @@ public class GetProcessDefinitionVariablesQueryHandler implements QueryHandler<G
      );
 
 
-     return ResponseEntity.ok(processVariableMapper.toDTO(process.getProcessVariables()));
+     var variables = processVariableMapper.toDTO(process.getProcessVariables());
+     auditUserEnricher.enrich(variables);
+     return ResponseEntity.ok(variables);
   }
 
 }

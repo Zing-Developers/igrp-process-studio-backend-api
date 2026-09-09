@@ -73,7 +73,7 @@ public class ProjectMapper {
         entity.getAppCode(),
         processDefinitions
     );
-    project.setAudit(entity.getCreatedBy(), entity.getLastModifiedBy());
+    project.setAudit(AuditMapping.trail(entity));
     return project;
   }
 
@@ -87,13 +87,17 @@ public class ProjectMapper {
     dto.setDescription(project.getDescription());
     dto.setActive(project.isActive());
     dto.setAppCode(project.getAppCode());
-    dto.setCreatedBy(project.getCreatedBy());
-    dto.setLastModifiedBy(project.getLastModifiedBy());
+    AuditMapping.apply(dto, project.getAudit());
 
     if (project.getProcessDefinitions() != null) {
 
       List<ProcessDefinitionResponseDTO> processDefinitionDTOs = project.getAllProcessAndLastestForProcessKey().stream()
-          .map(pd -> processDefinitionMapper.toResponseDTO(pd, false))
+          .map(pd -> {
+            // nested inside its own project: don't repeat the project
+            var pdDto = processDefinitionMapper.toResponseDTO(pd, false);
+            pdDto.setProject(null);
+            return pdDto;
+          })
           .collect(Collectors.toList());
       dto.setProcessDefinitions(processDefinitionDTOs);
     } else {
@@ -113,13 +117,17 @@ public class ProjectMapper {
     dto.setDescription(project.getDescription());
     dto.setActive(project.isActive());
     dto.setAppCode(project.getAppCode());
-    dto.setCreatedBy(project.getCreatedBy());
-    dto.setLastModifiedBy(project.getLastModifiedBy());
+    AuditMapping.apply(dto, project.getAudit());
 
     if (project.getProcessDefinitions() != null) {
 
       List<ProcessDefinitionResponseDTO> processDefinitionDTOs = project.getLatestPublishedProcesses().stream()
-          .map(pd -> processDefinitionMapper.toResponseDTO(pd, false))
+          .map(pd -> {
+            // nested inside its own project: don't repeat the project
+            var pdDto = processDefinitionMapper.toResponseDTO(pd, false);
+            pdDto.setProject(null);
+            return pdDto;
+          })
           .collect(Collectors.toList());
       dto.setProcessDefinitions(processDefinitionDTOs);
     } else {
@@ -140,13 +148,16 @@ public class ProjectMapper {
     dto.setDescription(project.getDescription());
     dto.setActive(project.isActive());
     dto.setAppCode(project.getAppCode());
-    dto.setCreatedBy(project.getCreatedBy());
-    dto.setLastModifiedBy(project.getLastModifiedBy());
+    AuditMapping.apply(dto, project.getAudit());
 
     if (project.getProcessDefinitions() != null) {
 
       var processDefinitionDTOs = project.getAllProcessAndLastestForProcessKey().stream()
-          .map(processDefinitionMapper::toResponseDTOLight)
+          .map(pd -> {
+            var pdDto = processDefinitionMapper.toResponseDTOLight(pd);
+            pdDto.setProject(null);
+            return pdDto;
+          })
           .collect(Collectors.toList());
       dto.setProcessDefinitions(processDefinitionDTOs);
     } else {

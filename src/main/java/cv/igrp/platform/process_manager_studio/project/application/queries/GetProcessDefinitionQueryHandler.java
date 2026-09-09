@@ -61,7 +61,7 @@ public class GetProcessDefinitionQueryHandler implements QueryHandler<GetProcess
      wrapperListaProcessDefinitionDTO.setPageSize(pageSize);
      wrapperListaProcessDefinitionDTO.setTotalElements((long) projects.size());
 
-     auditUserEnricher.enrichLightProcessDefinitions(wrapperListaProcessDefinitionDTO.getContent());
+     auditUserEnricher.enrich(wrapperListaProcessDefinitionDTO.getContent());
      return ResponseEntity.ok(wrapperListaProcessDefinitionDTO);
 
   }

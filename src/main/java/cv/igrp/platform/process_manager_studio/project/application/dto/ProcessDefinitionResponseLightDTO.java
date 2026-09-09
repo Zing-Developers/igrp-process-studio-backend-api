@@ -15,7 +15,7 @@ import lombok.NoArgsConstructor;
 
 
 @IgrpDTO
-public class ProcessDefinitionResponseLightDTO {
+public class ProcessDefinitionResponseLightDTO implements cv.igrp.platform.process_manager_studio.shared.security.AuditedResponse {
 
 
 
@@ -23,6 +23,9 @@ public class ProcessDefinitionResponseLightDTO {
 
 
   private String projectId ;
+
+  // Owning project's labels; null when this definition is nested inside its project's response
+  private ProjectSummaryDTO project ;
 
 
   private String processKey ;
@@ -55,8 +58,12 @@ public class ProcessDefinitionResponseLightDTO {
 
   private String lastModifiedBy ;
 
-  private cv.igrp.platform.process_manager_studio.shared.security.m2m.UserProfileDTO userProfileCreatedBy ;
+  private java.time.LocalDateTime createdAt ;
 
-  private cv.igrp.platform.process_manager_studio.shared.security.m2m.UserProfileDTO userProfileLastModifiedBy ;
+  private java.time.LocalDateTime updatedAt ;
+
+  private cv.igrp.platform.process_manager_studio.project.application.dto.UserProfileDTO userProfileCreatedBy ;
+
+  private cv.igrp.platform.process_manager_studio.project.application.dto.UserProfileDTO userProfileLastModifiedBy ;
 
 }
