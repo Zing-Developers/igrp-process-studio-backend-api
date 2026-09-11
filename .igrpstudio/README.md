@@ -27,6 +27,9 @@ Verificação: `python3 scripts/check_igrpstudio_drift.py` (falha com exit 1 se 
 | `shared/controllers/M2mKeyController.json` | `shared/security/m2m/M2mKeyController` | Gate super-admin JWT-only está no `SecurityConfig`. |
 | `shared/controllers/ParameterizationController.json` | `shared/interfaces/rest/ParameterizationController` | Resposta é `List<EnumItem<String>>` do framework — modelada como `object` lista. |
 | `shared/dto/M2mKey*DTO.json` | `shared/application/dto/M2mKey*DTO` | Payloads das rotas `/m2m-keys`. |
+| `shared/models/EmailAccessMappingEntity.json` | `shared/infrastructure/persistence/entity/EmailAccessMappingEntity` | Sem `AuditEntity`/Envers **por design**. O índice único parcial (`email WHERE active`) vive no V6; o gerador não o exprime. |
+| `shared/controllers/EmailAccessMappingController.json` | `shared/security/access/EmailAccessMappingController` | Gate super-admin JWT-only no `SecurityConfig` (partilhado com `/m2m-keys`). |
+| `shared/dto/EmailAccessMapping*DTO.json` | `shared/application/dto/EmailAccessMapping*DTO` | Payloads das rotas `/email-access-mappings`. |
 | `project/dto/UserProfileDTO.json`, `ProjectSummaryDTO.json` | `project/application/dto` | Antes viviam como records fora da pasta gerada. |
 
 Fora do gerador, sem modelo (infra de segurança): `SecurityConfig`, `IAMUserProfileSyncFilter`,
