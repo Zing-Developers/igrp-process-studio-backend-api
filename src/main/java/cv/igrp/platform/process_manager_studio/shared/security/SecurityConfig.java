@@ -151,10 +151,11 @@ public class SecurityConfig {
                             "/actuator/health", "/actuator/health/**"
                     ).permitAll();
 
-                    // M2M key management is security plumbing, not a business route: a dedicated
-                    // gate, never the catalogue. Requires a human JWT super-admin — an M2M key can
-                    // never satisfy this, whatever authorities it carries (SPEC_M2M M-12).
-                    authorize.requestMatchers("/m2m-keys/**").access((authenticationSupplier, context) -> {
+                    // Credential and grant management is security plumbing, not a business route: a
+                    // dedicated gate, never the catalogue. Requires a JWT super-admin: an M2M key is
+                    // never a JwtAuthenticationToken, and neither store can grant the super-admin role,
+                    // so nothing they carry satisfies this (SPEC_M2M M-12, SPEC_EMAIL_ACCESS_MAPPING E-6).
+                    authorize.requestMatchers("/m2m-keys/**", "/email-access-mappings/**").access((authenticationSupplier, context) -> {
                         final var authentication = authenticationSupplier.get();
                         final var superAdmin = ROLE_PREFIX + SUPER_ADMIN_ROLE;
                         return new AuthorizationDecision(authentication instanceof JwtAuthenticationToken
@@ -255,8 +256,10 @@ public class SecurityConfig {
                         .forEach(g -> authorities.add(new SimpleGrantedAuthority(
                                 g.startsWith(ROLE_PREFIX) ? g : ROLE_PREFIX + g)));
 
+                // the Jwt overload: without an IRN session the adapter grants what the application
+                // mapped to the validated token's email claim (SPEC_EMAIL_ACCESS_MAPPING, management API repo)
                 authorizationService
-                        .getPermissions(token, request)
+                        .getPermissions(jwt, request)
                         .forEach(p -> authorities.add(new SimpleGrantedAuthority(p)));
 
                 // the decoded token goes in, so the adapter reads claims without re-parsing or trusting a raw string
