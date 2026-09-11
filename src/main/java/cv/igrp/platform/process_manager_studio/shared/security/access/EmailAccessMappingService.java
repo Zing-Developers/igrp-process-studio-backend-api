@@ -50,7 +50,7 @@ public class EmailAccessMappingService {
 
   @Transactional
   public EmailAccessMappingDTO create(String email, List<String> permissions, String description,
-                                      Instant expiresAt, String createdBy) {
+                                      String notes, Instant expiresAt, String createdBy) {
     final var normalised = normalise(email);
     final var granted = validated(permissions, normalised, createdBy);
     warnIfHuman(normalised);
@@ -59,6 +59,7 @@ public class EmailAccessMappingService {
     entity.setId(UUID.randomUUID());
     entity.setEmail(normalised);
     entity.setDescription(blankToNull(description));
+    entity.setNotes(blankToNull(notes));
     entity.setPermissions(String.join(",", granted));
     entity.setActive(true);
     entity.setExpiresAt(expiresAt);
@@ -92,7 +93,7 @@ public class EmailAccessMappingService {
 
   @Transactional
   public EmailAccessMappingDTO update(UUID id, List<String> permissions, String description,
-                                      Instant expiresAt, String updatedBy) {
+                                      String notes, Instant expiresAt, String updatedBy) {
     final var entity = repository.findById(id)
         .orElseThrow(() -> new IllegalArgumentException("email access mapping not found: " + id));
     if (!entity.isActive()) {
@@ -101,6 +102,7 @@ public class EmailAccessMappingService {
     final var granted = validated(permissions, entity.getEmail(), updatedBy);
     entity.setPermissions(String.join(",", granted));
     entity.setDescription(blankToNull(description));
+    entity.setNotes(blankToNull(notes));
     entity.setExpiresAt(expiresAt);
     entity.setUpdatedAt(Instant.now());
     entity.setUpdatedBy(updatedBy);
@@ -197,7 +199,7 @@ public class EmailAccessMappingService {
   }
 
   private static EmailAccessMappingDTO toDto(EmailAccessMappingEntity e, Map<String, UserProfileDTO> profiles) {
-    return new EmailAccessMappingDTO(e.getId(), e.getEmail(), e.getDescription(),
+    return new EmailAccessMappingDTO(e.getId(), e.getEmail(), e.getDescription(), e.getNotes(),
         List.copyOf(DbEmailAccessResolver.split(e.getPermissions())), e.isActive(), local(e.getExpiresAt()),
         local(e.getCreatedAt()), e.getCreatedBy(), profiles.get(e.getCreatedBy()),
         local(e.getUpdatedAt()), e.getUpdatedBy(), profiles.get(e.getUpdatedBy()),
