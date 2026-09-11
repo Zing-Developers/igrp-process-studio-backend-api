@@ -25,11 +25,16 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.AuthorityUtils;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.oauth2.client.OAuth2AuthorizedClientProvider;
 import org.springframework.security.oauth2.client.TokenExchangeOAuth2AuthorizedClientProvider;
 import org.springframework.security.authentication.ProviderManager;
+import org.springframework.security.authorization.AuthorityAuthorizationDecision;
+import org.springframework.security.authorization.AuthorityAuthorizationManager;
 import org.springframework.security.authorization.AuthorizationDecision;
+import org.springframework.security.authorization.AuthorizationManager;
+import org.springframework.security.web.access.intercept.RequestAuthorizationContext;
 import org.springframework.security.oauth2.jwt.JwtDecoder;
 import org.springframework.security.oauth2.jwt.NimbusJwtDecoder;
 import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationConverter;
@@ -63,6 +68,11 @@ public class SecurityConfig {
     private static final String ROLE_PREFIX = "ROLE_";
     private static final String SUPER_ADMIN_ROLE = "DEPT_IGRP.superadmin";
 
+    private static final String EMAIL_ACCESS_ROUTE = "/email-access-mappings";
+
+    /** Name of the IRN session cookie: its presence is what makes a catalogue permission trustworthy on the console routes. */
+    private final String sessionCookieName;
+
     private final IAuthorizationServiceAdapter authorizationService;
 
     private final IRouteAuthorizationAdapter routeAuthorization;
@@ -77,7 +87,9 @@ public class SecurityConfig {
     public SecurityConfig(IAuthorizationServiceAdapter authorizationService,
                           IRouteAuthorizationAdapter routeAuthorization,
                           @Value("${igrp.security.principal-claim-name}") String principalClaimName,
-                          @Value("${igrp.cors.allowed-origins:}") String corsAllowedOrigins) {
+                          @Value("${igrp.cors.allowed-origins:}") String corsAllowedOrigins,
+                          @Value("${irn.api.session-cookie-name:session_id}") String sessionCookieName) {
+        this.sessionCookieName = sessionCookieName;
         this.authorizationService = authorizationService;
         this.routeAuthorization = routeAuthorization;
         this.principalClaimName = principalClaimName;
@@ -152,22 +164,30 @@ public class SecurityConfig {
                     ).permitAll();
 
                     // M2M key management is security plumbing, not a business route: a dedicated
-                    // gate, never the catalogue. Requires a human JWT super-admin — an M2M key can
-                    // never satisfy this, whatever authorities it carries (SPEC_M2M M-12).
-                    authorize.requestMatchers("/m2m-keys/**").access((authenticationSupplier, context) -> {
-                        final var authentication = authenticationSupplier.get();
-                        final var superAdmin = ROLE_PREFIX + SUPER_ADMIN_ROLE;
-                        return new AuthorizationDecision(authentication instanceof JwtAuthenticationToken
-                                && authentication.getAuthorities().stream()
-                                    .anyMatch(a -> superAdmin.equals(a.getAuthority())));
-                    });
+                    // gate, never the catalogue. Requires a JWT super-admin: an M2M key is never a
+                    // JwtAuthenticationToken and no store can grant the super-admin role (SPEC_M2M M-12).
+                    authorize.requestMatchers("/m2m-keys/**").access(jwtSuperAdmin());
+
 
                     routeAuthorization.getRules().forEach(rule -> {
                         var matcher = rule.method() == null
                                 ? authorize.requestMatchers(rule.pattern())
                                 : authorize.requestMatchers(rule.method(), rule.pattern());
-                        matcher.hasAnyAuthority(withSuperAdmin(rule.anyAuthority()));
+                        final var permitted = withSuperAdmin(rule.anyAuthority());
+                        if (rule.pattern().startsWith(EMAIL_ACCESS_ROUTE)) {
+                            // Catalogued like any route (STUDIO_EMAIL_ACCESS_MAPPINGS:<action>, accept-also),
+                            // but the permission only counts with an IRN session: with a session the mapping
+                            // is never consulted, so the authority came from System Administration. A mapped
+                            // token has no session and can never grant access here (SPEC_EMAIL_ACCESS_MAPPING E-6).
+                            matcher.access(consoleGate(permitted));
+                        } else {
+                            matcher.hasAnyAuthority(permitted);
+                        }
                     });
+
+                    // No catalogue entry for the console (adapter=default, or a method outside the
+                    // catalogue): super admin only, never merely authenticated.
+                    authorize.requestMatchers(EMAIL_ACCESS_ROUTE + "/**").access(jwtSuperAdmin());
 
                     if (routeAuthorization.denyUnmatched()) {
                         authorize.anyRequest().denyAll();
@@ -202,6 +222,50 @@ public class SecurityConfig {
     @Bean
     public AuthorizationEventPublisher authorizationEventPublisher(ApplicationEventPublisher publisher) {
         return new SpringAuthorizationEventPublisher(publisher);
+    }
+
+    /**
+     * A Keycloak user JWT carrying the super-admin role. An M2M key is a BearerTokenAuthentication, never
+     * this. The decision carries the required authority so the audit line names it.
+     */
+    private static AuthorizationManager<RequestAuthorizationContext> jwtSuperAdmin() {
+        final var required = AuthorityUtils.createAuthorityList(ROLE_PREFIX + SUPER_ADMIN_ROLE);
+        return (authenticationSupplier, context) -> {
+            final var authentication = authenticationSupplier.get();
+            return new AuthorityAuthorizationDecision(
+                    authentication instanceof JwtAuthenticationToken && isSuperAdmin(authentication), required);
+        };
+    }
+
+    /**
+     * The console gate: a JWT that is the super admin, or a caller with an IRN session cookie holding one
+     * of the catalogue authorities. The cookie value is not checked here: a bogus one sends the adapter
+     * down the session path, where IRN denies it and the mapping is never consulted, so the caller ends
+     * up with no permissions at all. The decision always carries the accepted authorities, so a denial
+     * logs them (the session requirement itself is documented, not listed).
+     */
+    private AuthorizationManager<RequestAuthorizationContext> consoleGate(String[] permitted) {
+        final var byAuthority = AuthorityAuthorizationManager.<RequestAuthorizationContext>hasAnyAuthority(permitted);
+        final var required = AuthorityUtils.createAuthorityList(permitted);
+        return (authenticationSupplier, context) -> {
+            final var authentication = authenticationSupplier.get();
+            if (!(authentication instanceof JwtAuthenticationToken)) {
+                return new AuthorityAuthorizationDecision(false, required);
+            }
+            final var cookies = context.getRequest().getCookies();
+            final var hasSession = cookies != null && Arrays.stream(cookies)
+                    .anyMatch(c -> sessionCookieName.equals(c.getName()) && c.getValue() != null && !c.getValue().isBlank());
+            if (!isSuperAdmin(authentication) && !hasSession) {
+                return new AuthorityAuthorizationDecision(false, required);
+            }
+            // AuthorityAuthorizationManager answers with an AuthorityAuthorizationDecision (an AuthorizationDecision)
+            return (AuthorizationDecision) byAuthority.authorize(authenticationSupplier, context);
+        };
+    }
+
+    private static boolean isSuperAdmin(org.springframework.security.core.Authentication authentication) {
+        final var superAdmin = ROLE_PREFIX + SUPER_ADMIN_ROLE;
+        return authentication.getAuthorities().stream().anyMatch(a -> superAdmin.equals(a.getAuthority()));
     }
 
     /**
@@ -255,8 +319,10 @@ public class SecurityConfig {
                         .forEach(g -> authorities.add(new SimpleGrantedAuthority(
                                 g.startsWith(ROLE_PREFIX) ? g : ROLE_PREFIX + g)));
 
+                // the Jwt overload: without an IRN session the adapter grants what the application
+                // mapped to the validated token's email claim (SPEC_EMAIL_ACCESS_MAPPING, management API repo)
                 authorizationService
-                        .getPermissions(token, request)
+                        .getPermissions(jwt, request)
                         .forEach(p -> authorities.add(new SimpleGrantedAuthority(p)));
 
                 // the decoded token goes in, so the adapter reads claims without re-parsing or trusting a raw string
