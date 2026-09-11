@@ -254,7 +254,7 @@ mesmas regras de rota desta spec. As rotas `/m2m-keys/**` têm gate dedicado no 
 
 Desde a **24.9** há a segunda via, sem chave nossa: o integrador chama com o seu token Keycloak sem
 sessão IRN e recebe as permissões `STUDIO_*:acao` que o super admin mapeou ao claim `email` do token
-em `/email-access-mappings` (tabela própria do Studio, mesmo gate do `/m2m-keys`). Com sessão presente
+em `/email-access-mappings` (tabela própria do Studio), módulo `STUDIO_EMAIL_ACCESS_MAPPINGS` do catálogo cuja permissão só conta com sessão IRN (super admin isento). Com sessão presente
 o IRN decide sempre. Spec e handoff de frontend no repo da management API:
 `docs/SPEC_EMAIL_ACCESS_MAPPING.md`, `docs/EMAIL_ACCESS_FRONTEND_HANDOFF.md`.
 
