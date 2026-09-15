@@ -1,12 +1,11 @@
 package cv.igrp.platform.process_manager_studio.shared.security.m2m;
 
 import cv.igrp.framework.process.runtime.auth.core.adapter.PermissionFormat;
-import cv.igrp.platform.process_manager_studio.shared.infrastructure.persistence.entity.IAMUserProfileEntity;
-import cv.igrp.platform.process_manager_studio.shared.infrastructure.persistence.repository.IAMUserProfileEntityRepository;
 import cv.igrp.platform.process_manager_studio.shared.infrastructure.persistence.entity.M2mApiKeyEntity;
 import cv.igrp.platform.process_manager_studio.shared.infrastructure.persistence.repository.M2mApiKeyEntityRepository;
 import cv.igrp.platform.process_manager_studio.shared.application.dto.M2mKeySummaryDTO;
 import cv.igrp.platform.process_manager_studio.project.application.dto.UserProfileDTO;
+import cv.igrp.platform.process_manager_studio.shared.security.AuditPrincipals;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -15,9 +14,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.Duration;
 import java.time.Instant;
-import java.time.LocalDateTime;
-import java.time.ZoneId;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -42,7 +38,7 @@ public class M2mKeyService {
 
   private final M2mApiKeyEntityRepository repository;
   private final M2mKeyCodec codec;
-  private final IAMUserProfileEntityRepository userProfileRepository;
+  private final AuditPrincipals principals;
   private final Duration rotateGrace;
 
   // Audit users follow the platform pattern: raw principal string + enriched profile (null when
@@ -52,11 +48,11 @@ public class M2mKeyService {
 
   public M2mKeyService(M2mApiKeyEntityRepository repository,
                        M2mKeyCodec codec,
-                       IAMUserProfileEntityRepository userProfileRepository,
+                       AuditPrincipals principals,
                        @Value("${igrp.authorization.m2m.rotate-grace:7d}") Duration rotateGrace) {
     this.repository = repository;
     this.codec = codec;
-    this.userProfileRepository = userProfileRepository;
+    this.principals = principals;
     this.rotateGrace = rotateGrace;
   }
 
@@ -108,7 +104,7 @@ public class M2mKeyService {
         .addKeyValue("enduser.id", createdBy)
         .log("M2M key created for client [{}] (prefix {})", clientName, entity.getKeyPrefix());
 
-    return new CreatedKey(entity.getId(), clientName, plaintext, createdBy, profileOf(createdBy));
+    return new CreatedKey(entity.getId(), clientName, plaintext, createdBy, principals.profileOf(createdBy));
   }
 
   @Transactional(readOnly = true)
@@ -118,38 +114,14 @@ public class M2mKeyService {
         .flatMap(e -> Stream.of(e.getCreatedBy(), e.getRevokedBy(), e.getUpdatedBy()))
         .filter(Objects::nonNull)
         .collect(Collectors.toSet());
-    final var profiles = profilesOf(principals);
+    final var profiles = this.principals.profilesOf(principals);
     return entities.stream()
         .map(e -> new M2mKeySummaryDTO(e.getId(), e.getClientName(), e.getKeyPrefix(), e.getPermissions(),
-            e.getEmail(), e.isActive(), local(e.getExpiresAt()), local(e.getCreatedAt()), e.getCreatedBy(),
-            profiles.get(e.getCreatedBy()), local(e.getLastUsedAt()), local(e.getRevokedAt()),
+            e.getEmail(), e.isActive(), AuditPrincipals.local(e.getExpiresAt()), AuditPrincipals.local(e.getCreatedAt()), e.getCreatedBy(),
+            profiles.get(e.getCreatedBy()), AuditPrincipals.local(e.getLastUsedAt()), AuditPrincipals.local(e.getRevokedAt()),
             e.getRevokedBy(), profiles.get(e.getRevokedBy()),
-            local(e.getUpdatedAt()), e.getUpdatedBy(), profiles.get(e.getUpdatedBy())))
+            AuditPrincipals.local(e.getUpdatedAt()), e.getUpdatedBy(), profiles.get(e.getUpdatedBy())))
         .toList();
-  }
-
-  /** The platform serializes dates as zone-less LocalDateTime (see AuditEntity) — match it. */
-  static LocalDateTime local(Instant instant) {
-    return instant == null ? null : LocalDateTime.ofInstant(instant, ZoneId.systemDefault());
-  }
-
-  /** Batch audit-user enrichment: a stored principal may be a sub or an email, so both are tried. */
-  private Map<String, UserProfileDTO> profilesOf(Set<String> principals) {
-    final var lookup = new HashMap<String, UserProfileDTO>();
-    if (principals.isEmpty()) {
-      return lookup;
-    }
-    for (IAMUserProfileEntity p : userProfileRepository.findBySubInOrEmailIn(principals)) {
-      final var dto = new UserProfileDTO(p.getId(), p.getUsername(), p.getEmail(),
-          p.getFirstName(), p.getLastName(), p.getFullName(), p.getSub());
-      if (p.getSub() != null) lookup.put(p.getSub(), dto);
-      if (p.getEmail() != null) lookup.put(p.getEmail(), dto);
-    }
-    return lookup;
-  }
-
-  private UserProfileDTO profileOf(String principal) {
-    return principal == null ? null : profilesOf(Set.of(principal)).get(principal);
   }
 
   @Transactional
