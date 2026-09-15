@@ -257,6 +257,9 @@ sessão IRN e recebe as permissões `STUDIO_*:acao` que o super admin mapeou ao 
 em `/email-access-mappings` (tabela própria do Studio), módulo `STUDIO_EMAIL_ACCESS_MAPPINGS` do catálogo cuja permissão só conta com sessão IRN (super admin isento). Com sessão presente
 o IRN decide sempre. Spec e handoff de frontend no repo da management API:
 `docs/SPEC_EMAIL_ACCESS_MAPPING.md`, `docs/EMAIL_ACCESS_FRONTEND_HANDOFF.md`.
+Desde a **24.10** o gate da consola pergunta ao adaptador se o pedido tem sessão
+(`IAuthorizationServiceAdapter.hasSession`), sem ler cookies na app; a listagem é paginada
+(`pageNumber`/`pageSize`, filtros `email` e `status`) e revogar um revogado devolve 204.
 
 ### 4.5 Riscos assinalados
 
